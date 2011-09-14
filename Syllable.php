@@ -111,13 +111,13 @@
      * Create your own language strategy to load the TeX files from a different
      * source. i.e. filenaming system, database or remote server.
      */
-    interface ISyllableLanguageStrategy extends Iterator {}
+    interface ISyllableSourceStrategy extends Iterator {}
 
     /**
      * Default language strategy tries to load TeX files from a relative path
      * to the class sourcefile.
      */
-    class FileSyllableLanguage implements ISyllableLanguageStrategy {
+    class FileSyllableLanguage implements ISyllableSourceStrategy {
         private $lines      = array();
         private $position   = 0;
 
@@ -165,7 +165,14 @@
 		
         /**
          * Set the language to use for splitting syllables.
-         * Loads from cache if available, otherwise parses .tex hyphen files.
+         * Loads from cache if available, otherwise parses TeX hyphen files.
+         * Assumes basic syntax for TeX files (simplified):
+         *  file    := ( line crlf )*
+         *  crlf    := CR | LF | ( CF LF )
+         *  line    := comment | ( command "{" content* "}" )
+         *  comment := "%" ANY*
+         *  command := "\" ALPHA+
+         *  content := ANY+             (depends on command)
          * @param type $language 
          */
 		public function setLanguage($language) {
@@ -188,8 +195,8 @@
                     $tex = new FileSyllableLanguage($language, dirname(__FILE__).'/languages');					
                     foreach ($tex as $line) {
 						$offset = 0;
-						while ($offset < strlen($line)) {		
-							// %comment
+						while ($offset < strlen($line)) {
+                            // %comment
 							if ($line[$offset] == '%') {
 								break;	// ignore rest of line
 							}
