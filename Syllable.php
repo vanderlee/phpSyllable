@@ -212,7 +212,12 @@
 			$this->setTreshold($treshold);
 			$this->setHyphen($hyphen? $hyphen : new SoftHyphen());
 		}
-				
+			
+                /**
+                 * Splits a word into an array of syllables.
+                 * @param string $word the word to be split.
+                 * @return array array of syllables.
+                 */
 		public function splitWord($word) {
 			// Is this word smaller than the miminal length requirement?
 			if (strlen($word) < $this->min_word_length) {
