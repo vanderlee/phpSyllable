@@ -15,14 +15,17 @@
 	 * @author Wim Muskee <wimmuskee-at-gmail-dot-com>
 	 * @copyright Copyright (c) 2011, Martijn W. van der Lee
 	 * @license http://www.opensource.org/licenses/mit-license.php
+     * 
+     * @todo Ability to set cache and language strategies.
+     * @todo Errors on file-not-found or otherwise in strategies. When to quit?
 	 */
 	 
-	abstract class HyphenStrategy {
-		abstract public function joinText($parts);
-		abstract public function joinHTMLDOM($parts, DOMNode $node);
+	interface IHyphenStrategy {
+		public function joinText($parts);
+		public function joinHTMLDOM($parts, DOMNode $node);
 	}
 	
-	class DashHyphen extends HyphenStrategy {
+	class DashHyphen implements IHyphenStrategy {
 		public function joinText($parts) {
 			return join('-', $parts);
 		}
@@ -32,7 +35,7 @@
 		}
 	}
 	
-	abstract class EntityHyphenStrategy extends HyphenStrategy {
+	abstract class EntityHyphenStrategy implements IHyphenStrategy {
 		protected $entity = null;
 		
 		public function joinText($parts) {
@@ -58,23 +61,28 @@
 		protected $entity = '#8203';
 	}
 	
-	abstract class SyllableCacheStrategy {
-		abstract public function __set($key, $value);
-		abstract public function __get($key);
-		abstract public function __isset($key);
-		abstract public function __unset($key);
-		
-		protected $language = null;
-		public function __construct($language) {
-			$this->language = $language;
-		}
+    /**
+     * Defines the Cache strategy interface
+     * Create your own caching strategy to store the hyphenation and patterns
+     * arrays in the location you want. i.e. from a database or remote server.
+     */    
+	interface ISyllableCacheStrategy {
+		public function __set($key, $value);
+		public function __get($key);
+		public function __isset($key);
+		public function __unset($key);
 	}
 	
-	class SerializedSyllableCache extends SyllableCacheStrategy {
-		protected $path = null;
+    /**
+     * Cache strategy that uses serialized arrays written to flat text files.
+     */    
+	class SerializedSyllableCache implements ISyllableCacheStrategy {
+		protected $language = null;
+		protected $path     = null;
+        
 		public function __construct($language, $path) {
-			parent::__construct($language);
-			$this->path = $path;
+			$this->language = $language;
+			$this->path     = $path;
 		}
 
 		private function _filename($key) {
@@ -97,26 +105,74 @@
 			unlink($this->_filename($key));
 		}		
 	}
+    
+    /**
+     * Defines the interface for Language strategies.
+     * Create your own language strategy to load the TeX files from a different
+     * source. i.e. filenaming system, database or remote server.
+     */
+    interface ISyllableLanguageStrategy extends Iterator {}
+
+    /**
+     * Default language strategy tries to load TeX files from a relative path
+     * to the class sourcefile.
+     */
+    class FileSyllableLanguage implements ISyllableLanguageStrategy {
+        private $lines      = array();
+        private $position   = 0;
+
+        public function __construct($language, $path) {
+            $this->lines    = file("$path/hyph-{$language}.tex");
+            $this->position = 0;
+        }
+
+        function rewind() {
+            $this->position = 0;
+        }
+
+        function current() {
+            return $this->lines[$this->position];
+        }
+
+        function key() {
+            return $this->position;
+        }
+
+        function next() {
+            ++$this->position;
+        }
+
+        function valid() {
+            return isset($this->lines[$this->position]);
+        }
+    }
 	 
+    /**
+     * Main class
+     */
 	class Syllable {		
-		const TRESHOLD_LEAST	= 5;
-		const TRESHOLD_AVERAGE	= 3;
-		const TRESHOLD_MOST		= 1;
+		const TRESHOLD_LEAST        = 5;
+		const TRESHOLD_AVERAGE      = 3;
+		const TRESHOLD_MOST         = 1;
 	
-		protected $patterns		= null;
-		protected $hyphenation	= null;		
+		protected $patterns         = null;
+		protected $hyphenation      = null;		
 			
 		protected $language			= null;
 		protected $hyphen			= null;
 		protected $treshold			= null;
 		protected $min_word_length	= 2;
 		
+        /**
+         * Set the language to use for splitting syllables.
+         * Loads from cache if available, otherwise parses .tex hyphen files.
+         * @param type $language 
+         */
 		public function setLanguage($language) {
 			if ($language !== null && $language != $this->language) {			
 				$this->language = $language;
 				
-				$path = dirname(__FILE__).'/cache';
-				$cache = new SerializedSyllableCache($language, $path);
+				$cache = new SerializedSyllableCache($language, dirname(__FILE__).'/cache');
 				
 				if ($cache !== null && isset($cache->patterns) && isset($cache->hyphenation)) {
 					$this->patterns		= $cache->patterns;
@@ -128,9 +184,9 @@
 					// parser state
 					$command = FALSE;
 					$braces = FALSE;
-					
-					$handle = @fopen(dirname(__FILE__) . '/languages/hyph-'.$this->language.'.tex', 'r');
-					while (($line = fgets($handle, 1024)) !== FALSE) {
+                    
+                    $tex = new FileSyllableLanguage($language, dirname(__FILE__).'/languages');					
+                    foreach ($tex as $line) {
 						$offset = 0;
 						while ($offset < strlen($line)) {		
 							// %comment
@@ -185,7 +241,6 @@
 							++$offset;
 						}
 					}
-					fclose($handle);
 
 					if ($cache !== null) {
 						$cache->patterns	= $this->patterns;
@@ -213,11 +268,11 @@
 			$this->setHyphen($hyphen? $hyphen : new SoftHyphen());
 		}
 			
-                /**
-                 * Splits a word into an array of syllables.
-                 * @param string $word the word to be split.
-                 * @return array array of syllables.
-                 */
+        /**
+         * Splits a word into an array of syllables.
+         * @param string $word the word to be split.
+         * @return array array of syllables.
+         */
 		public function splitWord($word) {
 			// Is this word smaller than the miminal length requirement?
 			if (strlen($word) < $this->min_word_length) {
@@ -302,7 +357,7 @@
 		
 		public function hyphenateWord($word) {
 			$parts = $this->splitWord($word);
-			if ($this->hyphen instanceof HyphenStrategy) {
+			if ($this->hyphen instanceof IHyphenStrategy) {
 				return $this->hyphen->joinText($parts);
 			} else {
 				return join($this->hyphen, $parts);
@@ -311,7 +366,7 @@
 				
 		public function hyphenateText($text) {
 			$parts = $this->splitText($text);
-			if ($this->hyphen instanceof HyphenStrategy) {
+			if ($this->hyphen instanceof IHyphenStrategy) {
 				return $this->hyphen->joinText($parts);
 			} else {
 				return join($this->hyphen, $parts);
@@ -337,7 +392,7 @@
 			if ($node instanceof DOMText) {
 				$parts = $this->splitText($node->data);
 				
-				if ($this->hyphen instanceof HyphenStrategy) {
+				if ($this->hyphen instanceof IHyphenStrategy) {
 					$this->hyphen->joinHTMLDOM($parts, $node);
 				} else {
 					$node->data = join($this->hyphen, $parts);
