@@ -10,39 +10,39 @@
 	 * - http://www.ctan.org/tex-archive/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/
 	 * - http://www.ctan.org/tex-archive/language/hyphenation/
 	 *
-	 * @version 0.0.1
+	 * @version 0.2
 	 * @author Martijn W. van der Lee <martijn-at-vanderlee-dot-com>
 	 * @author Wim Muskee <wimmuskee-at-gmail-dot-com>
 	 * @copyright Copyright (c) 2011, Martijn W. van der Lee
 	 * @license http://www.opensource.org/licenses/mit-license.php
-     * 
+     *
      * @todo Ability to set cache and language strategies.
      * @todo Errors on file-not-found or otherwise in strategies. When to quit?
 	 */
-	 
+
 	interface IHyphenStrategy {
 		public function joinText($parts);
 		public function joinHTMLDOM($parts, DOMNode $node);
 	}
-	
+
 	class DashHyphen implements IHyphenStrategy {
 		public function joinText($parts) {
 			return join('-', $parts);
 		}
-		
+
 		public function joinHTMLDOM($parts, DOMNode $node) {
 			$node->data = $this->joinText($parts);
 		}
 	}
-	
+
 	abstract class EntityHyphenStrategy implements IHyphenStrategy {
 		protected $entity = null;
-		
+
 		public function joinText($parts) {
 			return join('&'.$this->entity.';', $parts);
 		}
-		
-		public function joinHTMLDOM($parts, DOMNode $node) {					
+
+		public function joinHTMLDOM($parts, DOMNode $node) {
 			if (($p = count($parts)) > 1) {
 				$node->data = $parts[--$p];
 				while (--$p >= 0) {
@@ -52,34 +52,34 @@
 			}
 		}
 	}
-	
+
 	class SoftHyphen extends EntityHyphenStrategy {
-		protected $entity = 'shy';	
+		protected $entity = 'shy';
 	}
-		 
+
 	class ZeroWidthSpaceHyphen extends EntityHyphenStrategy{
 		protected $entity = '#8203';
 	}
-	
+
     /**
      * Defines the Cache strategy interface
      * Create your own caching strategy to store the hyphenation and patterns
      * arrays in the location you want. i.e. from a database or remote server.
-     */    
-	interface ISyllableCacheStrategy {
+     */
+	interface ICacheStrategy {
 		public function __set($key, $value);
 		public function __get($key);
 		public function __isset($key);
 		public function __unset($key);
 	}
-	
+
     /**
      * Cache strategy that uses serialized arrays written to flat text files.
-     */    
-	class SerializedSyllableCache implements ISyllableCacheStrategy {
+     */
+	class SerializedCache implements ICacheStrategy {
 		protected $language = null;
 		protected $path     = null;
-        
+
 		public function __construct($language, $path) {
 			$this->language = $language;
 			$this->path     = $path;
@@ -88,24 +88,127 @@
 		private function _filename($key) {
 			return $this->path.'/syllable.'.$this->language.'.'.$key.'.ser';;
 		}
-		
+
 		public function __set($key, $value) {
 			$file = $this->_filename($key);
 			file_put_contents($file, serialize($value));
 			chmod($file, 0777);
 		}
 		public function __get($key) {
-			return unserialize(file_get_contents($this->_filename($key)));			
+			return unserialize(file_get_contents($this->_filename($key)));
 		}
 		public function __isset($key) {
 			return file_exists($this->_filename($key));
 		}
-		
+
 		public function __unset($key) {
 			unlink($this->_filename($key));
-		}		
+		}
 	}
-    
+
+    /**
+     * Cache strategy that uses serialized arrays written to flat text files.
+     */
+	class JSONCache implements ICacheStrategy {
+		protected $language = null;
+		protected $path     = null;
+
+		public function __construct($language, $path) {
+			$this->language = $language;
+			$this->path     = $path;
+		}
+
+		private function _filename($key) {
+			return $this->path.'/syllable.'.$this->language.'.'.$key.'.json';;
+		}
+
+		public function __set($key, $value) {
+			$file = $this->_filename($key);
+			file_put_contents($file, json_encode($value));
+			chmod($file, 0777);
+		}
+		public function __get($key) {
+			return json_decode(file_get_contents($this->_filename($key)), true);
+		}
+		public function __isset($key) {
+			return file_exists($this->_filename($key));
+		}
+
+		public function __unset($key) {
+			unlink($this->_filename($key));
+		}
+	}
+
+    /**
+     * Cache strategy that uses serialized arrays written to flat text files.
+	 * Note that this should really use RAW only in PHP 5.3
+	 * Use of INI files is strongly discouraged due to the way PHP parses them.
+     */
+	class INICache implements ICacheStrategy {
+		protected $language = null;
+		protected $path     = null;
+
+		public function __construct($language, $path) {
+			$this->language = $language;
+			$this->path     = $path;
+		}
+
+		private function _filename($key) {
+			return $this->path.'/syllable.'.$this->language.'.'.$key.'.ini';;
+		}
+
+		public function __set($key, $value) {
+			$file = $this->_filename($key);
+			self::_write_php_ini($value, $file);
+			chmod($file, 0777);
+		}
+
+		public function __get($key) {
+			return parse_ini_file($this->_filename($key), false, INI_SCANNER_RAW);
+		}
+
+		public function __isset($key) {
+			return file_exists($this->_filename($key));
+		}
+
+		public function __unset($key) {
+			unlink($this->_filename($key));
+		}
+
+		private static function _write_php_ini($array, $file) {
+			$res = array();
+			foreach ($array as $key => $val) {
+				if (is_array($val)) {
+					$res[] = "[$key]";
+					foreach ($val as $skey => $sval)
+						$res[] = "$skey = " . (is_numeric($sval) ? $sval : '"' . $sval . '"');
+				}
+				else
+					$res[] = "$key = " . (is_numeric($val) ? $val : '"' . $val . '"');
+			}
+			self::_safefilerewrite($file, implode("\r\n", $res));
+		}
+
+		private static function _safefilerewrite($fileName, $dataToSave) {
+			if ($fp = fopen($fileName, 'w')) {
+				$startTime = microtime();
+				do {
+					$canWrite = flock($fp, LOCK_EX);
+					// If lock not obtained sleep for 0 - 100 milliseconds, to avoid collision and CPU load
+					if (!$canWrite)
+						usleep(round(rand(0, 100) * 1000));
+				} while ((!$canWrite) and ((microtime() - $startTime) < 1000));
+
+				//file was locked so now we can store information
+				if ($canWrite) {
+					fwrite($fp, $dataToSave);
+					flock($fp, LOCK_UN);
+				}
+				fclose($fp);
+			}
+		}
+	}
+
     /**
      * Defines the interface for Language strategies.
      * Create your own language strategy to load the TeX files from a different
@@ -146,23 +249,29 @@
             return isset($this->lines[$this->position]);
         }
     }
-	 
+
     /**
      * Main class
      */
-	class Syllable {		
+	class Syllable {
 		const TRESHOLD_LEAST        = 5;
 		const TRESHOLD_AVERAGE      = 3;
 		const TRESHOLD_MOST         = 1;
-	
+
 		protected $patterns         = null;
-		protected $hyphenation      = null;		
-			
+		protected $hyphenation      = null;
+
 		protected $language			= null;
 		protected $hyphen			= null;
 		protected $treshold			= null;
 		protected $min_word_length	= 2;
-		
+
+		public function __construct($language = 'en', $treshold = self::TRESHOLD_AVERAGE, $hyphen = null) {
+			$this->setLanguage($language);
+			$this->setTreshold($treshold);
+			$this->setHyphen($hyphen? $hyphen : new SoftHyphen());
+		}
+
         /**
          * Set the language to use for splitting syllables.
          * Loads from cache if available, otherwise parses TeX hyphen files.
@@ -173,26 +282,28 @@
          *  comment := "%" ANY*
          *  command := "\" ALPHA+
          *  content := ANY+             (depends on command)
-         * @param type $language 
+         * @param type $language
          */
 		public function setLanguage($language) {
-			if ($language !== null && $language != $this->language) {			
+			if ($language !== null && $language != $this->language) {
 				$this->language = $language;
-				
-				$cache = new SerializedSyllableCache($language, dirname(__FILE__).'/cache');
-				
+
+				$cache = new SerializedCache($language, dirname(__FILE__).'/cache');
+				//$cache = new JSONCache($language, dirname(__FILE__).'/cache');
+				//$cache = new INICache($language, dirname(__FILE__).'/cache');
+
 				if ($cache !== null && isset($cache->patterns) && isset($cache->hyphenation)) {
 					$this->patterns		= $cache->patterns;
-					$this->hyphenation	= $cache->hyphenation;								
+					$this->hyphenation	= $cache->hyphenation;
 				} else {
 					$this->patterns		= array();
-					$this->hyphenation	= array();				
-					
+					$this->hyphenation	= array();
+
 					// parser state
 					$command = FALSE;
 					$braces = FALSE;
-                    
-                    $tex = new FileSyllableLanguage($language, dirname(__FILE__).'/languages');					
+
+                    $tex = new FileSyllableLanguage($language, dirname(__FILE__).'/languages');
                     foreach ($tex as $line) {
 						$offset = 0;
 						while ($offset < strlen($line)) {
@@ -200,27 +311,32 @@
 							if ($line[$offset] == '%') {
 								break;	// ignore rest of line
 							}
-							
+
 							// \command
 							if (preg_match('~^\\\\([[:alpha:]]+)~', substr($line, $offset), $m) === 1) {
 								$command = $m[1];
 								$offset += strlen($m[0]);
 								continue;	// next token
-							}				
-							
+							}
+
 							// {
 							if ($line[$offset] == '{') {
 								$braces = TRUE;
 								++$offset;
 								continue;	// next token
 							}
-							
+
 							// content
 							if ($braces) {
 								switch ($command) {
 									case 'patterns':
 										if (preg_match('~^(\pL\pM*|\pN|\.)+~u', substr($line, $offset), $m) === 1) {
-											$this->patterns[preg_replace('~\d~', '', $m[0])] = $m[0];
+											$numbers = '';
+											preg_match_all('~(?:(\d)\D?)|\D~', $m[0], $matches, PREG_PATTERN_ORDER);
+											foreach ($matches[1] as $score) {
+												$numbers .= is_numeric($score)? $score : 0;
+											}
+											$this->patterns[preg_replace('~\d~', '', $m[0])] = $numbers;
 											$offset += strlen($m[0]);
 										}
 										continue;	// next token
@@ -235,15 +351,15 @@
 									break;
 								}
 							}
-							
+
 							// }
 							if ($line[$offset] == '}') {
 								$braces = FALSE;
 								$command = FALSE;
 								++$offset;
-								continue;	// next token		
+								continue;	// next token
 							}
-							
+
 							// ignorable content, skip one char
 							++$offset;
 						}
@@ -256,84 +372,80 @@
 				}
 			}
 		}
-		
+
 		public function setHyphen($hyphen) {
 			if ($hyphen !== null) {
 				$this->hyphen	= $hyphen;
-			}		
+			}
 		}
 
 		public function setTreshold($treshold) {
 			if ($treshold !== null) {
 				$this->treshold	= $treshold;
-			}		
+			}
 		}
 
-		public function __construct($language = 'en', $treshold = self::TRESHOLD_AVERAGE, $hyphen = null) {
-			$this->setLanguage($language);
-			$this->setTreshold($treshold);
-			$this->setHyphen($hyphen? $hyphen : new SoftHyphen());
-		}
-			
         /**
          * Splits a word into an array of syllables.
          * @param string $word the word to be split.
          * @return array array of syllables.
          */
 		public function splitWord($word) {
+			$word_length = strlen($word);
 			// Is this word smaller than the miminal length requirement?
-			if (strlen($word) < $this->min_word_length) {
+			if ($word_length < $this->min_word_length) {
 				return $word;
 			}
-		
+
 			// Is it a pre-hyphenated word?
-			if (array_key_exists($word, $this->hyphenation)) {
+			if (isset($this->hyphenation[$word])) {
 				return str_replace('-', $this->hyphen, $this->hyphenation[$word]);
 			}
-			
+
 			// Convenience array
-			$chars = str_split(".$word.");
-			
+			$text			= '.'.$word.'.';
+			$text_length	= $word_length + 2;
+
 			// Maximize
 			$before = array();
-			for ($start = 0; $start < count($chars); ++$start) {
-				for ($length = $this->min_word_length; $length <= count($chars) - $start; ++$length) {
-					$subword = join(array_slice($chars, $start, $length));
-					if (array_key_exists($subword, $this->patterns)) {
-						preg_match_all('~(\d?)(\D?)~', $this->patterns[$subword], $matches, PREG_PATTERN_ORDER);
-						foreach ($matches[1] as $offset => $score) {
-							if ( array_key_exists( ($start + $offset), $before ) ) {
-								$before[$start + $offset] = max($before[$start + $offset], $score);
-							} else {
+			for ($start = 0; $start < $text_length - $this->min_word_length; ++$start) {
+				$subword = substr($text, $start, $this->min_word_length - 1);
+				for ($index = $start + $this->min_word_length - 1; $index < $text_length; ++$index) {
+					$subword .= $text[$index];
+					if (isset($this->patterns[$subword])) {
+						$scores = $this->patterns[$subword];
+						$scores_length = strlen($scores);
+						for ($offset = 0; $offset < $scores_length; ++$offset) {
+							$score = $scores[$offset];
+							if (!isset($before[($start + $offset)]) || $score > $before[$start + $offset]) {
 								$before[$start + $offset] = $score;
 							}
-						}					
+						}
 					}
 				}
 			}
 
 			// Output
 			$parts = array();
-			$part = '';
-			for ($i = 1; $i < count($chars) - 1; ++$i) {
-				$char	= $chars[$i];
-				if ($i > 1 && array_key_exists( $i, $before ) ) {
+			$part = $text[1];
+			for ($i = 2; $i < $text_length - 1; ++$i) {
+				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
-					if (($score % 2 == 1)				// only odd scores
+					if (($score % 2)					// only odd scores
 					 && ($score >= $this->treshold)) {	// only above treshold
 						$parts[] = $part;
 						$part = '';
 					}
 				}
-				$part .= $char;
+				$part .= $text[$i];
 			}
 			if (!empty($part)) {
 				$parts[] = $part;
 			}
-			
+
 			return $parts;
-		}		
-		
+		}
+
 		public function splitText($text) {
 			$splits = preg_split('~[^[:alpha:]]+~', $text, null, PREG_SPLIT_OFFSET_CAPTURE);
 			$parts = array();
@@ -345,23 +457,23 @@
 					$part .= substr($text, $pos, $length);
 				}
 				if (!empty($split[0])) {
-					$sw = $this->splitWord($split[0]);					
+					$sw = $this->splitWord($split[0]);
 					$index = 0;
 					$part .= $sw[$index++];
 					if (count($sw) > 1) {
 						do {
 							$parts[] = $part;
 							$part = $sw[$index++];
-						} while ($index < count($sw));						
+						} while ($index < count($sw));
 					}
 				}
 				$pos = $split[1] + strlen($split[0]);
 			}
 			$parts[] = $part;
-			
+
 			return $parts;
-		}		
-		
+		}
+
 		public function hyphenateWord($word) {
 			$parts = $this->splitWord($word);
 			if ($this->hyphen instanceof IHyphenStrategy) {
@@ -370,7 +482,7 @@
 				return join($this->hyphen, $parts);
 			}
 		}
-				
+
 		public function hyphenateText($text) {
 			$parts = $this->splitText($text);
 			if ($this->hyphen instanceof IHyphenStrategy) {
@@ -378,27 +490,27 @@
 			} else {
 				return join($this->hyphen, $parts);
 			}
-		}		
-		
+		}
+
 		public function hyphenateHTML($html) {
 			$dom = new DOMDocument();
 			$dom->resolveExternals = true;
 			$dom->loadHTML($html);
 
 			$this->_hyphenateHTMLDOMNodes($dom);
-			
+
 			return $dom->saveHTML();
 		}
-		
+
 		private function _hyphenateHTMLDOMNodes(DOMNode $node) {
 			if ($node->hasChildNodes()) {
 				foreach ($node->childNodes as $child) {
-					$this->_hyphenateHTMLDOMNodes($child, $entity_reference);
+					$this->_hyphenateHTMLDOMNodes($child);
 				}
 			}
 			if ($node instanceof DOMText) {
 				$parts = $this->splitText($node->data);
-				
+
 				if ($this->hyphen instanceof IHyphenStrategy) {
 					$this->hyphen->joinHTMLDOM($parts, $node);
 				} else {

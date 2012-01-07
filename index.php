@@ -1,7 +1,7 @@
 <?php
 
 	header ('Content-type: text/html; charset=utf-8');
-	
+
 	require_once(dirname(__FILE__) . '/Syllable.php');
 
     class Perf {
@@ -18,62 +18,71 @@
         }
     }
 
-    Perf::Start();
-    $hyph = new Syllable('nl');
-    Perf::Stop('Init');
+    //Perf::Start();
+    $syllable = new Syllable('en-us');
+    //Perf::Stop('Init');
+
+	$english_text = 'Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, \'and what is the use of a book,\' thought Alice \'without pictures or conversation?\' So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her. There was nothing so VERY remarkable in that; nor did Alice think it so VERY much out of the way to hear the Rabbit say to itself, \'Oh dear! Oh dear! I shall be late!\' (when she thought it over afterwards, it occurred to her that she ought to have wondered at this, but at the time it all seemed quite natural); but when the Rabbit actually TOOK A WATCH OUT OF ITS WAISTCOAT-POCKET, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was just in time to see it pop down a large rabbit-hole under the hedge.';
 ?><html>
+	<head>
+		<title>phpSyllable</title>
+		<style>
+			.example {
+				text-align: justify;
+				margin: 0 25%;
+				border: solid 1px silver;
+				padding: 1em;
+			}
+		</style>
+	</head>
+
 	<body>
-		<p style="width: 50%; text-align: justify;">
-			<?php
-				$text = 'Er werd al ruim 10 jaar aandachtig geluisterd. Waarom zou het onwaarschijnlijke geval, dat ik zo graag veronderstelde, niet bewaarheid worden in het uiteindelijke resultaat? Waarlijk, er is geen reden te beredeneren en geen gedachte te bedenken die het tegendeel bewijzen zou.';				
-				echo $hyph->hyphenateText($text);
-			?>
-		</p>
-		
-		<p style="width: 50%; text-align: justify;">
+		<div style="width: 60px; float: right; text-align: justify; border: solid 1px silver; padding: 1em;">
 			<?php
 				ob_start();
 				?>
 				<html>
 					<body>
-						De inhoud van deze &copy; HTML webpagina is zo goed als
-						<b>verzekerd</b>
-						van een adequate vertaling met behulp van verbindingsstreepjes.
+						The content of this &copy; HTML webpage is <b>guarenteed</b> to be adequately split into syllables with the help of hyphenation.
 					</body>
 				</html>
 				<?php
 				$html = ob_get_clean();
-				echo $hyph->hyphenateHTML($html);
+				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
+				echo $syllable->hyphenateHTML($html);
+				$syllable->setTreshold(Syllable::TRESHOLD_AVERAGE);
+			?>
+		</div>
+
+		<p>
+			<h1>phpSyllable</h1>
+			<br/>TODO
+			<br/>- HTML syntax
+			<br/>- Other hyphenation splitter
+			<br/>- Different languages
+			<br/>- Different hyphen styles (visualize)
+			<br/>- Case insensitivity
+		</p>
+
+		<h2>Without hyphenation</h2>
+		<p class="example">
+			<?php
+				echo utf8_encode($english_text);
 			?>
 		</p>
 
-		<h1>Plain</h1>
-		<p style="width: 50%; text-align: justify;">
+		<h2>Hyphenated - Standard</h2>
+		<p class="example">
 			<?php
-				$text = 'Wat doe je als je veel wilt zeggen, maar toch beknopt wilt zijn? Je zoekt een formulering waarbij je zo min mogelijk woorden gebruikt. Lekker kort en bondig, want de lezer heeft weinig tijd.
-                        Zo denken veel schrijvers: korte tekst is goede tekst. Toch is het nodig om dat te nuanceren. Er schuilt namelijk een gevaar in korte teksten. In je drang om zo kort mogelijk te zijn, sluipen containerbegrippen de tekst binnen.
-                        Wat is een containerbegrip? Van Dale zegt: "een begrip zonder scherp afgebakende betekenis waaraan de taalgebruiker zelf nader invulling kan geven en dat op veel verschillende toestanden, gebeurtenissen of zaken wordt toegepast."
-                        Een woord als "ding" is misschien wel het het meest gebruikte containerbegrip. Het laat de lezer (of luisteraar) volledig de ruimte om te bedenken wat dat dan precies is. In die zin is het woord "containerbegrip" trouwens ook een containerbegrip.
-                        Wat bestempelen mensen zelf als containerbegrip? Even googlen op het woord "containerbegrip" leverde de volgende resultaten op: "dialoog", "klantgerichtheid", "crossmedia", "competentie". Voor de duidelijkheid: het gaat hier om teksten waarin de schrijvers deze woorden containerbegrippen noemden.
-                        Misschien denk je: wat is nou precies het probleem? Het probleem is dat containerbegrippen algemeen zijn en abstract. Ze laten veel ruimte voor de beoordeling van de lezer. Dat lijkt een voordeel. Maar je maakt het je lezer moeilijk. Hij moet namelijk gaan nadenken over wat jij (misschien wel) hebt bedoeld. En dat kost tijd.
-                        Je maakt je tekst dus juist vaag door algemene woorden te gebruiken. Dus wel lekker kort en bondig, maar niet helder!';
-		
-				echo utf8_encode($text);
+				echo utf8_encode($syllable->hyphenateText($english_text));
 			?>
 		</p>
-		
-		<h1>Hyphenated</h1>
-		<p style="width: 50%; text-align: justify;">
+
+		<h2>Hyphenated - All possible hyphens</h2>
+		<p class="example">
 			<?php
-				echo utf8_encode($hyph->hyphenateText($text));
-			?>
-		</p>
-		
-		<h1>Hyphenated - MOST</h1>
-		<p style="width: 50%; text-align: justify;">
-			<?php
-				$hyph->setTreshold(Syllable::TRESHOLD_MOST);
-				echo utf8_encode($hyph->hyphenateText($text));	
+				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
+				echo utf8_encode($syllable->hyphenateText($english_text));
 			?>
 		</p>
 	</body>
