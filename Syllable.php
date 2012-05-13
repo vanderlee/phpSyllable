@@ -73,139 +73,90 @@
 		public function __unset($key);
 	}
 
-    /**
-     * Cache strategy that uses serialized arrays written to flat text files.
-     */
-	class SerializedCache implements ICacheStrategy {
-		protected $language = null;
-		protected $path     = null;
+	abstract class SingleFileCacheStrategy implements ICacheStrategy {
+		private $language	= null;
+		private $path		= null;
+		private $data		= array();
+
+		abstract protected function _encode($array);
+		abstract protected function _decode($array);
+		abstract protected function _getFilename($language);
 
 		public function __construct($language, $path) {
 			$this->language = $language;
 			$this->path     = $path;
 		}
 
-		private function _filename($key) {
-			return $this->path.'/syllable.'.$this->language.'.'.$key.'.ser';;
+		private function _filename() {
+			return $this->path.'/'.$this->_getFilename($this->language);
+		}
+
+		private function _load() {
+			if (empty($this->data)) {
+				$file = $this->_filename();
+				if (is_file($file)) {
+					$this->data = $this->_decode(file_get_contents($file), true);
+				}
+			}
+		}
+
+		private function _save() {
+			$file = $this->_filename();
+			file_put_contents($file, $this->_encode($this->data));
+			chmod($file, 0777);
 		}
 
 		public function __set($key, $value) {
-			$file = $this->_filename($key);
-			file_put_contents($file, serialize($value));
-			chmod($file, 0777);
+			$this->data[$key] = $value;
+			$this->_save();
 		}
+
 		public function __get($key) {
-			return unserialize(file_get_contents($this->_filename($key)));
+			$this->_load();
+			return $this->data[$key];
 		}
+
 		public function __isset($key) {
-			return file_exists($this->_filename($key));
+			$this->_load();
+			return isset($this->data[$key]);
 		}
 
 		public function __unset($key) {
-			unlink($this->_filename($key));
+			unset($this->data[$key]);
 		}
 	}
 
-    /**
-     * Cache strategy that uses serialized arrays written to flat text files.
-     */
-	class JSONCache implements ICacheStrategy {
-		protected $language = null;
-		protected $path     = null;
-
-		public function __construct($language, $path) {
-			$this->language = $language;
-			$this->path     = $path;
+	/**
+	 * Single-file cache using JSON format to encode data
+	 */
+	class JSONCache extends SingleFileCacheStrategy {
+		protected function _encode($array) {
+			return json_encode($array);
 		}
 
-		private function _filename($key) {
-			return $this->path.'/syllable.'.$this->language.'.'.$key.'.json';;
+		protected function _decode($array) {
+			return json_decode($array, true);
 		}
 
-		public function __set($key, $value) {
-			$file = $this->_filename($key);
-			file_put_contents($file, json_encode($value));
-			chmod($file, 0777);
-		}
-		public function __get($key) {
-			return json_decode(file_get_contents($this->_filename($key)), true);
-		}
-		public function __isset($key) {
-			return file_exists($this->_filename($key));
-		}
-
-		public function __unset($key) {
-			unlink($this->_filename($key));
+		protected function _getFilename($language) {
+			return "syllable.{$language}.json";
 		}
 	}
 
-    /**
-     * Cache strategy that uses serialized arrays written to flat text files.
-	 * Note that this should really use RAW only in PHP 5.3
-	 * Use of INI files is strongly discouraged due to the way PHP parses them.
-     */
-	class INICache implements ICacheStrategy {
-		protected $language = null;
-		protected $path     = null;
-
-		public function __construct($language, $path) {
-			$this->language = $language;
-			$this->path     = $path;
+	/**
+	 * Single-file cache using PHP-native serialization to encode data
+	 */
+	class SerializedCache extends SingleFileCacheStrategy {
+		protected function _encode($array) {
+			return serialize($array);
 		}
 
-		private function _filename($key) {
-			return $this->path.'/syllable.'.$this->language.'.'.$key.'.ini';;
+		protected function _decode($array) {
+			return unserialize($array);
 		}
 
-		public function __set($key, $value) {
-			$file = $this->_filename($key);
-			self::_write_php_ini($value, $file);
-			chmod($file, 0777);
-		}
-
-		public function __get($key) {
-			return parse_ini_file($this->_filename($key), false, INI_SCANNER_RAW);
-		}
-
-		public function __isset($key) {
-			return file_exists($this->_filename($key));
-		}
-
-		public function __unset($key) {
-			unlink($this->_filename($key));
-		}
-
-		private static function _write_php_ini($array, $file) {
-			$res = array();
-			foreach ($array as $key => $val) {
-				if (is_array($val)) {
-					$res[] = "[$key]";
-					foreach ($val as $skey => $sval)
-						$res[] = "$skey = " . (is_numeric($sval) ? $sval : '"' . $sval . '"');
-				}
-				else
-					$res[] = "$key = " . (is_numeric($val) ? $val : '"' . $val . '"');
-			}
-			self::_safefilerewrite($file, implode("\r\n", $res));
-		}
-
-		private static function _safefilerewrite($fileName, $dataToSave) {
-			if ($fp = fopen($fileName, 'w')) {
-				$startTime = microtime();
-				do {
-					$canWrite = flock($fp, LOCK_EX);
-					// If lock not obtained sleep for 0 - 100 milliseconds, to avoid collision and CPU load
-					if (!$canWrite)
-						usleep(round(rand(0, 100) * 1000));
-				} while ((!$canWrite) and ((microtime() - $startTime) < 1000));
-
-				//file was locked so now we can store information
-				if ($canWrite) {
-					fwrite($fp, $dataToSave);
-					flock($fp, LOCK_UN);
-				}
-				fclose($fp);
-			}
+		protected function _getFilename($language) {
+			return "syllable.{$language}.serialized";
 		}
 	}
 
@@ -259,6 +210,7 @@
 		const TRESHOLD_MOST         = 1;
 
 		protected $patterns         = null;
+		protected $max_pattern		= null;
 		protected $hyphenation      = null;
 
 		protected $language			= null;
@@ -288,15 +240,15 @@
 			if ($language !== null && $language != $this->language) {
 				$this->language = $language;
 
-				$cache = new SerializedCache($language, dirname(__FILE__).'/cache');
-				//$cache = new JSONCache($language, dirname(__FILE__).'/cache');
-				//$cache = new INICache($language, dirname(__FILE__).'/cache');
+				$cache = new JSONCache($language, dirname(__FILE__).'/cache');
 
-				if ($cache !== null && isset($cache->patterns) && isset($cache->hyphenation)) {
+				if ($cache !== null && isset($cache->patterns) && isset($cache->max_pattern) && isset($cache->hyphenation)) {
 					$this->patterns		= $cache->patterns;
+					$this->max_pattern	= $cache->max_pattern;
 					$this->hyphenation	= $cache->hyphenation;
 				} else {
 					$this->patterns		= array();
+					$this->max_pattern	= 0;
 					$this->hyphenation	= array();
 
 					// parser state
@@ -336,7 +288,11 @@
 											foreach ($matches[1] as $score) {
 												$numbers .= is_numeric($score)? $score : 0;
 											}
-											$this->patterns[preg_replace('~\d~', '', $m[0])] = $numbers;
+											$pattern = preg_replace('~\d~', '', $m[0]);
+											$this->patterns[$pattern]	= $numbers;
+											if (isset($pattern{$this->max_pattern})) {
+												$this->max_pattern = strlen($pattern);
+											}
 											$offset += strlen($m[0]);
 										}
 										continue;	// next token
@@ -367,6 +323,7 @@
 
 					if ($cache !== null) {
 						$cache->patterns	= $this->patterns;
+						$cache->max_pattern	= $this->max_pattern;
 						$cache->hyphenation	= $this->hyphenation;
 					}
 				}
@@ -405,12 +362,13 @@
 			// Convenience array
 			$text			= '.'.$word.'.';
 			$text_length	= $word_length + 2;
+			$pattern_length = min($this->max_pattern, $text_length);
 
 			// Maximize
 			$before = array();
 			for ($start = 0; $start < $text_length - $this->min_word_length; ++$start) {
 				$subword = substr($text, $start, $this->min_word_length - 1);
-				for ($index = $start + $this->min_word_length - 1; $index < $text_length; ++$index) {
+				for ($index = $start + $this->min_word_length - 1; $index < $pattern_length; ++$index) {
 					$subword .= $text[$index];
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
