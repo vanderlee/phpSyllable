@@ -212,6 +212,7 @@
 		protected $patterns         = null;
 		protected $max_pattern		= null;
 		protected $hyphenation      = null;
+		protected $min_hyphenation  = null;
 
 		protected $language			= null;
 		protected $hyphen			= null;
@@ -242,14 +243,21 @@
 
 				$cache = new JSONCache($language, dirname(__FILE__).'/cache');
 
-				if ($cache !== null && isset($cache->patterns) && isset($cache->max_pattern) && isset($cache->hyphenation)) {
-					$this->patterns		= $cache->patterns;
-					$this->max_pattern	= $cache->max_pattern;
-					$this->hyphenation	= $cache->hyphenation;
+				if ($cache !== null
+						&& isset($cache->patterns)
+						&& isset($cache->max_pattern)
+						&& isset($cache->hyphenation)
+						&& isset($cache->min_hyphenation)
+						) {
+					$this->patterns			= $cache->patterns;
+					$this->max_pattern		= $cache->max_pattern;
+					$this->hyphenation		= $cache->hyphenation;
+					$this->min_hyphenation	= $cache->min_hyphenation;
 				} else {
-					$this->patterns		= array();
-					$this->max_pattern	= 0;
-					$this->hyphenation	= array();
+					$this->patterns			= array();
+					$this->max_pattern		= 0;
+					$this->hyphenation		= array();
+					$this->min_hyphenation	= PHP_INT_MAX;
 
 					// parser state
 					$command = FALSE;
@@ -300,7 +308,11 @@
 
 									case 'hyphenation':
 										if (preg_match('~^\pL\pM*(-|\pL\pM*)+\pL\pM*~u', substr($line, $offset), $m) === 1) {
-											$this->hyphenation[preg_replace('~\-~', '', $m[0])] = $m[0];
+											$hyphenation = preg_replace('~\-~', '', $m[0]);
+											$this->hyphenation[$hyphenation] = $m[0];
+											if (!isset($hyphenation{$this->min_hyphenation})) {
+												$this->min_hyphenation = strlen($hyphenation);
+											}
 											$offset += strlen($m[0]);
 										}
 										continue;	// next token
@@ -322,14 +334,20 @@
 					}
 
 					if ($cache !== null) {
-						$cache->patterns	= $this->patterns;
-						$cache->max_pattern	= $this->max_pattern;
-						$cache->hyphenation	= $this->hyphenation;
+						$cache->patterns		= $this->patterns;
+						$cache->max_pattern		= $this->max_pattern;
+						$cache->hyphenation		= $this->hyphenation;
+						$cache->min_hyphenation	= $this->min_hyphenation;
 					}
 				}
 			}
 		}
 
+		/**
+		 *
+		 * @param IHyphenStrategy/String $hyphen Either an IHyphenStrategy or
+		 * plain string used to join the syllables of words.
+		 */
 		public function setHyphen($hyphen) {
 			if ($hyphen !== null) {
 				$this->hyphen	= $hyphen;
@@ -355,7 +373,7 @@
 			}
 
 			// Is it a pre-hyphenated word?
-			if (isset($this->hyphenation[$word])) {
+			if (isset($word{$this->min_hyphenation - 1}) && isset($this->hyphenation[$word])) {
 				return str_replace('-', $this->hyphen, $this->hyphenation[$word]);
 			}
 

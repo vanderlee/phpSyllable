@@ -1,3 +1,5 @@
+Internal run-time cache per run (~20% performance improvement).
 Internal run-time cache per language (contains entire word and numbers).
+Internal caches with/without scoring?
 Split up into individual classes and use Classname.class.php convention.
 Change the caches to use a single load/save point instead of on get/set
