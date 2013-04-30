@@ -1,7 +1,7 @@
 <?php
 
 	class Syllable_Hyphen_Entity implements Syllable_Hyphen_Interface {
-		private $entity = null;
+		private $entity;
 
 		public function __construct($entity) {
 			$this->entity = $entity;

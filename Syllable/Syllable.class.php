@@ -8,18 +8,28 @@
 		const TRESHOLD_AVERAGE      = 3;
 		const TRESHOLD_MOST         = 1;
 
-		private	$Cache				= null;
-		private	$Source				= null;
+		/**
+		 * @var Syllable_Cache_Interface
+		 */
+		private	$Cache;
 
-		protected $patterns         = null;
-		protected $max_pattern		= null;
-		protected $hyphenation      = null;
-		protected $min_hyphenation  = null;
+		/**
+		 * @var Syllable_Cache_Interface
+		 */
+		private	$Source;
 
-		protected $language			= null;
-		protected $hyphen			= null;
-		protected $treshold			= null;
-		protected $min_word_length	= 2;
+		/**
+		 * @var Syllable_Hyphen_Interface
+		 */
+		private $Hyphen;
+		
+		private $treshold;
+		private $min_word_length	= 2;
+
+		private $patterns			= null;
+		private $max_pattern		= null;
+		private $hyphenation		= null;
+		private $min_hyphenation	= null;
 
 		public function __construct($language = 'en', $treshold = self::TRESHOLD_AVERAGE, $hyphen = null) {
 			$this->setCache(new Syllable_Cache_Json($language, dirname(__FILE__).'/cache'));
@@ -28,10 +38,22 @@
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
 		}
 
+		/**
+		 * Set the hyphen to use when hyphenating text
+		 * @param Mixed $hyphen either a Syllable_Hyphen_Interface or a string, which is turned into a Syllable_Hyphen_Text
+		 */
 		public function setHyphen($hyphen) {
-			if ($hyphen !== null) {
-				$this->hyphen	= $hyphen;
-			}
+			$this->Hyphen	= ($hyphen instanceof Syllable_Hyphen_Interface)
+							? $hyphen
+							: new Syllable_Hyphen_Text($hyphen);
+		}
+
+		/**
+		 *
+		 * @return Syllable_Hyphen_Interface hyphen
+		 */
+		public function getHyphen() {
+			return $this->Hyphen;
 		}
 
 		public function setTreshold($treshold = self::TRESHOLD_MOST) {
@@ -42,10 +64,17 @@
 			return $this->treshold;
 		}
 
+		/**
+		 *
+		 * @param Syllable_Cache_Interface $Cache
+		 */
 		public function setCache(Syllable_Cache_Interface $Cache) {
 			$this->Cache = $Cache;
 		}
 
+		/**
+		 * @return Syllable_Cache_Interface
+		 */
 		public function getCache() {
 			return $this->Cache;
 		}
@@ -96,20 +125,12 @@
 
 		public function hyphenateWord($word) {
 			$parts = $this->splitWord($word);
-			if ($this->hyphen instanceof Syllable_Hyphen_Interface) {
-				return $this->hyphen->joinText($parts);
-			} else {
-				return join($this->hyphen, $parts);
-			}
+			return $this->Hyphen->joinText($parts);
 		}
 
 		public function hyphenateText($text) {
 			$parts = $this->splitText($text);
-			if ($this->hyphen instanceof Syllable_Hyphen_Interface) {
-				return $this->hyphen->joinText($parts);
-			} else {
-				return join($this->hyphen, $parts);
-			}
+			return $this->Hyphen->joinText($parts);
 		}
 
 		public function hyphenateHtml($html) {
@@ -241,7 +262,7 @@
 
 			// Is it a pre-hyphenated word?
 			if (isset($word{$this->min_hyphenation - 1}) && isset($this->hyphenation[$word])) {
-				return str_replace('-', $this->hyphen, $this->hyphenation[$word]);
+				return explode('-', $this->hyphenation[$word]);
 			}
 
 			// Convenience array
@@ -298,11 +319,7 @@
 			if ($node instanceof DOMText) {
 				$parts = $this->splitText($node->data);
 
-				if ($this->hyphen instanceof Syllable_Hyphen_Interface) {
-					$this->hyphen->joinHtmlDom($parts, $node);
-				} else {
-					$node->data = join($this->hyphen, $parts);
-				}
+				$this->Hyphen->joinHtmlDom($parts, $node);
 			}
 		}
 	}

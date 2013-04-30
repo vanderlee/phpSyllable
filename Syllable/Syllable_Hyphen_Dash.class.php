@@ -1,11 +1,7 @@
 <?php
 
-	class Syllable_Hyphen_Dash implements Syllable_Hyphen_Interface {
-		public function joinText($parts) {
-			return join('-', $parts);
-		}
-
-		public function joinHtmlDom($parts, DOMNode $node) {
-			$node->data = $this->joinText($parts);
+	class Syllable_Hyphen_Dash implements Syllable_Hyphen_Text {
+		public function __construct() {
+			parent::__construct('-');
 		}
 	}

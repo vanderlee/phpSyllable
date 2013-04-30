@@ -2,7 +2,7 @@
 
 	header ('Content-type: text/html; charset=utf-8');
 
-	require_once(dirname(__FILE__) . '/Syllable.php');
+	require_once(dirname(__FILE__) . '/Syllable/Syllable.php');
 
     class Perf {
         private static $start;

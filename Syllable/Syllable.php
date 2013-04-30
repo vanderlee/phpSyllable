@@ -18,7 +18,7 @@
 	 */
 
 	function Syllable_autoloader($class) {
-		include 'Syllable/' . $class . '.class.php';
+		include_once dirname(__FILE__). '/' . $class . '.class.php';
 	}
+	
 	spl_autoload_register('Syllable_autoloader');
-?>
