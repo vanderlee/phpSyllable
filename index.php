@@ -20,9 +20,11 @@
 
     //Perf::Start();
     $syllable = new Syllable('en-us');
+	$syllable->getCache()->setPath(dirname(__FILE__).'/cache');
+	$syllable->getSource()->setPath(dirname(__FILE__).'/languages');
     //Perf::Stop('Init');
 
-	$english_text = 'If my poor Flatland friend retained the vigour of mind which he enjoyed when he began to compose these Memoirs, I should not now need to represent him in this preface, in which he desires, firstly, to return his thanks to his readers and critics in Spaceland, whose appreciation has, with unexpected celerity, required a second edition of his work; secondly, to apologize forcertain errors and misprints (for which, however, he is not entirely responsible); and, thirdly, to explain one or two misconceptions. But he is not the Square he once was. Years of imprisonment, and the still heavier burden of general incredulity and mockery, have combined with the natural decay of old age to erase from his mind many of the thoughts and notions, and much also of the terminology, which he acquired during his short stay in Spaceland. He has, therefore, requested me to reply in his behalf to two special objections, one of an intellectual, the other of a moral nature.';
+	$english_text = 'If my poor Flatland friend retained the vigour of mind which he enjoyed when he began to compose these Memoirs, I should not now need to represent him in this preface, in which he desires, firstly, to return his thanks to his readers and critics in Spaceland, whose appreciation has, with unexpected celerity, required a second edition of his work; secondly, to apologize for certain errors and misprints (for which, however, he is not entirely responsible); and, thirdly, to explain one or two misconceptions. But he is not the Square he once was. Years of imprisonment, and the still heavier burden of general incredulity and mockery, have combined with the natural decay of old age to erase from his mind many of the thoughts and notions, and much also of the terminology, which he acquired during his short stay in Spaceland. He has, therefore, requested me to reply in his behalf to two special objections, one of an intellectual, the other of a moral nature.';
 ?><html>
 	<head>
 		<title>phpSyllable</title>
@@ -32,6 +34,12 @@
 				margin: 0 25%;
 				border: solid 1px silver;
 				padding: 1em;
+			}
+
+			.debug-hyphen {
+				background-color: #fc0;
+				padding: 0 .2em;
+				margin: 0 .1em;
 			}
 		</style>
 	</head>
@@ -49,7 +57,7 @@
 				<?php
 				$html = ob_get_clean();
 				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-				echo $syllable->hyphenateHTML($html);
+				echo $syllable->hyphenateHtml($html);
 				$syllable->setTreshold(Syllable::TRESHOLD_AVERAGE);
 			?>
 		</div>
@@ -67,6 +75,8 @@
 		<h2>Without hyphenation</h2>
 		<p class="example">
 			<?php
+				$syllable->setHyphen('<span class="debug-hyphen">-</span>');
+				
 				echo utf8_encode($english_text);
 			?>
 		</p>
