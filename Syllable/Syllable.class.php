@@ -24,7 +24,9 @@
 		private $Hyphen;
 		
 		private $treshold;
-		private $min_word_length	= 2;
+
+		private $left_min_hyphen	= 2;
+		private $right_min_hyphen	= 3;
 
 		private $patterns			= null;
 		private $max_pattern		= null;
@@ -256,8 +258,8 @@
 		private function parseWord($word) {
 			$word_length = strlen($word);
 			// Is this word smaller than the miminal length requirement?
-			if ($word_length < $this->min_word_length) {
-				return $word;
+			if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen) {
+				return array($word);
 			}
 
 			// Is it a pre-hyphenated word?
@@ -272,9 +274,9 @@
 
 			// Maximize
 			$before = array();
-			for ($start = 0; $start < $text_length - $this->min_word_length; ++$start) {
-				$subword = substr($text, $start, $this->min_word_length - 1);
-				for ($index = $start + $this->min_word_length - 1; $index < $pattern_length; ++$index) {
+			for ($start = 0; $start < $text_length - 2; ++$start) {
+				$subword = substr($text, $start, 1);
+				for ($index = $start + 1; $index < $pattern_length; ++$index) {
 					$subword .= $text[$index];
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
@@ -291,8 +293,11 @@
 
 			// Output
 			$parts = array();
-			$part = $text[1];
-			for ($i = 2; $i < $text_length - 1; ++$i) {
+			$part = '';
+			for ($i = 1; $i <= $this->left_min_hyphen; ++$i) {
+				$part .= $text[$i];
+			}
+			for (; $i < $text_length - $this->right_min_hyphen; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
 					if (($score % 2)					// only odd scores
@@ -301,6 +306,9 @@
 						$part = '';
 					}
 				}
+				$part .= $text[$i];
+			}
+			for (; $i < $text_length - 1; ++$i) {
 				$part .= $text[$i];
 			}
 			if (!empty($part)) {
