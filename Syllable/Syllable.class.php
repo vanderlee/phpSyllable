@@ -174,9 +174,10 @@
 				$tex = $this->getSource();
 				foreach ($tex as $line) {
 					$offset = 0;
-					while ($offset < strlen($line)) {
+					$strlen_line = strlen($line);
+					while ($offset < $strlen_line) {
 						// %comment
-						if ($line[$offset] == '%') {
+						if ($line[$offset] === '%') {
 							break;	// ignore rest of line
 						}
 
@@ -188,7 +189,7 @@
 						}
 
 						// {
-						if ($line[$offset] == '{') {
+						if ($line[$offset] === '{') {
 							$braces = TRUE;
 							++$offset;
 							continue;	// next token
@@ -229,7 +230,7 @@
 						}
 
 						// }
-						if ($line[$offset] == '}') {
+						if ($line[$offset] === '}') {
 							$braces = FALSE;
 							$command = FALSE;
 							++$offset;
@@ -257,6 +258,7 @@
          */
 		private function parseWord($word) {
 			$word_length = strlen($word);
+			
 			// Is this word smaller than the miminal length requirement?
 			if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen) {
 				return array($word);
@@ -270,13 +272,18 @@
 			// Convenience array
 			$text			= '.'.$word.'.';
 			$text_length	= $word_length + 2;
-			$pattern_length = min($this->max_pattern, $text_length);
+			$pattern_length = $this->max_pattern < $text_length ? $this->max_pattern : $text_length;
 
 			// Maximize
-			$before = array();
-			for ($start = 0; $start < $text_length - 2; ++$start) {
-				$subword = substr($text, $start, 1);
-				for ($index = $start + 1; $index < min($text_length, $start + $pattern_length); ++$index) {
+			$before		= array();
+			$end		= $text_length - $this->right_min_hyphen;
+			for ($start = 0; $start < $end; ++$start) {
+				$subword	= $text{$start};
+				$max_length = $start + $pattern_length;
+				if ($text_length < $max_length) {
+					$max_length = $text_length;
+				}
+				for ($index = $start + 1; $index < $max_length; ++$index) {
 					$subword .= $text[$index];
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
@@ -297,12 +304,12 @@
 			for ($i = 1; $i <= $this->left_min_hyphen; ++$i) {
 				$part .= $text[$i];
 			}
-			for (; $i < $text_length - $this->right_min_hyphen; ++$i) {
+			for (; $i < $end; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
 					if (($score % 2)					// only odd scores
 					 && ($score >= $this->treshold)) {	// only above treshold
-						$parts[] = $part;
+						$parts[] = $part;	//.$score for debugging
 						$part = '';
 					}
 				}

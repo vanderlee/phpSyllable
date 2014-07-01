@@ -127,7 +127,7 @@ EOF
 			<h2>Source</h2>
 			<h5>Without hyphens</h5>
 			<?php
-				echo utf8_encode($source);
+				echo nl2br(utf8_encode($source));
 			?>
 		</div>
 
@@ -137,7 +137,7 @@ EOF
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_Soft);
 				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-				echo utf8_encode($syllable->hyphenateText($source));
+				echo nl2br(utf8_encode($syllable->hyphenateText($source)));
 			?>
 		</div>
 		
@@ -147,7 +147,7 @@ EOF
 			<?php
 				$syllable->setHyphen('<span class="debug-hyphen">-</span>');
 				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-				echo utf8_encode($syllable->hyphenateText($source));
+				echo nl2br(utf8_encode($syllable->hyphenateText($source)));
 			?>
 		</div>
 
@@ -157,7 +157,7 @@ EOF
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_ZeroWidthSpace);
 				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-				echo utf8_encode($syllable->hyphenateText($source));
+				echo nl2br(utf8_encode($syllable->hyphenateText($source)));
 			?>
 		</div>
 
@@ -167,7 +167,7 @@ EOF
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_Dash());
 				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-				echo utf8_encode($syllable->hyphenateText($source));
+				echo nl2br(utf8_encode($syllable->hyphenateText($source)));
 			?>
 		</div>
 	</body>

@@ -18,7 +18,9 @@
 	 */
 
 	function Syllable_autoloader($class) {
-		include_once dirname(__FILE__). '/' . $class . '.class.php';
+		if (!class_exists($class)) {
+			require dirname(__FILE__). '/' . $class . '.class.php';
+		}
 	}
 	
 	spl_autoload_register('Syllable_autoloader');

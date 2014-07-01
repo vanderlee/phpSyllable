@@ -1,3 +1,8 @@
+Russian/cyrillic support;
+	May need to undo lots of performance optimzations due to mb_strlen/mb_substr
+	May be faster to convert strings to arrays?
+	May be able to treat patterns "hackish" as multibyte.
+
 Implement left/right hyphen-min:
 	i.e. (2,3) means atleast 2 chars on left and 3 chars on right
 		So do no try anything less than (2 + 3) in length, test scoring from [1+2] upto [0-3]?

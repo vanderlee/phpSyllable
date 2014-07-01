@@ -24,11 +24,9 @@
 		}
 
 		private function load() {
-			if (!$this->data) {
-				$file = $this->filename();
-				if (is_file($file)) {
-					$this->data = $this->decode(file_get_contents($file), true);
-				}
+			$file = $this->filename();
+			if (is_file($file)) {
+				$this->data = $this->decode(file_get_contents($file), true);
 			}
 		}
 
@@ -44,12 +42,16 @@
 		}
 
 		public function __get($key) {
-			$this->load();
+			if (!$this->data) {
+				$this->load();
+			}
 			return $this->data[$key];
 		}
 
 		public function __isset($key) {
-			$this->load();
+			if (!$this->data) {
+				$this->load();
+			}
 			return isset($this->data[$key]);
 		}
 
