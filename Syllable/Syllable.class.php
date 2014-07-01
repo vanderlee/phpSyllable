@@ -276,7 +276,7 @@
 			$before = array();
 			for ($start = 0; $start < $text_length - 2; ++$start) {
 				$subword = substr($text, $start, 1);
-				for ($index = $start + 1; $index < $pattern_length; ++$index) {
+				for ($index = $start + 1; $index < min($text_length, $start + $pattern_length); ++$index) {
 					$subword .= $text[$index];
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
