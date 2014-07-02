@@ -55,6 +55,7 @@ EOF
 ?><html>
 	<head>
 		<title>phpSyllable</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<style>
 			* {
 				font-family: 'Segoe UI', Verdana, Arial, Helvetica, sans-serif;
@@ -167,7 +168,7 @@ EOF
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_Dash());
 				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-				echo nl2br(utf8_encode($syllable->hyphenateText($source)));
+				echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>
 	</body>
