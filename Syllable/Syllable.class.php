@@ -237,7 +237,7 @@
 										$hyphenation = preg_replace('~\-~', '', $m[0]);
 										$this->hyphenation[$hyphenation] = $m[0];
 										if (!isset($hyphenation{$this->min_hyphenation})) {
-											$this->min_hyphenation = strlen($hyphenation);
+											$this->min_hyphenation = mb_strlen($hyphenation);
 										}
 										$offset += strlen($m[0]);
 									}
