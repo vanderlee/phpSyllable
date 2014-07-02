@@ -1,7 +1,9 @@
 Russian/cyrillic support;
-	May need to undo lots of performance optimzations due to mb_strlen/mb_substr
-	May be faster to convert strings to arrays?
-	May be able to treat patterns "hackish" as multibyte.
+	Re-optimize
+	Research high-numerics (6 and up)
+	Test '-' patterns for TEX hacks
+
+PHPUnit testsuite
 
 Implement left/right hyphen-min:
 	i.e. (2,3) means atleast 2 chars on left and 3 chars on right
