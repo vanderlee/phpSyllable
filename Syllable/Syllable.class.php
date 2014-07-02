@@ -323,7 +323,8 @@
 					$score	= (int)$before[$i];
 					if (($score % 2)					// only odd scores
 					 && ($score >= $this->treshold)) {	// only above treshold
-						$parts[] = $part;	//.$score for debugging
+						//$part .= $score; // debugging
+						$parts[] = $part;	
 						$part = '';
 					}
 				}
