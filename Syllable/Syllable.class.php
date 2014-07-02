@@ -90,16 +90,20 @@
 		}
 
 		public function splitWord($word) {
+			mb_internal_encoding('UTF-8');	//@todo upwards?
+			mb_regex_encoding('UTF-8');	//@todo upwards?
+
 			$this->parseTex();
 			
 			return $this->parseWord($word);
 		}
 
 		public function splitText($text) {
+			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
-			
+
 			$this->parseTex();
-			
+
 			$splits = mb_split('[^[:alpha:]]+', $text);
 			$parts = array();
 			$part = '';
@@ -124,7 +128,7 @@
 						} while ($index < $sw_count);
 					}
 				}
-				$pos = $p + strlen($split);
+				$pos = $p + mb_strlen($split);
 			}
 			$parts[] = $part;
 
@@ -157,7 +161,6 @@
 			}
 
 			$cache = $this->getCache();
-			$cache = null;	//@todo de-null
 			if ($cache !== null
 					&& isset($cache->patterns)
 					&& isset($cache->max_pattern)
@@ -206,7 +209,7 @@
 						if ($braces) {
 							switch ($command) {
 								case 'patterns':
-									if (preg_match('~^(\pL\pM*|\pN|\.)+~u', substr($line, $offset), $m) === 1) {
+									if (preg_match('~^(?:\pL\pM*|\pN|[-.])+~u', mb_substr($line, $offset), $m) === 1) {
 										$numbers = '';
 										$pattern = '';
 										$strlen = 0;
@@ -218,13 +221,13 @@
 												$pattern .= $char;
 												++$strlen;
 											}
+											++$offset;
 										}
 
 										$this->patterns[$pattern]	= $numbers;
 										if ($strlen > $this->max_pattern) {
 											$this->max_pattern = $strlen;
 										}
-										$offset += mb_strlen($m[0]);
 									}
 									continue;	// next token
 								break;
@@ -263,8 +266,6 @@
 					$cache->min_hyphenation	= $this->min_hyphenation;
 				}
 			}
-
-			var_dump($this->patterns);
 		}
 
         /**
@@ -273,8 +274,8 @@
          * @return array array of syllables.
          */
 		private function parseWord($word) {
-			$word_length = strlen($word);
-			
+			$word_length = mb_strlen($word);
+
 			// Is this word smaller than the miminal length requirement?
 			if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen) {
 				return array($word);
@@ -282,7 +283,7 @@
 
 			// Is it a pre-hyphenated word?
 			if (isset($word{$this->min_hyphenation - 1}) && isset($this->hyphenation[$word])) {
-				return explode('-', $this->hyphenation[$word]);
+				return mb_split('-', $this->hyphenation[$word]);
 			}
 
 			// Convenience array
@@ -294,18 +295,18 @@
 			$before		= array();
 			$end		= $text_length - $this->right_min_hyphen;
 			for ($start = 0; $start < $end; ++$start) {
-				$subword	= $text{$start};
 				$max_length = $start + $pattern_length;
 				if ($text_length < $max_length) {
 					$max_length = $text_length;
 				}
-				for ($index = $start + 1; $index < $max_length; ++$index) {
-					$subword .= $text[$index];
+				for ($length = 1; $length < $max_length; ++$length) {
+					$subword = mb_substr($text, $start, $length);
+
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
-						$scores_length = strlen($scores);
+						$scores_length = $length + 1;
 						for ($offset = 0; $offset < $scores_length; ++$offset) {
-							$score = $scores[$offset];
+							$score = $scores{$offset};
 							if (!isset($before[($start + $offset)]) || $score > $before[$start + $offset]) {
 								$before[$start + $offset] = $score;
 							}
@@ -315,12 +316,9 @@
 			}
 
 			// Output
-			$parts = array();
-			$part = '';
-			for ($i = 1; $i <= $this->left_min_hyphen; ++$i) {
-				$part .= $text[$i];
-			}
-			for (; $i < $end; ++$i) {
+			$parts	= array();
+			$part	= substr($text, 1, $this->left_min_hyphen);
+			for ($i = $this->left_min_hyphen; $i < $end; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
 					if (($score % 2)					// only odd scores
@@ -329,10 +327,10 @@
 						$part = '';
 					}
 				}
-				$part .= $text[$i];
+				$part .= mb_substr($text, $i, 1);
 			}
 			for (; $i < $text_length - 1; ++$i) {
-				$part .= $text[$i];
+				$part .= mb_substr($text, $i, 1);
 			}
 			if (!empty($part)) {
 				$parts[] = $part;
