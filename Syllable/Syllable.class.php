@@ -96,19 +96,24 @@
 		}
 
 		public function splitText($text) {
+			mb_regex_encoding('UTF-8');	//@todo upwards?
+			
 			$this->parseTex();
 			
-			$splits = preg_split('~[^[:alpha:]]+~', $text, null, PREG_SPLIT_OFFSET_CAPTURE);
+			$splits = mb_split('[^[:alpha:]]+', $text);
 			$parts = array();
 			$part = '';
 			$pos = 0;
+
 			foreach ($splits as $split) {
-				$length = $split[1] - $pos;
+				$p = mb_stripos($text, $split, $pos);
+
+				$length = $p - $pos;
 				if ($length >= 1) {
-					$part .= substr($text, $pos, $length);
+					$part .= mb_substr($text, $pos, $length);
 				}
-				if (!empty($split[0])) {
-					$sw = $this->parseWord($split[0]);
+				if (!empty($split)) {
+					$sw = $this->parseWord($split);
 					$index = 0;
 					$part .= $sw[$index++];
 					$sw_count = count($sw);
@@ -119,7 +124,7 @@
 						} while ($index < $sw_count);
 					}
 				}
-				$pos = $split[1] + strlen($split[0]);
+				$pos = $p + strlen($split);
 			}
 			$parts[] = $part;
 
@@ -152,6 +157,7 @@
 			}
 
 			$cache = $this->getCache();
+			$cache = null;	//@todo de-null
 			if ($cache !== null
 					&& isset($cache->patterns)
 					&& isset($cache->max_pattern)
@@ -175,22 +181,22 @@
 				$tex = $this->getSource();
 				foreach ($tex as $line) {
 					$offset = 0;
-					$strlen_line = strlen($line);
+					$strlen_line = mb_strlen($line);
 					while ($offset < $strlen_line) {
 						// %comment
-						if ($line[$offset] === '%') {
+						if ($line{$offset} === '%') {
 							break;	// ignore rest of line
 						}
 
 						// \command
-						if (preg_match('~^\\\\([[:alpha:]]+)~', substr($line, $offset), $m) === 1) {
+						if (preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
 							$command = $m[1];
-							$offset += strlen($m[0]);
+							$offset += mb_strlen($m[0]);
 							continue;	// next token
 						}
 
 						// {
-						if ($line[$offset] === '{') {
+						if ($line{$offset} === '{') {
 							$braces = TRUE;
 							++$offset;
 							continue;	// next token
@@ -202,16 +208,23 @@
 								case 'patterns':
 									if (preg_match('~^(\pL\pM*|\pN|\.)+~u', substr($line, $offset), $m) === 1) {
 										$numbers = '';
-										preg_match_all('~(?:(\d)\D?)|\D~', $m[0], $matches, PREG_PATTERN_ORDER);
-										foreach ($matches[1] as $score) {
-											$numbers .= is_numeric($score)? $score : 0;
+										$pattern = '';
+										$strlen = 0;
+										foreach (preg_split('/(?<!^)(?!$)/u', $m[0]) as $char) {
+											if (is_numeric($char)) {
+												$numbers .= $char;
+											} else {
+												$numbers .= 0;
+												$pattern .= $char;
+												++$strlen;
+											}
 										}
-										$pattern = preg_replace('~\d~', '', $m[0]);
+
 										$this->patterns[$pattern]	= $numbers;
-										if (isset($pattern{$this->max_pattern})) {
-											$this->max_pattern = strlen($pattern);
+										if ($strlen > $this->max_pattern) {
+											$this->max_pattern = $strlen;
 										}
-										$offset += strlen($m[0]);
+										$offset += mb_strlen($m[0]);
 									}
 									continue;	// next token
 								break;
@@ -250,6 +263,8 @@
 					$cache->min_hyphenation	= $this->min_hyphenation;
 				}
 			}
+
+			var_dump($this->patterns);
 		}
 
         /**
