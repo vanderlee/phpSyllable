@@ -111,11 +111,12 @@
 					$sw = $this->parseWord($split[0]);
 					$index = 0;
 					$part .= $sw[$index++];
-					if (count($sw) > 1) {
+					$sw_count = count($sw);
+					if ($sw_count > 1) {
 						do {
 							$parts[] = $part;
 							$part = $sw[$index++];
-						} while ($index < count($sw));
+						} while ($index < $sw_count);
 					}
 				}
 				$pos = $split[1] + strlen($split[0]);
