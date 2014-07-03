@@ -334,7 +334,7 @@
 			
 			// Output
 			$parts	= array();
-			$part	= substr($text, 1, $this->left_min_hyphen);
+			$part	= substr($text, 1, $this->left_min_hyphen - 1);
 			for ($i = $this->left_min_hyphen; $i < $end; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
