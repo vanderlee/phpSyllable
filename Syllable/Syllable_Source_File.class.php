@@ -5,6 +5,8 @@
      * to the class sourcefile.
      */
     class Syllable_Source_File implements Syllable_Source_Interface {
+		private static $minHyphens = null;
+
 		private $path		= null;
 		private $language	= null;
         private $lines      = null;
@@ -24,6 +26,14 @@
 		public function setLanguage($language) {
 			$this->language = $language;
 			$this->lines = null;
+		}
+
+		public function getMinHyphens() {
+			if (!self::$minHyphens) {
+				self::$minHyphens = json_decode(file_get_contents("{$this->path}/min.json"), true);
+			}
+
+			return isset(self::$minHyphens[$this->language]) ? self::$minHyphens[$this->language] : null;
 		}
 
 		private function load() {

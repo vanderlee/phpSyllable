@@ -22,22 +22,28 @@
 		 * @var Syllable_Hyphen_Interface
 		 */
 		private $Hyphen;
+
+		private $language;
 		
 		private $treshold;
 
 		private $left_min_hyphen	= 2;
-		private $right_min_hyphen	= 3;
-
+		private $right_min_hyphen	= 2;
 		private $patterns			= null;
 		private $max_pattern		= null;
 		private $hyphenation		= null;
 		private $min_hyphenation	= null;
 
 		public function __construct($language = 'en', $treshold = self::TRESHOLD_AVERAGE, $hyphen = null) {
-			$this->setCache(new Syllable_Cache_Json($language, dirname(__FILE__).'/cache'));
-			$this->setSource(new Syllable_Source_File($language, dirname(__FILE__).'/languages'));
+			$this->setLanguage($language);
 			$this->setTreshold($treshold);
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
+		}
+
+		public function setLanguage($language) {
+			$this->language = $language;
+			$this->setCache(new Syllable_Cache_Json($language, dirname(__FILE__).'/cache'));
+			$this->setSource(new Syllable_Source_File($language, dirname(__FILE__).'/languages'));
 		}
 
 		/**
@@ -93,7 +99,7 @@
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
 
-			$this->parseTex();
+			$this->loadLanguage();
 			
 			return $this->parseWord($word);
 		}
@@ -102,7 +108,7 @@
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
 
-			$this->parseTex();
+			$this->loadLanguage();
 
 			$splits = mb_split('[^[:alpha:]]+', $text);
 			$parts = array();
@@ -155,32 +161,34 @@
 			return $dom->saveHTML();
 		}
 
-		private function parseTex() {
-			if ($this->patterns && $this->max_pattern && $this->hyphenation && $this->min_hyphenation) {
-				return;
-			}
-
+		private function loadLanguage() {
 			$cache = $this->getCache();
 			if ($cache !== null
 					&& isset($cache->patterns)
 					&& isset($cache->max_pattern)
 					&& isset($cache->hyphenation)
 					&& isset($cache->min_hyphenation)
+					&& isset($cache->left_min_hyphen)
+					&& isset($cache->right_min_hyphen)
 					) {
 				$this->patterns			= $cache->patterns;
 				$this->max_pattern		= $cache->max_pattern;
 				$this->hyphenation		= $cache->hyphenation;
-				$this->min_hyphenation	= $cache->min_hyphenation;
+				$this->left_min_hyphen	= $cache->left_min_hyphen;
+				$this->right_min_hyphen	= $cache->right_min_hyphen;
 			} else {
 				$this->patterns			= array();
 				$this->max_pattern		= 0;
 				$this->hyphenation		= array();
 				$this->min_hyphenation	= PHP_INT_MAX;
+				$this->left_min_hyphen	= 2;
+				$this->right_min_hyphen	= 2;
 
 				// parser state
 				$command = FALSE;
 				$braces = FALSE;
 
+				// parse .tex file
 				$tex = $this->getSource();
 				foreach ($tex as $line) {
 					$offset = 0;
@@ -259,11 +267,20 @@
 					}
 				}
 
+				// parse hyphen file
+				$minHyphens = $tex->getMinHyphens();
+				if ($minHyphens) {
+					$this->left_min_hyphen	= $minHyphens[0];
+					$this->right_min_hyphen	= $minHyphens[1];
+				}
+
 				if ($cache !== null) {
-					$cache->patterns		= $this->patterns;
-					$cache->max_pattern		= $this->max_pattern;
-					$cache->hyphenation		= $this->hyphenation;
-					$cache->min_hyphenation	= $this->min_hyphenation;
+					$cache->patterns			= $this->patterns;
+					$cache->max_pattern			= $this->max_pattern;
+					$cache->hyphenation			= $this->hyphenation;
+					$cache->min_hyphenation		= $this->min_hyphenation;
+					$cache->left_min_hyphen		= $this->left_min_hyphen;
+					$cache->right_min_hyphen	= $this->right_min_hyphen;
 				}
 			}
 		}
@@ -282,7 +299,7 @@
 			}
 
 			// Is it a pre-hyphenated word?
-			if (isset($word{$this->min_hyphenation - 1}) && isset($this->hyphenation[$word])) {
+			if (mb_strlen($word) >= $this->min_hyphenation && isset($this->hyphenation[$word])) {
 				return mb_split('-', $this->hyphenation[$word]);
 			}
 
@@ -314,7 +331,7 @@
 					}
 				}
 			}
-
+			
 			// Output
 			$parts	= array();
 			$part	= substr($text, 1, $this->left_min_hyphen);
