@@ -313,12 +313,11 @@
 			$end		= $text_length - $this->right_min_hyphen;
 			for ($start = 0; $start < $end; ++$start) {
 				$max_length = $start + $pattern_length;
-				if ($text_length < $max_length) {
-					$max_length = $text_length;
+				if ($text_length - $start < $max_length) {
+					$max_length = $text_length - $start;
 				}
-				for ($length = 1; $length < $max_length; ++$length) {
-					$subword = mb_substr($text, $start, $length);
-
+				for ($length = 1; $length <= $max_length; ++$length) {
+					$subword = mb_substr($text, $start, $length);				
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
 						$scores_length = $length + 1;
