@@ -221,15 +221,23 @@
 										$numbers = '';
 										$pattern = '';
 										$strlen = 0;
+										$expect_number = true;
 										foreach (preg_split('/(?<!^)(?!$)/u', $m[0]) as $char) {
 											if (is_numeric($char)) {
 												$numbers .= $char;
+												$expect_number = false;
 											} else {
-												$numbers .= 0;
+												if ($expect_number) {
+													$numbers .= '0';
+												}
 												$pattern .= $char;
 												++$strlen;
+												$expect_number = true;
 											}
 											++$offset;
+										}
+										if ($expect_number) {
+											$numbers .= '0';
 										}
 
 										$this->patterns[$pattern]	= $numbers;
@@ -330,10 +338,10 @@
 					}
 				}
 			}
-			
+
 			// Output
 			$parts	= array();
-			$part	= substr($text, 1, $this->left_min_hyphen - 1);
+			$part	= mb_substr($text, 1, $this->left_min_hyphen - 1);
 			for ($i = $this->left_min_hyphen; $i < $end; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
