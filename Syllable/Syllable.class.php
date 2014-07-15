@@ -116,25 +116,27 @@
 			$pos = 0;
 
 			foreach ($splits as $split) {
-				$p = mb_stripos($text, $split, $pos);
+				if (mb_strlen($split)) {
+					$p = mb_stripos($text, $split, $pos);
 
-				$length = $p - $pos;
-				if ($length >= 1) {
-					$part .= mb_substr($text, $pos, $length);
-				}
-				if (!empty($split)) {
-					$sw = $this->parseWord($split);
-					$index = 0;
-					$part .= $sw[$index++];
-					$sw_count = count($sw);
-					if ($sw_count > 1) {
-						do {
-							$parts[] = $part;
-							$part = $sw[$index++];
-						} while ($index < $sw_count);
+					$length = $p - $pos;
+					if ($length >= 1) {
+						$part .= mb_substr($text, $pos, $length);
 					}
+					if (!empty($split)) {
+						$sw = $this->parseWord($split);
+						$index = 0;
+						$part .= $sw[$index++];
+						$sw_count = count($sw);
+						if ($sw_count > 1) {
+							do {
+								$parts[] = $part;
+								$part = $sw[$index++];
+							} while ($index < $sw_count);
+						}
+					}
+					$pos = $p + mb_strlen($split);
 				}
-				$pos = $p + mb_strlen($split);
 			}
 			$parts[] = $part;
 
