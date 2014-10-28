@@ -162,6 +162,19 @@
 
 			return $dom->saveHTML();
 		}
+		
+		private function hyphenateHtmlDom(DOMNode $node) {
+			if ($node->hasChildNodes()) {
+				foreach ($node->childNodes as $child) {
+					$this->hyphenateHtmlDom($child);
+				}
+			}
+			if ($node instanceof DOMText) {
+				$parts = $this->splitText($node->data);
+
+				$this->Hyphen->joinHtmlDom($parts, $node);
+			}
+		}		
 
 		private function loadLanguage() {
 			$cache = $this->getCache();
@@ -366,16 +379,4 @@
 			return $parts;
 		}
 
-		private function hyphenateHtmlDom(DOMNode $node) {
-			if ($node->hasChildNodes()) {
-				foreach ($node->childNodes as $child) {
-					$this->hyphenateHtmlDom($child);
-				}
-			}
-			if ($node instanceof DOMText) {
-				$parts = $this->splitText($node->data);
-
-				$this->Hyphen->joinHtmlDom($parts, $node);
-			}
-		}
 	}
