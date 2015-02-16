@@ -18,7 +18,7 @@
 	 */
 
 	function Syllable_autoloader($class) {
-		if (!class_exists($class)) {
+		if (!class_exists($class) && is_file(dirname(__FILE__). '/' . $class . '.class.php')) {
 			require dirname(__FILE__). '/' . $class . '.class.php';
 		}
 	}
