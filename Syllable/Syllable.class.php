@@ -33,17 +33,36 @@
 		private $max_pattern		= null;
 		private $hyphenation		= null;
 		private $min_hyphenation	= null;
+		
+		private static $cache_dir		= null;
+		private static $language_dir	= null;
 
 		public function __construct($language = 'en', $treshold = self::TRESHOLD_AVERAGE, $hyphen = null) {
+			if (!self::$cache_dir) {
+				self::$cache_dir = __DIR__.'/cache';
+			}
+			
+			if (!self::$language_dir) {
+				self::$language_dir = __DIR__.'/languages';
+			}
+			
 			$this->setLanguage($language);
 			$this->setTreshold($treshold);
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
 		}
 
+		public static function setCacheDir($dir) {
+			self::$cache_dir = $dir;
+		}
+		
+		public static function setLanguageDir($dir) {
+			self::$language_dir = $dir;
+		}
+		
 		public function setLanguage($language) {
 			$this->language = $language;
-			$this->setCache(new Syllable_Cache_Json($language, dirname(__FILE__).'/cache'));
-			$this->setSource(new Syllable_Source_File($language, dirname(__FILE__).'/languages'));
+			$this->setCache(new Syllable_Cache_Json($language, self::$cache_dir));
+			$this->setSource(new Syllable_Source_File($language, self::$language_dir));
 		}
 
 		/**
