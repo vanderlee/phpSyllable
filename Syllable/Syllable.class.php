@@ -138,7 +138,7 @@
 					$pos = $p + mb_strlen($split);
 				}
 			}
-			$parts[] = $part;
+			$parts[] = $part . mb_substr($text, $pos);
 
 			return $parts;
 		}
