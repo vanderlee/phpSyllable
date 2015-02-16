@@ -138,7 +138,7 @@
 					$pos = $p + mb_strlen($split);
 				}
 			}
-			$parts[] = $part;
+			$parts[] = $part . mb_substr($text, $pos);
 
 			return $parts;
 		}
@@ -162,7 +162,7 @@
 
 			return $dom->saveHTML();
 		}
-		
+
 		private function hyphenateHtmlDom(DOMNode $node) {
 			if ($node->hasChildNodes()) {
 				foreach ($node->childNodes as $child) {
@@ -174,7 +174,7 @@
 
 				$this->Hyphen->joinHtmlDom($parts, $node);
 			}
-		}		
+		}
 
 		private function loadLanguage() {
 			$cache = $this->getCache();
@@ -378,5 +378,5 @@
 
 			return $parts;
 		}
-
 	}
+
