@@ -14,4 +14,8 @@
 		public function joinHtmlDom($parts, DOMNode $node) {
 			$node->data = $this->joinText($parts);
 		}
+
+		public function stripHtml($html) {
+			return str_replace($this->text, '', $html);
+		}
 	}

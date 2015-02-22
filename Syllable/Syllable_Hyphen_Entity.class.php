@@ -20,4 +20,8 @@
 				}
 			}
 		}
+		
+		public function stripHtml($html) {
+			return str_replace('&'.$this->entity.';', '', $html);
+		}
 	}
