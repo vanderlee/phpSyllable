@@ -346,7 +346,7 @@
 			}
 
 			// Convenience array
-			$text			= '.'.$word.'.';
+			$text			= '.'.mb_strtolower($word).'.';
 			$text_length	= $word_length + 2;
 			$pattern_length = $this->max_pattern < $text_length ? $this->max_pattern : $text_length;
 
@@ -375,8 +375,8 @@
 
 			// Output
 			$parts	= array();
-			$part	= mb_substr($text, 1, $this->left_min_hyphen - 1);
-			for ($i = $this->left_min_hyphen; $i < $end; ++$i) {
+			$part	= mb_substr($word, 0, $this->left_min_hyphen);
+			for ($i = $this->left_min_hyphen + 1; $i < $end; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
 					if (($score % 2)					// only odd scores
@@ -386,10 +386,10 @@
 						$part = '';
 					}
 				}
-				$part .= mb_substr($text, $i, 1);
+				$part .= mb_substr($word, $i - 1, 1);
 			}
 			for (; $i < $text_length - 1; ++$i) {
-				$part .= mb_substr($text, $i, 1);
+				$part .= mb_substr($word, $i - 1, 1);
 			}
 			if (!empty($part)) {
 				$parts[] = $part;

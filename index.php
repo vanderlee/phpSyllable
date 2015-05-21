@@ -18,7 +18,7 @@ middle of the floor, from which a ladder led down into the small, dark
 hole.
 EOF
 );
-
+	
 	$source		= isset($_REQUEST['source'])? $_REQUEST['source'] : $text;
 	$language	= isset($_REQUEST['language'])? $_REQUEST['language'] : 'en-us';
 

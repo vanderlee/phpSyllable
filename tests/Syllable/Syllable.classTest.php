@@ -210,7 +210,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @covers Syllable::hyphenateHtml
-	 * @todo   Implement testHyphenateHtml().
 	 */
 	public function testHyphenateHtml() {
 		$this->object->setHyphen('-');
@@ -220,6 +219,18 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
 						."\n".'<html><body><p>Ridicu-lously <b attr="unsplittable">com-pli-cated</b> meta-text</p></body></html>'
 						."\n", $this->object->hyphenateHtml('Ridiculously <b attr="unsplittable">complicated</b> metatext'));
+	}
+	
+	/**
+	 * @covers Syllable::splitText
+	 */
+	public function testCaseInsensitivity() {
+		$this->object->setHyphen('-');
+		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
+		$this->object->setLanguage('en-us');
+		
+		$this->assertEquals(array('IN', 'EX', 'PLIC', 'A', 'BLE'), $this->object->splitText('INEXPLICABLE'));
+		$this->assertEquals(array('in', 'ex', 'plic', 'a', 'ble'), $this->object->splitText('inexplicable'));
 	}
 
 }
