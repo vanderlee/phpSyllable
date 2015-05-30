@@ -2,7 +2,7 @@ Syllable
 ========
 Version 1.1
 
-Copyright &copy; 2015 Martijn van der Lee.
+Copyright &copy; 2001-2015 Martijn van der Lee.
 MIT Open Source license applies.
 
 Introduction
