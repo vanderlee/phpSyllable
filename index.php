@@ -47,7 +47,7 @@ EOF
 	asort($languages);
 
 	// phpSyllable code
-	require_once(dirname(__FILE__) . '/Syllable/Syllable.php');
+	require_once(dirname(__FILE__) . '/classes/autoloader.php');
 
     $syllable = new Syllable($language);
 	$syllable->getCache()->setPath(dirname(__FILE__).'/cache');
