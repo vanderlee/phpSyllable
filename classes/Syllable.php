@@ -37,7 +37,7 @@
 		private static $cache_dir		= null;
 		private static $language_dir	= null;
 
-		public function __construct($language = 'en', $treshold = self::TRESHOLD_AVERAGE, $hyphen = null) {
+		public function __construct($language = 'en', $treshold = self::TRESHOLD_MOST, $hyphen = null) {
 			if (!self::$cache_dir) {
 				self::$cache_dir = __DIR__.'/cache';
 			}
