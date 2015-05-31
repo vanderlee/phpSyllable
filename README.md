@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.1
+Version 1.2
 
 Copyright &copy; 2001-2015 Martijn van der Lee.
 MIT Open Source license applies.
@@ -20,3 +20,11 @@ italian, romanian, russian, etc. 67 languages in total.
 Language sources: http://tug.org/tex-hyphen/#languages
 
 Supports PHP 5.2 and up, so you can use it on older servers.
+
+Changes
+-------
+### 1.2
+-	Deprecated treshold feature. Was based on misinterpretation of the
+	algorithm. Methods, constants and constructor signature unchanged, although
+	you can now omit the treshold if you want (or leave it in, it's detected as
+	a "fake" treshold).
