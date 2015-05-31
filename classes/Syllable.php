@@ -4,9 +4,18 @@
      * Main class
      */
 	class Syllable {
-		const TRESHOLD_LEAST        = 5;
-		const TRESHOLD_AVERAGE      = 3;
-		const TRESHOLD_MOST         = 1;
+		/**
+		 * @deprecated since version 1.2
+		 */
+		const TRESHOLD_LEAST        = PHP_INT_MAX;
+		/**
+		 * @deprecated since version 1.2
+		 */
+		const TRESHOLD_AVERAGE      = PHP_INT_MAX;
+		/**
+		 * @deprecated since version 1.2
+		 */
+		const TRESHOLD_MOST         = PHP_INT_MAX;
 
 		/**
 		 * @var Syllable_Cache_Interface
@@ -25,8 +34,6 @@
 
 		private $language;
 		
-		private $treshold;
-
 		private $left_min_hyphen	= 2;
 		private $right_min_hyphen	= 2;
 		private $patterns			= null;
@@ -37,7 +44,7 @@
 		private static $cache_dir		= null;
 		private static $language_dir	= null;
 
-		public function __construct($language = 'en', $treshold = self::TRESHOLD_MOST, $hyphen = null) {
+		public function __construct($language = 'en', $hyphen = null) {
 			if (!self::$cache_dir) {
 				self::$cache_dir = __DIR__.'/cache';
 			}
@@ -47,7 +54,11 @@
 			}
 			
 			$this->setLanguage($language);
-			$this->setTreshold($treshold);
+			
+			if ($hyphen === self::TRESHOLD_MOST) {			
+				$hyphen = func_get_arg(2);
+			}
+			
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
 		}
 
@@ -83,12 +94,27 @@
 			return $this->Hyphen;
 		}
 
+		/**
+		 * Set the treshold.
+		 * This feature is deprecated as it was based on misinterpretation of
+		 * the algorithm.
+		 * @param type $treshold
+		 * @deprecated since version 1.2
+		 */
 		public function setTreshold($treshold = self::TRESHOLD_MOST) {
-			$this->treshold	= $treshold;
+			trigger_error('Treshold removed', E_USER_DEPRECATED);
 		}
 
+		/**
+		 * Get the treshold.
+		 * This feature is deprecated as it was based on misinterpretation of
+		 * the algorithm.
+		 * @return int
+		 * @deprecated since version 1.2
+		 */
 		public function getTreshold() {
-			return $this->treshold;
+			trigger_error('Treshold removed', E_USER_DEPRECATED);
+			return self::TRESHOLD_MOST;
 		}
 
 		/**
@@ -379,8 +405,7 @@
 			for ($i = $this->left_min_hyphen + 1; $i < $end; ++$i) {
 				if (isset($before[$i])) {
 					$score	= (int)$before[$i];
-					if (($score % 2)					// only odd scores
-					 && ($score >= $this->treshold)) {	// only above treshold
+					if ($score & 1) {	// only odd
 						//$part .= $score; // debugging
 						$parts[] = $part;	
 						$part = '';

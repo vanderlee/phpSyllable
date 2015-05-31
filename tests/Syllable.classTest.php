@@ -36,7 +36,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testSetLanguage() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);
 		
 		$this->object->setLanguage('en-us');
 		$this->assertEquals('Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
@@ -54,7 +53,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testSetHyphen() {
 		$this->object->setLanguage('en-us');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);
 		
 		$this->object->setHyphen('-');
 		$this->assertEquals('Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
@@ -75,38 +73,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 		$this->object->setHyphen('/');		
 		$this->assertEquals(new Syllable_Hyphen_Text('/'), $this->object->getHyphen());
 		$this->assertNotEquals(new Syllable_Hyphen_Text('-'), $this->object->getHyphen());
-	}
-
-	/**
-	 * @covers Syllable::setTreshold
-	 * @todo   Implement testSetTreshold().
-	 */
-	public function testSetTreshold() {
-		$this->object->setLanguage('en-us');
-		$this->object->setHyphen('-');
-		
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);
-		$this->assertEquals('Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
-		$this->assertEquals('Ab-nor-mal con-se-quences', $this->object->hyphenateText('Abnormal consequences'));
-		
-		$this->object->setTreshold(Syllable::TRESHOLD_AVERAGE);
-		$this->assertEquals('Supercalifragilisticex-pi-alidocious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
-		$this->assertEquals('Ab-normal con-sequences', $this->object->hyphenateText('Abnormal consequences'));
-		
-		$this->object->setTreshold(Syllable::TRESHOLD_LEAST);
-		$this->assertEquals('Supercalifragilisticexpialidocious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
-		$this->assertEquals('Abnormal consequences', $this->object->hyphenateText('Abnormal consequences'));
-	}
-
-	/**
-	 * @covers Syllable::getTreshold
-	 * @todo   Implement testGetTreshold().
-	 */
-	public function testGetTreshold() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-		);
 	}
 
 	/**
@@ -159,7 +125,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testSplitWord() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals(array(';Re', 'dun', 'dan', 't, punc', 'tu', 'a', 'tion...'), $this->object->splitWord(';Redundant, punctuation...'));
@@ -172,7 +137,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testSplitText() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals(array(';Re', 'dun', 'dant, punc', 'tu', 'a', 'tion...'), $this->object->splitText(';Redundant, punctuation...'));
@@ -185,7 +149,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testHyphenateWord() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals(';Re-dun-dan-t, punc-tu-a-tion...', $this->object->hyphenateWord(';Redundant, punctuation...'));
@@ -198,7 +161,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testHyphenateText() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals(';Re-dun-dant, punc-tu-a-tion...', $this->object->hyphenateText(';Redundant, punctuation...'));
@@ -213,7 +175,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testHyphenateHtml() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
@@ -226,7 +187,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCaseInsensitivity() {
 		$this->object->setHyphen('-');
-		$this->object->setTreshold(Syllable::TRESHOLD_MOST);		
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals(array('IN', 'EX', 'PLIC', 'A', 'BLE'), $this->object->splitText('INEXPLICABLE'));

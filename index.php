@@ -137,7 +137,6 @@ EOF
 			<h5>&amp;shy; entities</h5>
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_Soft);
-				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
 				echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>
@@ -147,7 +146,6 @@ EOF
 			<h5>All hyphen locations</h5>
 			<?php
 				$syllable->setHyphen('<span class="debug-hyphen">-</span>');
-				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
 				echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>
@@ -157,7 +155,6 @@ EOF
 			<h5>&amp;#8203; entities</h5>
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_ZeroWidthSpace);
-				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
 				echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>
@@ -167,7 +164,6 @@ EOF
 			<h5>For pre-school reading</h5>
 			<?php
 				$syllable->setHyphen(new Syllable_Hyphen_Dash());
-				$syllable->setTreshold(Syllable::TRESHOLD_MOST);
 				echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>
