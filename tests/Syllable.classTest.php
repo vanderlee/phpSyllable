@@ -33,6 +33,8 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 * @todo   Implement testSetLanguage().
 	 */
 	public function testSetLanguage() {
+		$this->object->setLanguageDir('../languages');
+		
 		$this->object->setHyphen('-');
 		
 		$this->object->setLanguage('en-us');
