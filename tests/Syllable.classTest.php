@@ -16,8 +16,8 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	protected function setUp() {
 		$this->object = new Syllable;
-		$this->object->setCacheDir(realpath('../cache'));
-		$this->object->setLanguageDir(realpath('../languages'));
+		$this->object->setCacheDir(realpath('cache'));
+		$this->object->setLanguageDir(realpath('languages'));
 	}
 
 	/**
@@ -33,8 +33,6 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 * @todo   Implement testSetLanguage().
 	 */
 	public function testSetLanguage() {
-		$this->object->setLanguageDir(dirname(__FILE__).'/../languages');
-		
 		$this->object->setHyphen('-');
 		
 		$this->object->setLanguage('en-us');
