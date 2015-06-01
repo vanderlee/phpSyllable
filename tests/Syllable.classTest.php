@@ -16,6 +16,11 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 */
 	protected function setUp() {
 		$this->object = new Syllable;
+		
+		if (!file_exists(realpath('cache'))) {
+			mkdir(realpath('cache'), 0777, true);
+		}
+		
 		$this->object->setCacheDir(realpath('cache'));
 		$this->object->setLanguageDir(realpath('languages'));
 	}
