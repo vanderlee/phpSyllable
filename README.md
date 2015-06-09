@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.2
+Version 1.3
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
@@ -25,6 +25,11 @@ Supports PHP 5.2 and up, so you can use it on older servers.
 
 Changes
 -------
+### 1.3
+-	Added `array histogramText($text)`, `integer countWordsText($text)` and
+	`integer countPolysyllableText($text)` methods.
+-	Refactored cache interface.
+-	Improved unittests.
 ### 1.2
 -	Deprecated treshold feature. Was based on misinterpretation of the
 	algorithm. Methods, constants and constructor signature unchanged, although
