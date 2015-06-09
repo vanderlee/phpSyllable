@@ -10,4 +10,7 @@
 		public function __get($key);
 		public function __isset($key);
 		public function __unset($key);
+		
+		public function open($language);
+		public function close();
 	}

@@ -48,11 +48,12 @@
 			if (!self::$cache_dir) {
 				self::$cache_dir = __DIR__.'/cache';
 			}
+			$this->setCache(new Syllable_Cache_Json(self::$cache_dir));				
 			
 			if (!self::$language_dir) {
 				self::$language_dir = __DIR__.'/languages';
 			}
-			
+						
 			$this->setLanguage($language);
 			
 			if ($hyphen === self::TRESHOLD_MOST) {			
@@ -71,8 +72,7 @@
 		}
 		
 		public function setLanguage($language) {
-			$this->language = $language;
-			$this->setCache(new Syllable_Cache_Json($language, self::$cache_dir));
+			$this->language = $language;		
 			$this->setSource(new Syllable_Source_File($language, self::$language_dir));
 		}
 
@@ -121,7 +121,7 @@
 		 *
 		 * @param Syllable_Cache_Interface $Cache
 		 */
-		public function setCache(Syllable_Cache_Interface $Cache) {
+		public function setCache(Syllable_Cache_Interface $Cache = null) {
 			$this->Cache = $Cache;
 		}
 
@@ -220,23 +220,86 @@
 				$this->Hyphen->joinHtmlDom($parts, $node);
 			}
 		}
+		
+		public function histogramText($text) {
+			mb_internal_encoding('UTF-8');	//@todo upwards?
+			mb_regex_encoding('UTF-8');	//@todo upwards?
+			
+			$this->loadLanguage();			
+			
+			$counts = array();
+			foreach (mb_split('[^[:alpha:]]+', $text) as $split) {
+				if (mb_strlen($split)) {
+					$count = count($this->parseWord($split));
+					if (isset($counts[$count])) {
+						++$counts[$count];
+					} else {
+						$counts[$count] = 1;
+					}
+				}
+			}
+			
+			return $counts;
+		}
+		
+		public function countWordsText($text) {
+			mb_internal_encoding('UTF-8');	//@todo upwards?
+			mb_regex_encoding('UTF-8');	//@todo upwards?
+			
+			$this->loadLanguage();			
+			
+			$count = 0;
+			foreach (mb_split('[^[:alpha:]]+', $text) as $split) {
+				if (mb_strlen($split)) {
+					++$count;
+				}
+			}
+			
+			return $count;
+		}
+		
+		public function countPolysyllablesText($text) {
+			mb_internal_encoding('UTF-8');	//@todo upwards?
+			mb_regex_encoding('UTF-8');	//@todo upwards?
+			
+			$this->loadLanguage();			
+			
+			$count = 0;
+			foreach (mb_split('[^[:alpha:]]+', $text) as $split) {
+				if (mb_strlen($split) && count($this->parseWord($split)) >= 3) {
+					++$count;
+				}
+			}
+			
+			return $count;
+		}
 
 		private function loadLanguage() {
+			$loaded = false;
+			
 			$cache = $this->getCache();
-			if ($cache !== null
-					&& isset($cache->patterns)
-					&& isset($cache->max_pattern)
-					&& isset($cache->hyphenation)
-					&& isset($cache->min_hyphenation)
-					&& isset($cache->left_min_hyphen)
-					&& isset($cache->right_min_hyphen)
-					) {
-				$this->patterns			= $cache->patterns;
-				$this->max_pattern		= $cache->max_pattern;
-				$this->hyphenation		= $cache->hyphenation;
-				$this->left_min_hyphen	= $cache->left_min_hyphen;
-				$this->right_min_hyphen	= $cache->right_min_hyphen;
-			} else {
+			if ($cache !== null) {
+				$cache->open($this->language);
+				
+				if (isset($cache->patterns)
+				 && isset($cache->max_pattern)
+				 && isset($cache->hyphenation)
+				 && isset($cache->min_hyphenation)
+				 && isset($cache->left_min_hyphen)
+				 && isset($cache->right_min_hyphen)) {
+					$this->patterns			= $cache->patterns;
+					$this->max_pattern		= $cache->max_pattern;
+					$this->hyphenation		= $cache->hyphenation;
+					$this->min_hyphenation	= $cache->min_hyphenation;
+					$this->left_min_hyphen	= $cache->left_min_hyphen;
+					$this->right_min_hyphen	= $cache->right_min_hyphen;
+					
+					$loaded = true;
+				 }
+			}
+			
+			if (!$loaded) {
+var_dump('HIER');				
 				$this->patterns			= array();
 				$this->max_pattern		= 0;
 				$this->hyphenation		= array();
@@ -333,22 +396,24 @@
 						// ignorable content, skip one char
 						++$offset;
 					}
-				}
+					
+					// parse hyphen file
+					$minHyphens = $tex->getMinHyphens();					
+					if ($minHyphens) {
+						$this->left_min_hyphen	= $minHyphens[0];
+						$this->right_min_hyphen	= $minHyphens[1];
+					}
 
-				// parse hyphen file
-				$minHyphens = $tex->getMinHyphens();
-				if ($minHyphens) {
-					$this->left_min_hyphen	= $minHyphens[0];
-					$this->right_min_hyphen	= $minHyphens[1];
-				}
+					if ($cache !== null) {
+						$cache->patterns			= $this->patterns;
+						$cache->max_pattern			= $this->max_pattern;
+						$cache->hyphenation			= $this->hyphenation;
+						$cache->min_hyphenation		= $this->min_hyphenation;
+						$cache->left_min_hyphen		= $this->left_min_hyphen;
+						$cache->right_min_hyphen	= $this->right_min_hyphen;
 
-				if ($cache !== null) {
-					$cache->patterns			= $this->patterns;
-					$cache->max_pattern			= $this->max_pattern;
-					$cache->hyphenation			= $this->hyphenation;
-					$cache->min_hyphenation		= $this->min_hyphenation;
-					$cache->left_min_hyphen		= $this->left_min_hyphen;
-					$cache->right_min_hyphen	= $this->right_min_hyphen;
+						$cache->close();
+					}					
 				}
 			}
 		}

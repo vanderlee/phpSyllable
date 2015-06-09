@@ -24,7 +24,7 @@
 		}
 
 		public function setLanguage($language) {
-			$this->language = $language;
+			$this->language = strtolower($language);
 			$this->lines = null;
 		}
 

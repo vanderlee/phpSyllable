@@ -1,61 +1,61 @@
 <?php
 
 	abstract class Syllable_Cache_FileAbstract implements Syllable_Cache_Interface {
-		private $language	= null;
-		private $path		= null;
-		private $data		= null;
+		private static $language	= null;
+		private static $path		= null;
+		private static $data		= null;
 
 		abstract protected function encode($array);
 		abstract protected function decode($array);
 		abstract protected function getFilename($language);
 
-		public function __construct($language, $path) {
-			$this->language = $language;
+		public function __construct($path) {
 			$this->setPath($path);
 		}
 
 		public function setPath($path) {
-			$this->path = $path;
-			$this->data = null;
+			if ($path !== self::$path) {
+				self::$path = $path;
+				self::$data = null;
+			}
 		}
 
 		private function filename() {
-			return $this->path.'/'.$this->getFilename($this->language);
+			return self::$path.'/'.$this->getFilename(self::$language);
 		}
 
-		private function load() {
-			$file = $this->filename();
-			if (is_file($file)) {
-				$this->data = $this->decode(file_get_contents($file), true);
+		public function open($language) {
+			$language = strtolower($language);
+			
+			if (self::$language !== $language) {
+				self::$language = $language;
+var_dump('NIUEW');
+				$file = $this->filename($language);
+				if (is_file($file)) {
+					self::$data = $this->decode(file_get_contents($file), true);
+				}
 			}
 		}
 
-		private function save() {
+		public function close() {
 			$file = $this->filename();
-			file_put_contents($file, $this->encode($this->data));
+			file_put_contents($file, $this->encode(self::$data));
 			@chmod($file, 0777);
 		}
-
+		
 		public function __set($key, $value) {
-			$this->data[$key] = $value;
-			$this->save();
+			self::$data[$key] = $value;
 		}
 
 		public function __get($key) {
-			if (!$this->data) {
-				$this->load();
-			}
-			return $this->data[$key];
+			return self::$data[$key];
 		}
 
 		public function __isset($key) {
-			if (!$this->data) {
-				$this->load();
-			}
-			return isset($this->data[$key]);
+			return isset(self::$data[$key]);
 		}
 
 		public function __unset($key) {
-			unset($this->data[$key]);
-		}
+			unset(self::$data[$key]);
+		}				
 	}
