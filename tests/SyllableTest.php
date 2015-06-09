@@ -15,18 +15,10 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	 * This method is called before a test is executed.
 	 */
 	protected function setUp() {
+		Syllable::setCacheDir(realpath('cache'));
+		Syllable::setLanguageDir(realpath('languages'));
+		
 		$this->object = new Syllable;
-		
-		$this->object->setCacheDir(realpath('cache'));
-		$this->object->setLanguageDir(realpath('languages'));
-	}
-
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown() {
-		
 	}
 
 	/**
@@ -166,7 +158,7 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('In-ex-plic-a-ble', $this->object->hyphenateText('Inexplicable'));
 		
 		// note that HTML attributes are hyphenated too!
-		$this->assertEquals('Ridicu-lously <b attr="un-split-table">com-pli-cated</b> meta-text', $this->object->hyphenateText('Ridiculously <b attr="unsplittable">complicated</b> metatext'));
+		$this->assertEquals('Ridicu-lous-ly <b class="un-split-table">com-pli-cat-ed</b> meta-text', $this->object->hyphenateText('Ridiculously <b class="unsplittable">complicated</b> metatext'));
 	}
 
 	/**
@@ -177,8 +169,8 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 		$this->object->setLanguage('en-us');
 		
 		$this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-						."\n".'<html><body><p>Ridicu-lously <b attr="unsplittable">com-pli-cated</b> meta-text</p></body></html>'
-						."\n", $this->object->hyphenateHtml('Ridiculously <b attr="unsplittable">complicated</b> metatext'));
+						."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
+						."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
 	}
 	
 	/**
@@ -191,5 +183,22 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('IN', 'EX', 'PLIC', 'A', 'BLE'), $this->object->splitText('INEXPLICABLE'));
 		$this->assertEquals(array('in', 'ex', 'plic', 'a', 'ble'), $this->object->splitText('inexplicable'));
 	}
-
+	
+	/**
+	 * @covers Syllable::histogramText
+	 */
+	public function testHistogramText() {
+		$this->object->setLanguage('en-us');
+		$this->assertSame(array(), $this->object->histogramText('.'));
+		$this->assertSame(array(1=>1, 2=>2, 3=>1, 5=>1, 7=>1), $this->object->histogramText('1 is wonder welcome furthermore sophisticated extravagantically.'));
+	}
+	
+	/**
+	 * @covers Syllable::countWordsText
+	 */
+	public function testCountWordsText() {
+		$this->object->setLanguage('en-us');
+		$this->assertSame(0, $this->object->countWordsText('.'));
+		$this->assertSame(6, $this->object->countWordsText('1 is wonder welcome furthermore sophisticated extravagantically.'));
+	}
 }
