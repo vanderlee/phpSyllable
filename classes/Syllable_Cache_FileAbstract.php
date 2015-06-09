@@ -28,8 +28,9 @@
 			$language = strtolower($language);
 			
 			if (self::$language !== $language) {
-				self::$language = $language;
-var_dump('NIUEW');
+				self::$language = $language;				
+				self::$data		= null;
+
 				$file = $this->filename($language);
 				if (is_file($file)) {
 					self::$data = $this->decode(file_get_contents($file), true);

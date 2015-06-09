@@ -280,7 +280,7 @@
 			$cache = $this->getCache();
 			if ($cache !== null) {
 				$cache->open($this->language);
-				
+
 				if (isset($cache->patterns)
 				 && isset($cache->max_pattern)
 				 && isset($cache->hyphenation)
@@ -299,7 +299,6 @@
 			}
 			
 			if (!$loaded) {
-var_dump('HIER');				
 				$this->patterns			= array();
 				$this->max_pattern		= 0;
 				$this->hyphenation		= array();
