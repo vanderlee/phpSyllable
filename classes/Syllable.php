@@ -39,7 +39,6 @@
 		private $patterns			= null;
 		private $max_pattern		= null;
 		private $hyphenation		= null;
-		private $min_hyphenation	= null;
 		
 		private static $cache_dir		= null;
 		private static $language_dir	= null;
@@ -284,13 +283,11 @@
 				if (isset($cache->patterns)
 				 && isset($cache->max_pattern)
 				 && isset($cache->hyphenation)
-				 && isset($cache->min_hyphenation)
 				 && isset($cache->left_min_hyphen)
 				 && isset($cache->right_min_hyphen)) {
 					$this->patterns			= $cache->patterns;
 					$this->max_pattern		= $cache->max_pattern;
 					$this->hyphenation		= $cache->hyphenation;
-					$this->min_hyphenation	= $cache->min_hyphenation;
 					$this->left_min_hyphen	= $cache->left_min_hyphen;
 					$this->right_min_hyphen	= $cache->right_min_hyphen;
 					
@@ -302,7 +299,6 @@
 				$this->patterns			= array();
 				$this->max_pattern		= 0;
 				$this->hyphenation		= array();
-				$this->min_hyphenation	= PHP_INT_MAX;
 				$this->left_min_hyphen	= 2;
 				$this->right_min_hyphen	= 2;
 
@@ -374,9 +370,6 @@
 									if (preg_match('~^\pL\pM*(-|\pL\pM*)+\pL\pM*~u', substr($line, $offset), $m) === 1) {
 										$hyphenation = preg_replace('~\-~', '', $m[0]);
 										$this->hyphenation[$hyphenation] = $m[0];
-										if (!isset($hyphenation{$this->min_hyphenation})) {
-											$this->min_hyphenation = mb_strlen($hyphenation);
-										}
 										$offset += strlen($m[0]);
 									}
 									continue;	// next token
@@ -407,12 +400,13 @@
 						$cache->patterns			= $this->patterns;
 						$cache->max_pattern			= $this->max_pattern;
 						$cache->hyphenation			= $this->hyphenation;
-						$cache->min_hyphenation		= $this->min_hyphenation;
 						$cache->left_min_hyphen		= $this->left_min_hyphen;
 						$cache->right_min_hyphen	= $this->right_min_hyphen;
-
-						$cache->close();
 					}					
+				}
+				
+				if ($cache !== null) {
+					$cache->close();
 				}
 			}
 		}
@@ -431,7 +425,7 @@
 			}
 
 			// Is it a pre-hyphenated word?
-			if (mb_strlen($word) >= $this->min_hyphenation && isset($this->hyphenation[$word])) {
+			if (isset($this->hyphenation[$word])) {
 				return mb_split('-', $this->hyphenation[$word]);
 			}
 
