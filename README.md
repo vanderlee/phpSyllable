@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.3
+Version 1.3.1
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
@@ -25,6 +25,9 @@ Supports PHP 5.2 and up, so you can use it on older servers.
 
 Changes
 -------
+### 1.3.1
+-	Fix slow initial cache writing; too many writes (only one was needed).
+-	Removed min_hyphenation; mb_strlen takes more time than hashmap lookup.
 ### 1.3
 -	Added `array histogramText($text)`, `integer countWordsText($text)` and
 	`integer countPolysyllableText($text)` methods.
