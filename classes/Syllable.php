@@ -402,11 +402,9 @@
 						$cache->hyphenation			= $this->hyphenation;
 						$cache->left_min_hyphen		= $this->left_min_hyphen;
 						$cache->right_min_hyphen	= $this->right_min_hyphen;
+
+						$cache->close();
 					}					
-				}
-				
-				if ($cache !== null) {
-					$cache->close();
 				}
 			}
 		}
