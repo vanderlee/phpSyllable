@@ -35,7 +35,7 @@ EOF
 	,	'id'					=> 'Indonesian'
 	,	'it'					=> 'Italian'
 	,	'la'					=> 'Latin'
-	,	'nk'					=> 'Norwegian'
+	,	'no'					=> 'Norwegian'
 	,	'pl'					=> 'Polish'
 	,	'pt'					=> 'Portuguese'
 	,	'ru'					=> 'Russian'

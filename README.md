@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.3.1
+Version 1.4
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
@@ -17,7 +17,7 @@ Based on the work by Frank M. Liang (http://www.tug.org/docs/liang/)
 and the many volunteers in the TeX community.
 
 Many languages supported. i.e. english (us/uk), spanish, german, french, dutch,
-italian, romanian, russian, etc. 67 languages in total.
+italian, romanian, russian, etc. 76 languages in total.
 
 Language sources: http://tug.org/tex-hyphen/#languages
 
@@ -25,6 +25,10 @@ Supports PHP 5.2 and up, so you can use it on older servers.
 
 Changes
 -------
+### 1.4
+-	Fix for French language handling
+-	Refactor .text loading into source class.
+-	Massive cache performance increase (excessive writes).
 ### 1.3.1
 -	Fix slow initial cache writing; too many writes (only one was needed).
 -	Removed min_hyphenation; mb_strlen takes more time than hashmap lookup.
