@@ -1,66 +1,164 @@
 <?php
 
-    /**
-     * Default language strategy tries to load TeX files from a relative path
-     * to the class sourcefile.
-     */
-    class Syllable_Source_File implements Syllable_Source_Interface {
-		private static $minHyphens = null;
+/**
+ * Default language strategy tries to load TeX files from a relative path
+ * to the class sourcefile.
+ */
+class Syllable_Source_File implements Syllable_Source_Interface
+{
 
-		private $path		= null;
-		private $language	= null;
-        private $lines      = null;
-        private $position   = 0;
+    private static $minHyphens = null;
+    private $path = null;
+    private $language = null;
+    private $loaded = false;
+    private $patterns = null;
+    private $max_pattern_length = null;
+    private $hyphenations = null;
 
-        public function __construct($language, $path) {
-			$this->setLanguage($language);
-			$this->setPath($path);
-            $this->rewind();
+    public function __construct($language, $path)
+    {
+        $this->setLanguage($language);
+        $this->setPath($path);
+        $this->loaded = false;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+        $this->loaded = false;
+    }
+
+    public function setLanguage($language)
+    {
+        $this->language = strtolower($language);
+        $this->loaded = false;
+    }
+
+    public function getMinHyphens()
+    {
+        if (!self::$minHyphens) {
+            self::$minHyphens = json_decode(file_get_contents("{$this->path}/min.json"), true);
         }
 
-		public function setPath($path) {
-			$this->path = $path;
-			$this->lines = null;
-		}
+        return isset(self::$minHyphens[$this->language]) ? self::$minHyphens[$this->language] : null;
+    }
 
-		public function setLanguage($language) {
-			$this->language = strtolower($language);
-			$this->lines = null;
-		}
+    private function loadLanguage()
+    {
+        if (!$this->loaded) {
+            $this->patterns = array();
+            $this->max_pattern_length = 0;
+            $this->hyphenations = array();
 
-		public function getMinHyphens() {
-			if (!self::$minHyphens) {
-				self::$minHyphens = json_decode(file_get_contents("{$this->path}/min.json"), true);
-			}
+            // parser state
+            $command = FALSE;
+            $braces = FALSE;
 
-			return isset(self::$minHyphens[$this->language]) ? self::$minHyphens[$this->language] : null;
-		}
+            // parse .tex file
+            foreach (file("{$this->path}/hyph-{$this->language}.tex") as $line) {
+                $offset = 0;
+                $strlen_line = mb_strlen($line);
+                while ($offset < $strlen_line) {
+                    $char = $line{$offset};
 
-		private function load() {
-			if (!$this->lines) {
-				$this->lines	= file("{$this->path}/hyph-{$this->language}.tex");
-			}
-		}
+                    // %comment
+                    if ($char === '%') {
+                        break; // ignore rest of line
+                    }
 
-        function rewind() {
-            $this->position = 0;
-        }
+                    // \command
+                    if (preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
+                        $command = $m[1];
+                        $offset += mb_strlen($m[0]);
+                        continue; // next token
+                    }
 
-        function current() {
-			$this->load();
-            return $this->lines[$this->position];
-        }
+                    // {
+                    if ($char === '{') {
+                        $braces = TRUE;
+                        ++$offset;
+                        continue; // next token
+                    }
 
-        function key() {
-            return $this->position;
-        }
+                    // content
+                    if ($braces) {
+                        switch ($command) {
+                            case 'patterns':
+                                if (preg_match('~^(?:\pL\pM*|\pN|[\'-.])+~u', mb_substr($line, $offset), $m) === 1) {
+                                    $numbers = '';
+                                    $pattern = '';
+                                    $strlen = 0;
+                                    $expect_number = true;
+                                    foreach (preg_split('/(?<!^)(?!$)/u', $m[0]) as $char) {
+                                        if (is_numeric($char)) {
+                                            $numbers .= $char;
+                                            $expect_number = false;
+                                        } else {
+                                            if ($expect_number) {
+                                                $numbers .= '0';
+                                            }
+                                            $pattern .= $char;
+                                            ++$strlen;
+                                            $expect_number = true;
+                                        }
+                                        ++$offset;
+                                    }
+                                    if ($expect_number) {
+                                        $numbers .= '0';
+                                    }
 
-        function next() {
-            ++$this->position;
-        }
+                                    $this->patterns[$pattern] = $numbers;
+                                    if ($strlen > $this->max_pattern_length) {
+                                        $this->max_pattern_length = $strlen;
+                                    }
+                                }
+                                continue; // next token
+                                break;
 
-        function valid() {
-			$this->load();
-            return isset($this->lines[$this->position]);
+                            case 'hyphenation':
+                                if (preg_match('~^\pL\pM*(\'-|\pL\pM*)+\pL\pM*~u', substr($line, $offset), $m) === 1) {
+                                    $hyphenation = preg_replace('~\-~', '', $m[0]);
+                                    $this->hyphenations[$hyphenation] = $m[0];
+                                    $offset += strlen($m[0]);
+                                }
+                                continue; // next token
+                                break;
+                        }
+                    }
+
+                    // }
+                    if ($char === '}') {
+                        $braces = FALSE;
+                        $command = FALSE;
+                        ++$offset;
+                        continue; // next token
+                    }
+
+                    // ignorable content, skip one char
+                    ++$offset;
+                }
+            }
+
+            $this->loaded = true;
         }
     }
+
+    public function getHyphentations()
+    {
+        $this->loadLanguage();
+        return $this->hyphenations;
+    }
+
+    public function getMaxPattern()
+    {
+        $this->loadLanguage();
+        return $this->max_pattern_length;
+    }
+
+    public function getPatterns()
+    {
+        $this->loadLanguage();
+        return $this->patterns;
+    }
+
+}
