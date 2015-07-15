@@ -67,7 +67,7 @@ class Syllable_Source_File implements Syllable_Source_Interface
                     }
 
                     // \command
-                    if (preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
+                    if ($char === '\\' && preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
                         $command = $m[1];
                         $offset += mb_strlen($m[0]);
                         continue; // next token
@@ -84,7 +84,7 @@ class Syllable_Source_File implements Syllable_Source_Interface
                     if ($braces) {
                         switch ($command) {
                             case 'patterns':
-                                if (preg_match('~^(?:\pL\pM*|\pN|[\'-.])+~u', mb_substr($line, $offset), $m) === 1) {
+                                if (preg_match('~^\S+~u', mb_substr($line, $offset), $m) === 1) {
                                     $numbers = '';
                                     $pattern = '';
                                     $strlen = 0;
@@ -116,7 +116,7 @@ class Syllable_Source_File implements Syllable_Source_Interface
                                 break;
 
                             case 'hyphenation':
-                                if (preg_match('~^\pL\pM*(\'-|\pL\pM*)+\pL\pM*~u', substr($line, $offset), $m) === 1) {
+                                if (preg_match('~^\S+~u', substr($line, $offset), $m) === 1) {
                                     $hyphenation = preg_replace('~\-~', '', $m[0]);
                                     $this->hyphenations[$hyphenation] = $m[0];
                                     $offset += strlen($m[0]);
