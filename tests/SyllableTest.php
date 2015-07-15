@@ -35,7 +35,7 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Su-per-ca-lifra-gi-lis-ti-c-ex-pi-a-li-do-cious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
 		
 		$this->object->setLanguage('fr');
-		$this->assertEquals('Super-califragilis-ticex-pialidocious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
+		$this->assertEquals('Su-per-ca-li-fra-gi-lis-ti-cex-pia-li-do-cious', $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
 	}
 
 	/**
