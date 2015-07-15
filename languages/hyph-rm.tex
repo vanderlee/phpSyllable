@@ -1,6 +1,6 @@
-% hyph-fur.tex
+% hyph-rm.tex
 %
-% Friulan hyphenation patterns
+% Romansh hyphenation patterns
 %
 % This file is part of the hyph-utf8 package.
 % For more information see
@@ -9,7 +9,7 @@
 %
 %------------------------------------------------------------------------------
 %
-%% Copyright 2012 Claudio Beccari
+%% Copyright 2011 Claudio Beccari
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either
@@ -24,33 +24,35 @@
 % The Current Maintainer of this work is Claudio Beccari
 % e-mail:  claudio dot beccari at gmail dot com
 %
-% This work consists of the single file hyph-fur.tex.
+% This work consists of the single file hyph-rm.tex.
 %
-% \versionnumber{1.1}   \versiondate{2012/04/10}
+% \versionnumber{1.1}   \versiondate{2011/04/10}
 %
-% These hyphenation patterns for the Friulan language are supposed to comply
-% with the common spelling of the Friulan (Furlan) language as fixed by the
-% Regional Law N.15/96 dated November 6, 1996 and its following amendments.
+% These hyphenation patterns for the Romansh language are supposed to comply
+% with the rules indicated by the Lia Rumantscha (Romansh language society).
 % They were initially obtained by merging the consonantic endings to the Italian
-% patterns and adding the necessary patterns for the special Friulan digraphs
-% used in this language and for the \c{c} consonant. The common Latin roots
-% of both languages helped a lot in this adaptation.
-% Digraphs: cj, gj, gl, gn, sj, ss.
+% patterns and adding the necessary patterns for the special Romansch di-, try- and
+% tetra-graphs used in this language. The common Latin roots of both languages helped
+% a lot in this adaptation.
+% Digraphs: ch, gh, gl, gn, tg
+% Trigraphs: sch
+% Tetragraphs: tsch
 %
 % ChangeLog:
 % - 2012-01-14 - First release 1.0
 % - 2012-02-10 - Version 1.1. Fix inconsistencies.
+%
+% First part is identical to what is contained in hyph-quote-rm.tex
+% It must be repeated because that file is read only when creating format files
+% for UTF-8 aware engines (XeXeX, LuaTeX)
 %%
 \patterns{% some revision might be necessary to handle more vocalic elisions
-.'2s2
-.'sj2
 2'2
 2'.
 2b'
 2c'
-2cj'
-2cj'.
-2ç'
+2ch'.
+2ch''
 2d'
 2f'
 2g'
@@ -61,13 +63,17 @@
 2l''
 2m'
 2n'
-.'n2
 2p'
 2q'
 2r'
 4s'.
 4s''
+2sch'
+2schs'
+2sh'
 2st'
+4tsch'
+4tschs'
 2t'.
 2t''
 2v'.
@@ -84,7 +90,7 @@
 .ca4p3s
 .circu2m1
 .co2n3j
-.cuintri1
+.contro1
 .co1o2p
 .di2s3
 .di2s4ch3oc
@@ -103,6 +109,7 @@
 .p2s
 .re1ac
 .re1i2scr
+.sha2re3
 .tran2s3ac
 .tran2s3c
 .tran2s3d
@@ -148,8 +155,6 @@ b2r
 2cc
 2cd
 2cf
-c2j
-2cj.
 2ck
 2cm
 2cn
@@ -167,14 +172,10 @@ c2l
 c2r
 2c.
 .c2
-1ç
-2ç.
-2çs.
 1d
 2db
 2dd
 2dg
-d2h
 2dl
 2dm
 2dn
@@ -202,11 +203,9 @@ f2r
 2gf
 2gg
 g2h
-g2j
 g2l
 2gm
 g2n
-2gn.
 2gp
 g2r
 2gs
@@ -290,10 +289,11 @@ l2j
 2nq
 2nr
 2ns
-n2s.
+2ns.
+2n3sch
+n4sch.
 n2s3fer
 2nt
-n2t.
 2nv
 2nz
 n2g3n
@@ -318,8 +318,6 @@ p2r
 1r
 2rb
 2rc
-2rç
-2rç.
 2rd
 2rf
 r2h
@@ -339,77 +337,48 @@ r2t2s3
 2rw
 2rz
 2r.
-.s2
-1s
-2sc
-.s2c
-2s1ç
-.s2ç
-2s1cj
-.s2cj
-2sch2
-.s2ch
-2sd
-.s2d
-2sf
-.s2f
-2sg
-.s2g
-s2j
-2sj.
-2sl
-.s2l
-2sm
-.s2m
-2sn
-.s2n
-2sp
-.s2p
-2s1p2n
-2sq
-.s2q
-2sr
-.s2r
-s2s % 
-2s4s3m
-2st
-2s2t.
-.s2t
-2s2tb
-2s2tc
-2s2td
-2s2tf
-2s2tm
-2s2tn
-2s2tp
-2s2ts
-2s2tt
-2s2tv
-2sv
-.s2v
+1s2
+sch2
+2sch.
+2schs.
+2shm
+2sh.
+2s3l
+2s3s
+s4s3m
+2s3p2n
+2st.
+2stb
+2stc
+2std
+2stf
+4stg.
+2stm
+2stn
+2stp
+2sts
+2stt
+2stv
 2sz
-2s2ç.
-2scj.
-2s.
+4s.
 1t
 2tb
 2tc
-2tç
-t2ç.
-2tcj
-t2cj.
 2td
 2tf
 t2g
+2tg.
 t2h
 t2l
 2tm
 2tn
 2tp
 t2r
-2t2s
+t2s
+3t2sch2
+4tsch.
+4tschs.
 2tt
-t2t3m
 t2t3s
 2tv
 2tw
@@ -417,7 +386,6 @@ t2z
 2tzk
 tz2s
 2t.
-2ts.
 1v
 2vc
 v2l
@@ -449,8 +417,8 @@ y1i
 2zn
 2zp
 2zr
-2zs
 2zt
+2zs
 2zv
 2zz
 2z.
