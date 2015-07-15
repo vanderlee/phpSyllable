@@ -4,6 +4,11 @@
      * Main class
      */
 	class Syllable {
+        /**
+         * Version string, used to recalculate language caches if needed.
+         */
+        const CACHE_VERSION         = 1.4;
+
 		/**
 		 * @deprecated since version 1.2
 		 */
@@ -135,6 +140,9 @@
 			$this->Source = $Source;
 		}
 
+        /**
+         * @return Syllable_Source_Interface
+         */
 		public function getSource() {
 			return $this->Source;
 		}
@@ -280,7 +288,8 @@
 			if ($cache !== null) {
 				$cache->open($this->language);
 
-				if (isset($cache->patterns)
+				if (isset($cache->version) && $cache->version == self::CACHE_VERSION
+				 && isset($cache->patterns)
 				 && isset($cache->max_pattern)
 				 && isset($cache->hyphenation)
 				 && isset($cache->left_min_hyphen)
@@ -296,116 +305,31 @@
 			}
 			
 			if (!$loaded) {
-				$this->patterns			= array();
-				$this->max_pattern		= 0;
-				$this->hyphenation		= array();
+                $source = $this->getSource();
+				$this->patterns			= $source->getPatterns();
+				$this->max_pattern		= $source->getMaxPattern();
+				$this->hyphenation		= $source->getHyphentations();
+
 				$this->left_min_hyphen	= 2;
 				$this->right_min_hyphen	= 2;
+                $minHyphens = $source->getMinHyphens();
+                if ($minHyphens) {
+                    $this->left_min_hyphen	= $minHyphens[0];
+                    $this->right_min_hyphen	= $minHyphens[1];
+                }
+                
+                if ($cache !== null) {
+                    $cache->version             = self::CACHE_VERSION;
+                    $cache->patterns			= $this->patterns;
+                    $cache->max_pattern			= $this->max_pattern;
+                    $cache->hyphenation			= $this->hyphenation;
+                    $cache->left_min_hyphen		= $this->left_min_hyphen;
+                    $cache->right_min_hyphen	= $this->right_min_hyphen;
 
-				// parser state
-				$command = FALSE;
-				$braces = FALSE;
+                    $cache->close();
+                }
 
-				// parse .tex file
-				$tex = $this->getSource();
-				foreach ($tex as $line) {
-					$offset = 0;
-					$strlen_line = mb_strlen($line);
-					while ($offset < $strlen_line) {
-						// %comment
-						if ($line{$offset} === '%') {
-							break;	// ignore rest of line
-						}
-
-						// \command
-						if (preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
-							$command = $m[1];
-							$offset += mb_strlen($m[0]);
-							continue;	// next token
-						}
-
-						// {
-						if ($line{$offset} === '{') {
-							$braces = TRUE;
-							++$offset;
-							continue;	// next token
-						}
-
-						// content
-						if ($braces) {
-							switch ($command) {
-								case 'patterns':
-									if (preg_match('~^(?:\pL\pM*|\pN|[-.])+~u', mb_substr($line, $offset), $m) === 1) {
-										$numbers = '';
-										$pattern = '';
-										$strlen = 0;
-										$expect_number = true;
-										foreach (preg_split('/(?<!^)(?!$)/u', $m[0]) as $char) {
-											if (is_numeric($char)) {
-												$numbers .= $char;
-												$expect_number = false;
-											} else {
-												if ($expect_number) {
-													$numbers .= '0';
-												}
-												$pattern .= $char;
-												++$strlen;
-												$expect_number = true;
-											}
-											++$offset;
-										}
-										if ($expect_number) {
-											$numbers .= '0';
-										}
-
-										$this->patterns[$pattern]	= $numbers;
-										if ($strlen > $this->max_pattern) {
-											$this->max_pattern = $strlen;
-										}
-									}
-									continue;	// next token
-								break;
-
-								case 'hyphenation':
-									if (preg_match('~^\pL\pM*(-|\pL\pM*)+\pL\pM*~u', substr($line, $offset), $m) === 1) {
-										$hyphenation = preg_replace('~\-~', '', $m[0]);
-										$this->hyphenation[$hyphenation] = $m[0];
-										$offset += strlen($m[0]);
-									}
-									continue;	// next token
-								break;
-							}
-						}
-
-						// }
-						if ($line[$offset] === '}') {
-							$braces = FALSE;
-							$command = FALSE;
-							++$offset;
-							continue;	// next token
-						}
-
-						// ignorable content, skip one char
-						++$offset;
-					}
-					
-					// parse hyphen file
-					$minHyphens = $tex->getMinHyphens();					
-					if ($minHyphens) {
-						$this->left_min_hyphen	= $minHyphens[0];
-						$this->right_min_hyphen	= $minHyphens[1];
-					}
-
-					if ($cache !== null) {
-						$cache->patterns			= $this->patterns;
-						$cache->max_pattern			= $this->max_pattern;
-						$cache->hyphenation			= $this->hyphenation;
-						$cache->left_min_hyphen		= $this->left_min_hyphen;
-						$cache->right_min_hyphen	= $this->right_min_hyphen;
-
-						$cache->close();
-					}					
-				}
+                $loaded = true;
 			}
 		}
 
@@ -455,7 +379,7 @@
 				}
 			}
 
-			// Output
+            // Output
 			$parts	= array();
 			$part	= mb_substr($word, 0, $this->left_min_hyphen);
 			for ($i = $this->left_min_hyphen + 1; $i < $end; ++$i) {
