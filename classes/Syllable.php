@@ -162,7 +162,7 @@
 
 			$this->loadLanguage();
 
-			$splits = mb_split('[^[:alpha:]]+', $text);
+			$splits = mb_split('[^\'[:alpha:]]+', $text);
 			$parts = array();
 			$part = '';
 			$pos = 0;
@@ -235,7 +235,7 @@
 			$this->loadLanguage();			
 			
 			$counts = array();
-			foreach (mb_split('[^[:alpha:]]+', $text) as $split) {
+			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split)) {
 					$count = count($this->parseWord($split));
 					if (isset($counts[$count])) {
@@ -256,7 +256,7 @@
 			$this->loadLanguage();			
 			
 			$count = 0;
-			foreach (mb_split('[^[:alpha:]]+', $text) as $split) {
+			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split)) {
 					++$count;
 				}
@@ -272,7 +272,7 @@
 			$this->loadLanguage();			
 			
 			$count = 0;
-			foreach (mb_split('[^[:alpha:]]+', $text) as $split) {
+			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split) && count($this->parseWord($split)) >= 3) {
 					++$count;
 				}
