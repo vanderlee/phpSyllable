@@ -16,6 +16,10 @@
 	 * @license http://www.opensource.org/licenses/mit-license.php
 	 */
 
+	/**
+	 * Classloader for the library
+	 * @param string $class
+	 */
 	function Syllable_autoloader($class) {
 		if (!class_exists($class) && is_file(dirname(__FILE__). '/' . $class . '.php')) {
 			require dirname(__FILE__). '/' . $class . '.php';
