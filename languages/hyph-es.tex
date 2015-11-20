@@ -1,69 +1,96 @@
 % DIVISI'ON DE PALABRAS
 % ~~~~~~~~~~~~~~~~~~~~~
-% hyph-es.tex 4.6
-% This files corresponds to eshyph.tex 4.6.
+% eshyph.tex 4.5
+%
+% Why 4.x? Well, I know at least other three files with the
+% same name, so this one is the fourth. 
 %
 % (c) Javier Bezos 1993 1997.
-% (c) Javier Bezos and CervanTeX 2001-2010
+% (c) Javier Bezos and CervanTeX 2001-2009
 % Some parts, (c) by Francesc Carmona
 % Licence: LPPL
 %
+% - division.pdf is a draft of an article (in Spanish) explaining the
+% rules to be applied and how they are being translated into TeX in a
+% unified set of patterns (somewhat outdated).
+% - eshyph-make.lua generates the patterns, with eshyph.src for
+% prefixes and special cases.
+% - eshyph-test.tex makes a comparison with strict syllabic rules.  It
+% requires a file spanish-words.txt (not supplied) with a list of
+% word, one per line.  You can (should) filter the words.
+%
+% Version 4.2 and later has been encoded in UTF-8, so that it can be
+% used with LuaTeX. Yet, it works without changes with standard TeX.
+% The trick is simple: in the range U+0080 to U+07FF UTF-8 behaves
+% like two chars in standard tex and like one char in luatex, so we
+% just count the number of arguments.  The idea can be extended easily
+% for more bytes.
+%
+% This file is intended mainly for backward compatibility. New
+% systems are best based on CTAN:language/hyph-utf8/, which has
+% the same patterns.
+% 
 % For further info, bug reports and comments:
 %
 %       http://www.tex-tipografia.com/spanish_hyphen.html
-%
+% 
 % I would like to thanks Francesc Carmona for his permission
-% to steal parts of his work without restrictions.
-%
-% 2010-05-18
-%
+% to steal parts of his work without restrictions. 
+% 
+% 2009-08-01
+% 
 % _____________________________________________________________
 % Javier Bezos                | http://www.cervantex.es/
 % .............................................................
 % TeX y tipografia            | http://www.tex-tipografia.com/
 
+\begingroup
+
+\def\setchar#1#2#3#4{%
+   \ifx#4\relax % lua #1: char, #2: font code (not used)
+     \catcode`#1=11
+     \lccode`#1=`#1
+   \else % std tex #1: 1st byte, #2: 2nd, #3: font code
+     \catcode`#3=11
+     \lccode`#4=`#3
+     \uccode`#3=`#4
+     \lccode`~=`#1
+     \catcode`#1=13
+     \lowercase{\def~}##1{\csname eshyphUTF@\string#1\string##1\endcsname}%
+     \expandafter\def\csname eshyphUTF@\string#1\string#2\endcsname{#3}%
+   \fi}
+
+\setchar ñ{^^f1}{^^d1}\relax
+\setchar á{^^e1}{^^c1}\relax
+\setchar é{^^e9}{^^c9}\relax
+\setchar í{^^ed}{^^cd}\relax
+\setchar ó{^^f3}{^^d3}\relax
+\setchar ú{^^fa}{^^da}\relax
+\setchar ü{^^fc}{^^dc}\relax
+
 \patterns{
-1b 4b. 2bb 2bc 2bd 2bf 2bg 2b1h 2bj 2bk     2bm 2bn 2bp 2bq     2bs 2bt 2bv 2bw 2bx 2by 2bz
-1c 4c. 2cb 2cc 2cd 2cf 2cg      2cj 2ck     2cm 2cn 2cp 2cq     2cs 2ct 2cv 2cw 2cx 2cy 2cz
-1d 4d. 2db 2dc 2dd 2df 2dg 2d1h 2dj 2dk 2dl 2dm 2dn 2dp 2dq     2ds 2dt 2dv 2dw 2dx 2dy 2dz
-1f 4f. 2fb 2fc 2fd 2ff 2fg 2f1h 2fj 2fk     2fm 2fn 2fp 2fq     2fs 2ft 2fv 2fw 2fx 2fy 2fz
-1g 4g. 2gb 2gc 2gd 2gf 2gg 2g1h 2gj 2gk     2gm 2gn 2gp 2gq     2gs 2gt 2gv 2gw 2gx 2gy 2gz
-   4h. 2hb 2hc 2hd 2hf 2hg 2h1h 2hj 2hk 2hl 2hm 2hn 2hp 2hq 2hr 2hs 2ht 2hv 2hw 2hx 2hy 2hz
-1j 4j. 2jb 2jc 2jd 2jf 2jg 2j1h 2jj 2jk 2jl 2jm 2jn 2jp 2jq 2jr 2js 2jt 2jv 2jw 2jx 2jy 2jz
-1k 4k. 2kb 2kc 2kd 2kf 2kg 2k1h 2kj 2kk     2km 2kn 2kp 2kq     2ks 2kt 2kv 2kw 2kx 2ky 2kz
-1l 4l. 2lb 2lc 2ld 2lf 2lg 2l1h 2lj 2lk     2lm 2ln 2lp 2lq 2lr 2ls 2lt 2lv 2lw 2lx 2ly 2lz
-1m 4m. 2mb 2mc 2md 2mf 2mg 2m1h 2mj 2mk 2ml 2mm 2mn 2mp 2mq 2mr 2ms 2mt 2mv 2mw 2mx 2my 2mz
-1n 4n. 2nb 2nc 2nd 2nf 2ng 2n1h 2nj 2nk 2nl 2nm 2nn 2np 2nq 2nr 2ns 2nt 2nv 2nw 2nx 2ny 2nz
-1p 4p. 2pb 2pc 2pd 2pf 2pg 2p1h 2pj 2pk     2pm 2pn 2pp 2pq     2ps 2pt 2pv 2pw 2px 2py 2pz
-1q 4q. 2qb 2qc 2qd 2qf 2qg 2q1h 2qj 2qk 2ql 2qm 2qn 2qp 2qq 2qr 2qs 2qt 2qv 2qw 2qx 2qy 2qz
-1r 4r. 2rb 2rc 2rd 2rf 2rg 2r1h 2rj 2rk 2rl 2rm 2rn 2rp 2rq     2rs 2rt 2rv 2rw 2rx 2ry 2rz
-1s 4s. 2sb 2sc 2sd 2sf 2sg 2s1h 2sj 2sk 2sl 2sm 2sn 2sp 2sq 2sr 2ss 2st 2sv 2sw 2sx 2sy 2sz
-1t 4t. 2tb 2tc 2td 2tf 2tg 2t1h 2tj 2tk     2tm 2tn 2tp 2tq     2ts 2tt 2tv 2tw 2tx 2ty 2tz
-1v 4v. 2vb 2vc 2vd 2vf 2vg 2v1h 2vj 2vk     2vm 2vn 2vp 2vq     2vs 2vt 2vv 2vw 2vx 2vy 2vz
-1w 4w. 2wb 2wc 2wd 2wf 2wg 2w1h 2wj 2wk 2wl 2wm 2wn 2wp 2wq 2wr 2ws 2wt 2wv 2ww 2wx 2wy 2wz
-1x 4x. 2xb 2xc 2xd 2xf 2xg 2x1h 2xj 2xk 2xl 2xm 2xn 2xp 2xq 2xr 2xs 2xt 2xv 2xw 2xx 2xy 2xz
-1y 4y. 2yb 2yc 2yd 2yf 2yg 2y1h 2yj 2yk 2yl 2ym 2yn 2yp 2yq 2yr 2ys 2yt 2yv 2yw 2yx 2yy 2yz
-1z 4z. 2zb 2zc 2zd 2zf 2zg 2z1h 2zj 2zk 2zl 2zm 2zn 2zp 2zq 2zr 2zs 2zt 2zv 2zw 2zx 2zy 2zz
-1ñ 4ñ.
-c4h 4ch. 2chb 2chc 2chd 2chf 2chg 2chh 2chj 2chk ch2l 2chm 2chn 2chp 2chq ch2r 2chs 2cht 2chv 2chw 2chx 2chy 2chz
-l4l 4ll. 2llb 2llc 2lld 2llf 2llg 2llh 2llj 2llk 2lll 2llm 2lln 2llp 2llq 2llr 2lls 2llt 2llv 2llw 2llx 2lly 2llz
-b2l 4bl. 2bl2b 2bl2c 2bl2d 2bl2f 2bl2g 2bl2h 2bl2j 2bl2k 2bl2l 2bl2m 2bl2n 2bl2p 2bl2q 2bl2r 2bl2s 2bl2t 2bl2v 2bl2w 2bl2x 2bl2y 2bl2z
-c2l 4cl. 2cl2b 2cl2c 2cl2d 2cl2f 2cl2g 2cl2h 2cl2j 2cl2k 2cl2l 2cl2m 2cl2n 2cl2p 2cl2q 2cl2r 2cl2s 2cl2t 2cl2v 2cl2w 2cl2x 2cl2y 2cl2z
-f2l 4fl. 2fl2b 2fl2c 2fl2d 2fl2f 2fl2g 2fl2h 2fl2j 2fl2k 2fl2l 2fl2m 2fl2n 2fl2p 2fl2q 2fl2r 2fl2s 2fl2t 2fl2v 2fl2w 2fl2x 2fl2y 2fl2z
-g2l 4gl. 2gl2b 2gl2c 2gl2d 2gl2f 2gl2g 2gl2h 2gl2j 2gl2k 2gl2l 2gl2m 2gl2n 2gl2p 2gl2q 2gl2r 2gl2s 2gl2t 2gl2v 2gl2w 2gl2x 2gl2y 2gl2z
-k2l 4kl. 2kl2b 2kl2c 2kl2d 2kl2f 2kl2g 2kl2h 2kl2j 2kl2k 2kl2l 2kl2m 2kl2n 2kl2p 2kl2q 2kl2r 2kl2s 2kl2t 2kl2v 2kl2w 2kl2x 2kl2y 2kl2z
-p2l 4pl. 2pl2b 2pl2c 2pl2d 2pl2f 2pl2g 2pl2h 2pl2j 2pl2k 2pl2l 2pl2m 2pl2n 2pl2p 2pl2q 2pl2r 2pl2s 2pl2t 2pl2v 2pl2w 2pl2x 2pl2y 2pl2z
-v2l 4vl. 2vl2b 2vl2c 2vl2d 2vl2f 2vl2g 2vl2h 2vl2j 2vl2k 2vl2l 2vl2m 2vl2n 2vl2p 2vl2q 2vl2r 2vl2s 2vl2t 2vl2v 2vl2w 2vl2x 2vl2y 2vl2z
-b2r 4br. 2br2b 2br2c 2br2d 2br2f 2br2g 2br2h 2br2j 2br2k 2br2l 2br2m 2br2n 2br2p 2br2q 2br2r 2br2s 2br2t 2br2v 2br2w 2br2x 2br2y 2br2z
-c2r 4cr. 2cr2b 2cr2c 2cr2d 2cr2f 2cr2g 2cr2h 2cr2j 2cr2k 2cr2l 2cr2m 2cr2n 2cr2p 2cr2q 2cr2r 2cr2s 2cr2t 2cr2v 2cr2w 2cr2x 2cr2y 2cr2z
-d2r 4dr. 2dr2b 2dr2c 2dr2d 2dr2f 2dr2g 2dr2h 2dr2j 2dr2k 2dr2l 2dr2m 2dr2n 2dr2p 2dr2q 2dr2r 2dr2s 2dr2t 2dr2v 2dr2w 2dr2x 2dr2y 2dr2z
-f2r 4fr. 2fr2b 2fr2c 2fr2d 2fr2f 2fr2g 2fr2h 2fr2j 2fr2k 2fr2l 2fr2m 2fr2n 2fr2p 2fr2q 2fr2r 2fr2s 2fr2t 2fr2v 2fr2w 2fr2x 2fr2y 2fr2z
-g2r 4gr. 2gr2b 2gr2c 2gr2d 2gr2f 2gr2g 2gr2h 2gr2j 2gr2k 2gr2l 2gr2m 2gr2n 2gr2p 2gr2q 2gr2r 2gr2s 2gr2t 2gr2v 2gr2w 2gr2x 2gr2y 2gr2z
-k2r 4kr. 2kr2b 2kr2c 2kr2d 2kr2f 2kr2g 2kr2h 2kr2j 2kr2k 2kr2l 2kr2m 2kr2n 2kr2p 2kr2q 2kr2r 2kr2s 2kr2t 2kr2v 2kr2w 2kr2x 2kr2y 2kr2z
-p2r 4pr. 2pr2b 2pr2c 2pr2d 2pr2f 2pr2g 2pr2h 2pr2j 2pr2k 2pr2l 2pr2m 2pr2n 2pr2p 2pr2q 2pr2r 2pr2s 2pr2t 2pr2v 2pr2w 2pr2x 2pr2y 2pr2z
-r2r 4rr. 2rr2b 2rr2c 2rr2d 2rr2f 2rr2g 2rr2h 2rr2j 2rr2k 2rr2l 2rr2m 2rr2n 2rr2p 2rr2q 2rr2r 2rr2s 2rr2t 2rr2v 2rr2w 2rr2x 2rr2y 2rr2z
-t2r 4tr. 2tr2b 2tr2c 2tr2d 2tr2f 2tr2g 2tr2h 2tr2j 2tr2k 2tr2l 2tr2m 2tr2n 2tr2p 2tr2q 2tr2r 2tr2s 2tr2t 2tr2v 2tr2w 2tr2x 2tr2y 2tr2z
-v2r 4vr. 2vr2b 2vr2c 2vr2d 2vr2f 2vr2g 2vr2h 2vr2j 2vr2k 2vr2l 2vr2m 2vr2n 2vr2p 2vr2q 2vr2r 2vr2s 2vr2t 2vr2v 2vr2w 2vr2x 2vr2y 2vr2z
+1b 2b. 2bb 2bc 2bd 2bf 2bg 2b1h 2bj 2bk b2l 2bl. 2bm 2bn 2bp 2bq b2r 2br. 2bs 2bt 2bv 2bw 2bx 2by 2bz
+1c 2c. 2cb 2cc 2cd 2cf 2cg c4h 2ch. 2cj 2ck c2l 2cl. 2cm 2cn 2cp 2cq c2r 2cr. 2cs 2ct 2cv 2cw 2cx 2cy 2cz
+1d 2d. 2db 2dc 2dd 2df 2dg 2d1h 2dj 2dk 2dl 2dm 2dn 2dp 2dq d2r 2dr. 2ds 2dt 2dv 2dw 2dx 2dy 2dz
+1f 2f. 2fb 2fc 2fd 2ff 2fg 2f1h 2fj 2fk f2l 2fl. 2fm 2fn 2fp 2fq f2r 2fr. 2fs 2ft 2fv 2fw 2fx 2fy 2fz
+1g 2g. 2gb 2gc 2gd 2gf 2gg 2g1h 2gj 2gk g2l 2gl. 2gm 2gn 2gp 2gq g2r 2gr. 2gs 2gt 2gv 2gw 2gx 2gy 2gz
+2h. 2hb 2hc 2hd 2hf 2hg 2h1h 2hj 2hk 2hl 2hm 2hn 2hp 2hq 2hr 2hs 2ht 2hv 2hw 2hx 2hy 2hz
+1j 2j. 2jb 2jc 2jd 2jf 2jg 2j1h 2jj 2jk 2jl 2jm 2jn 2jp 2jq 2jr 2js 2jt 2jv 2jw 2jx 2jy 2jz
+1k 2k. 2kb 2kc 2kd 2kf 2kg 2k1h 2kj 2kk k2l 2kl. 2km 2kn 2kp 2kq k2r 2kr. 2ks 2kt 2kv 2kw 2kx 2ky 2kz
+1l 2l. 2lb 2lc 2ld 2lf 2lg 2l1h 2lj 2lk l4l 2ll. 2lm 2ln 2lp 2lq 2lr 2ls 2lt 2lv 2lw 2lx 2ly 2lz
+1m 2m. 2mb 2mc 2md 2mf 2mg 2m1h 2mj 2mk 2ml 2mm 2mn 2mp 2mq 2mr 2ms 2mt 2mv 2mw 2mx 2my 2mz
+1n 2n. 2nb 2nc 2nd 2nf 2ng 2n1h 2nj 2nk 2nl 2nm 2nn 2np 2nq 2nr 2ns 2nt 2nv 2nw 2nx 2ny 2nz
+1p 2p. 2pb 2pc 2pd 2pf 2pg 2p1h 2pj 2pk p2l 2pl. 2pm 2pn 2pp 2pq p2r 2pr. 2ps 2pt 2pv 2pw 2px 2py 2pz
+1q 2q. 2qb 2qc 2qd 2qf 2qg 2q1h 2qj 2qk 2ql 2qm 2qn 2qp 2qq 2qr 2qs 2qt 2qv 2qw 2qx 2qy 2qz
+1r 2r. 2rb 2rc 2rd 2rf 2rg 2r1h 2rj 2rk 2rl 2rm 2rn 2rp 2rq r2r 2rr. 2rs 2rt 2rv 2rw 2rx 2ry 2rz
+1s 2s. 2sb 2sc 2sd 2sf 2sg 2s1h 2sj 2sk 2sl 2sm 2sn 2sp 2sq 2sr 2ss 2st 2sv 2sw 2sx 2sy 2sz
+1t 2t. 2tb 2tc 2td 2tf 2tg 2t1h 2tj 2tk 2t2l 2tm 2tn 2tp 2tq t2r 2tr. 2ts 2tt 2tv 2tw 2tx 2ty 2tz
+1v 2v. 2vb 2vc 2vd 2vf 2vg 2v1h 2vj 2vk v2l 2vl. 2vm 2vn 2vp 2vq v2r 2vr. 2vs 2vt 2vv 2vw 2vx 2vy 2vz
+1w 2w. 2wb 2wc 2wd 2wf 2wg 2w1h 2wj 2wk 2wl 2wm 2wn 2wp 2wq 2wr 2ws 2wt 2wv 2ww 2wx 2wy 2wz
+1x 2x. 2xb 2xc 2xd 2xf 2xg 2x1h 2xj 2xk 2xl 2xm 2xn 2xp 2xq 2xr 2xs 2xt 2xv 2xw 2xx 2xy 2xz
+1y 2y. 2yb 2yc 2yd 2yf 2yg 2y1h 2yj 2yk 2yl 2ym 2yn 2yp 2yq 2yr 2ys 2yt 2yv 2yw 2yx 2yy 2yz
+1z 2z. 2zb 2zc 2zd 2zf 2zg 2z1h 2zj 2zk 2zl 2zm 2zn 2zp 2zq 2zr 2zs 2zt 2zv 2zw 2zx 2zy 2zz
+1ñ 2ñ.
 2b3p2t 2c3p2t 2d3p2t 2l3p2t 2m3p2t 2n3p2t 2r3p2t 2s3p2t 2t3p2t 2x3p2t 2y3p2t 4pt.
 2b3c2t 2c3c2t 2d3c2t 2l3c2t 2m3c2t 2n3c2t 2r3c2t 2s3c2t 2t3c2t 2x3c2t 2y3c2t 4ct.
 2b3c2n 2c3c2n 2d3c2n 2l3c2n 2m3c2n 2n3c2n 2r3c2n 2s3c2n 2t3c2n 2x3c2n 2y3c2n 4cn.
@@ -78,7 +105,6 @@ v2r 4vr. 2vr2b 2vr2c 2vr2d 2vr2f 2vr2g 2vr2h 2vr2j 2vr2k 2vr2l 2vr2m 2vr2n 2vr2p
 san4c5t
 plan4c5t
 2no.
-2t2l
 4caca4
 4cago4
 4caga4
@@ -905,7 +931,7 @@ de3silusi
 de2s3imagin
 de2s3iman
 de2s3impon
-de2s3impres
+de2s3impresX
 de2s3incent
 de2s3inclin
 de2s3incorp
@@ -921,12 +947,11 @@ de2s3inform
 de2s3inhib
 de2s3insect
 de2s3instal
-ini3ci
-iní3ci
 de3s4integr
 de3s4inter
 de2s3intox
 de2s3inver
+de2s3impres
 de3sisten
 de3isti
 de2s3obedec
@@ -1090,17 +1115,9 @@ icono1á2 icono1é2 icono1í2 icono1ó2 icono1ú2
 .in3efici
 .in3eludi
 .ine3narr
-ini3cia
-iní3cia
-ini3ciá
-ini3cie
-.rei3na
-re3ini3cia
-re3iní3cia
-re3ini3ciá
-re3ini3cie
-.ini3cuo
-.ini3cua
+.ini3cia
+.ini3ciá
+.ini3cie
 .ino3cuo
 .ino3cua
 .ino3cula
@@ -1614,3 +1631,5 @@ su4d3oes
 .tran2s1ur
 .tri1ó2x
 }
+
+\endgroup 
