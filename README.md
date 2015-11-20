@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.4.1
+Version 1.4.2
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
@@ -25,6 +25,10 @@ Supports PHP 5.2 and up, so you can use it on older servers.
 
 Changes
 -------
+1.4.2
+-	Updated spanish language files.
+-	Initial PHPDoc.
+
 1.4.1
 -	More fixes for apostrophes in splitting.
 
