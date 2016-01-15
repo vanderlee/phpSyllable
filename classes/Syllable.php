@@ -48,6 +48,11 @@
 		private static $cache_dir		= null;
 		private static $language_dir	= null;
 
+		/**
+		 * Create a new Syllable class, with defaults
+		 * @param string $language
+		 * @param string|Syllable_Hyphen_Interface $hyphen
+		 */
 		public function __construct($language = 'en', $hyphen = null) {
 			if (!self::$cache_dir) {
 				self::$cache_dir = __DIR__.'/cache';
@@ -67,21 +72,35 @@
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
 		}
 
+		/**
+		 * Set the directory where compiled language files may be stored.
+		 * Default to the `cache` subdirectory of the current directory.
+		 * @param string $dir
+		 */
 		public static function setCacheDir($dir) {
 			self::$cache_dir = $dir;
 		}
-		
+
+		/**
+		 * Set the directory where language source files can be found.
+		 * Default to the `languages` subdirectory of the current directory.
+		 * @param string $dir
+		 */
 		public static function setLanguageDir($dir) {
 			self::$language_dir = $dir;
 		}
-		
+
+		/**
+		 * Set the language whose rules will be used for hyphenation.
+		 * @param string $language
+		 */
 		public function setLanguage($language) {
 			$this->language = $language;		
 			$this->setSource(new Syllable_Source_File($language, self::$language_dir));
 		}
 
 		/**
-		 * Set the hyphen to use when hyphenating text
+		 * Set the hyphen text or object to use as a hyphen marker.
 		 * @param Mixed $hyphen either a Syllable_Hyphen_Interface or a string, which is turned into a Syllable_Hyphen_Text
 		 */
 		public function setHyphen($hyphen) {
@@ -91,7 +110,7 @@
 		}
 
 		/**
-		 *
+		 * Get the current hyphen object.
 		 * @return Syllable_Hyphen_Interface hyphen
 		 */
 		public function getHyphen() {
@@ -147,6 +166,11 @@
 			return $this->Source;
 		}
 
+		/**
+		 * Split a single word on where the hyphenation would go.
+		 * @param string $text
+		 * @return array
+		 */
 		public function splitWord($word) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
@@ -156,6 +180,11 @@
 			return $this->parseWord($word);
 		}
 
+		/**
+		 * Split a text on where the hyphenation would go.
+		 * @param string $text
+		 * @return array
+		 */
 		public function splitText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
@@ -195,16 +224,32 @@
 			return $parts;
 		}
 
+		/**
+		 * Hyphenate a single word.
+		 * @param string $html
+		 * @return string
+		 */
 		public function hyphenateWord($word) {
 			$parts = $this->splitWord($word);
 			return $this->Hyphen->joinText($parts);
 		}
 
+		/**
+		 * Hyphenate all words in the plain text.
+		 * @param string $html
+		 * @return string
+		 */
 		public function hyphenateText($text) {
 			$parts = $this->splitText($text);
 			return $this->Hyphen->joinText($parts);
 		}
 
+		/**
+		 * Hyphenate all readable text in the HTML, excluding HTML tags and
+		 * attributes.
+		 * @param string $html
+		 * @return string
+		 */
 		public function hyphenateHtml($html) {
 			$dom = new DOMDocument();
 			$dom->resolveExternals = true;
@@ -215,6 +260,10 @@
 			return $dom->saveHTML();
 		}
 
+		/**
+		 * Add hyphenation to the DOM nodes.
+		 * @param DOMNode $node
+		 */
 		private function hyphenateHtmlDom(DOMNode $node) {
 			if ($node->hasChildNodes()) {
 				foreach ($node->childNodes as $child) {
@@ -227,7 +276,14 @@
 				$this->Hyphen->joinHtmlDom($parts, $node);
 			}
 		}
-		
+
+		/**
+		 * Count the number of syllables in the text and return a map with
+		 * syllable count as key and number of words for that syllable count as
+		 * the value.
+		 * @param string $text
+		 * @return array
+		 */
 		public function histogramText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
@@ -248,7 +304,12 @@
 			
 			return $counts;
 		}
-		
+
+		/**
+		 * Count the number of words in the text.
+		 * @param string $text
+		 * @return int
+		 */
 		public function countWordsText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
@@ -264,7 +325,12 @@
 			
 			return $count;
 		}
-		
+
+		/**
+		 * Count the number of polysyllables in the text.
+		 * @param string $text
+		 * @return int
+		 */
 		public function countPolysyllablesText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?

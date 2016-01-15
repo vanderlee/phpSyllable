@@ -19,7 +19,7 @@
 		<style>
 			body {
 				font-family:			"Segoe UI", Verdana, Helvetica, Arial, sans-serif;
-				font-size:				11px;
+				font-size:				13px;
 				padding:				3em 8em 1em 4em;
 			}
 
@@ -51,17 +51,38 @@
 				text-align:				justify;
 			}
 
-			h1,
-			h2 {
-				background:				black;
-				color:					white;
-				padding:				.2em .4em;
+			p {
+				margin:					.4em 0 1.2em .8em;
+			}
+
+			h1, h2, h3, h4 {
+				margin-top:					1.6em;
+				margin-bottom:				.4em;
+			}
+
+			h1, h2 {
+				border-top-left-radius:		1em;
+				border-top-right-radius:	2em;
+				padding:					.2em .4em .2em .8em;
+				background:					#34495e;
+				color:						white;
 			}
 			h1 {
-				margin-top:				1em;
+				margin-top:				2em;
 			}
 			h2 {
-				background:				gray;
+				background:				#95a5a6;
+			}
+			h3 {
+				border-bottom:			thin solid #95a5a6;
+				margin-left:			.4em;
+			}
+			h4 {
+				margin:					.4em 0 .2em 0;
+			}
+
+			ul, ol {
+				padding-left:		2em;
 			}
 
 			hr {
@@ -153,6 +174,8 @@
 					});
 				}
 
+				$('.year').text((new Date).getFullYear());
+
 				// extract html fragments
 				$('div.prettyprint, span.prettyprint').each(function() {
 					visualizeElement(this, 'HTML');
@@ -193,38 +216,10 @@
 
 		<div id="book">
 			<div id="readme"></div>
-
-			<h1>Examples</h1>
-			<div id="examples" class="chapter">
-				See the included index.php file for a working example.
-				<script class="prettyprint" type="text/php">
-					// Setup the autoloader (if needed)
-					require_once dirname(__FILE__) . '/classes/autoloader.php';
-					
-					// Create a new instance for the language
-					$syllable = new Syllable('en-us');
-					
-					// Set the directory where the .tex files are stored
-					$syllable->getSource()->setPath(dirname(__FILE__).'/languages');
-					
-					// Set the directory where Syllable can store cache files
-					$syllable->getCache()->setPath(dirname(__FILE__).'/cache');					
-					
-					// Set the hyphen style. In this case, the &shy; HTML entity
-					// for HTML (falls back to '-' for text)
-					$syllable->setHyphen(new Syllable_Hyphen_Soft);
-					
-					// Set the treshold (sensitivity)
-					$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-					
-					// Output hyphenated text
-					echo $syllable->hyphenateText('Provide your own paragraphs...');
-				</script>
-			</div>
 		</div>
 		
 		<div id="footer">
-			Copyright &copy; 2010-2015 Martijn van der Lee. MIT Open Source license applies.
+			Copyright &copy; <span class="year">2015</span> Martijn van der Lee. MIT Open Source license applies.
 		</div>
 	</body>
 </html>

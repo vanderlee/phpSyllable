@@ -4,7 +4,7 @@ Version 1.4.2
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
-Copyright &copy; 2011-2015 Martijn van der Lee.
+Copyright &copy; 2011-2016 Martijn van der Lee.
 MIT Open Source license applies.
 
 Introduction
@@ -23,8 +23,93 @@ Language sources: http://tug.org/tex-hyphen/#languages
 
 Supports PHP 5.2 and up, so you can use it on older servers.
 
+Quick start
+-----------
+Just include phpSyllable in your project, set up the autoloader to the classes
+directory and instantiate yourself a Sylllable class.
+
+	$syllable = new Syllable('en-us');
+	echo $syllable->hyphenateText('Provide a plethora of paragraphs');
+
+`Syllable` class reference
+--------------------------
+The following is an incomplete list, containing only the most common methods.
+For a complete documentation of all classes, read the generated [PHPDoc](doc).
+
+### public static __construct(  $language = 'en',  $hyphen = null )
+Create a new Syllable class, with defaults
+
+### public static setCacheDir(  $dir )
+Set the directory where compiled language files may be stored.
+Default to the `cache` subdirectory of the current directory.
+
+### public static setLanguageDir(  $dir )
+Set the directory where language source files can be found.
+Default to the `languages` subdirectory of the current directory.
+
+### public setLanguage(  $language )
+Set the language whose rules will be used for hyphenation.
+
+### public setHyphen( Mixed $hyphen )
+Set the hyphen text or object to use as a hyphen marker.
+
+### public array splitWord(  $word )
+Split a single word on where the hyphenation would go.
+
+### public array splitText(  $text )
+Split a text on where the hyphenation would go.
+
+### public string hyphenateWord(  $word )
+Hyphenate a single word.
+
+### public string hyphenateText(  $text )
+Hyphenate all words in the plain text.
+
+### public string hyphenateHtml(  $html )
+Hyphenate all readable text in the HTML, excluding HTML tags and attributes.
+
+### public array histogramText(  $text )
+Count the number of syllables in the text and return a map with
+syllable count as key and number of words for that syllable count as
+the value.
+
+### public integer countWordsText(  $text )
+Count the number of words in the text.
+
+### public integer countPolysyllablesText(  $text )
+Count the number of polysyllables in the text.
+
+Example
+-------
+See the included [demo.php](demo.php) file for a working example.
+
+	// Setup the autoloader (if needed)
+	require_once dirname(__FILE__) . '/classes/autoloader.php';
+
+	// Create a new instance for the language
+	$syllable = new Syllable('en-us');
+
+	// Set the directory where the .tex files are stored
+	$syllable->getSource()->setPath(__DIR__ . '/languages');
+
+	// Set the directory where Syllable can store cache files
+	$syllable->getCache()->setPath(__DIR__ . '/cache');
+
+	// Set the hyphen style. In this case, the &shy; HTML entity
+	// for HTML (falls back to '-' for text)
+	$syllable->setHyphen(new Syllable_Hyphen_Soft);
+
+	// Set the treshold (sensitivity)
+	$syllable->setTreshold(Syllable::TRESHOLD_MOST);
+
+	// Output hyphenated text
+	echo $syllable->hyphenateText('Provide your own paragraphs...');
+
 Changes
 -------
+1.4.3
+-	Improved documentation
+
 1.4.2
 -	Updated spanish language files.
 -	Initial PHPDoc.
