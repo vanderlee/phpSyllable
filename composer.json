@@ -1,0 +1,16 @@
+{
+	"name": "vanderlee/syllable",
+	"description": "Text syllable splitting and hyphenation using Frank M. Liang's TeX algorithm.",
+	"type": "library",
+	"keywords": ["syllable", "hyphenation", "language", "locale", "hyphen", "dash", "words", "text", "syllables", "split", "hyphenate"],
+	"homepage": "https://github.com/vanderlee/phpSyllable",
+	"license": "MIT",
+	"support": {
+		"issues": "https://github.com/vanderlee/phpSyllable/issues",
+		"source": "https://github.com/vanderlee/phpSyllable/"
+	},
+	"require": {
+		"php": ">=5.3.0"
+	}
+}
+
