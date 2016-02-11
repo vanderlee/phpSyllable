@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.4.2
+Version 1.4.4
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
@@ -107,6 +107,9 @@ See the included [demo.php](demo.php) file for a working example.
 
 Changes
 -------
+1.4.4
+-	Composer autoloader added
+
 1.4.3
 -	Improved documentation
 
