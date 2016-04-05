@@ -55,12 +55,12 @@
 		 */
 		public function __construct($language = 'en', $hyphen = null) {
 			if (!self::$cache_dir) {
-				self::$cache_dir = __DIR__.'/cache';
+				self::$cache_dir = __DIR__.'/../cache';
 			}
 			$this->setCache(new Syllable_Cache_Json(self::$cache_dir));				
 			
 			if (!self::$language_dir) {
-				self::$language_dir = __DIR__.'/languages';
+				self::$language_dir = __DIR__.'/../languages';
 			}
 						
 			$this->setLanguage($language);

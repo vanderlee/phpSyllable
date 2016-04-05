@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.4.4
+Version 1.4.5
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
