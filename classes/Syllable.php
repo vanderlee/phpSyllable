@@ -38,13 +38,13 @@
 		private $Hyphen;
 
 		private $language;
-		
+
 		private $left_min_hyphen	= 2;
 		private $right_min_hyphen	= 2;
 		private $patterns			= null;
 		private $max_pattern		= null;
 		private $hyphenation		= null;
-		
+
 		private static $cache_dir		= null;
 		private static $language_dir	= null;
 
@@ -57,18 +57,18 @@
 			if (!self::$cache_dir) {
 				self::$cache_dir = __DIR__.'/../cache';
 			}
-			$this->setCache(new Syllable_Cache_Json(self::$cache_dir));				
-			
+			$this->setCache(new Syllable_Cache_Json(self::$cache_dir));
+
 			if (!self::$language_dir) {
 				self::$language_dir = __DIR__.'/../languages';
 			}
-						
+
 			$this->setLanguage($language);
-			
-			if ($hyphen === self::TRESHOLD_MOST) {			
+
+			if ($hyphen === self::TRESHOLD_MOST) {
 				$hyphen = func_get_arg(2);
 			}
-			
+
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
 		}
 
@@ -95,7 +95,7 @@
 		 * @param string $language
 		 */
 		public function setLanguage($language) {
-			$this->language = $language;		
+			$this->language = $language;
 			$this->setSource(new Syllable_Source_File($language, self::$language_dir));
 		}
 
@@ -176,7 +176,7 @@
 			mb_regex_encoding('UTF-8');	//@todo upwards?
 
 			$this->loadLanguage();
-			
+
 			return $this->parseWord($word);
 		}
 
@@ -287,9 +287,9 @@
 		public function histogramText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
-			
-			$this->loadLanguage();			
-			
+
+			$this->loadLanguage();
+
 			$counts = array();
 			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split)) {
@@ -301,7 +301,7 @@
 					}
 				}
 			}
-			
+
 			return $counts;
 		}
 
@@ -313,16 +313,16 @@
 		public function countWordsText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
-			
-			$this->loadLanguage();			
-			
+
+			$this->loadLanguage();
+
 			$count = 0;
 			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split)) {
 					++$count;
 				}
 			}
-			
+
 			return $count;
 		}
 
@@ -334,22 +334,22 @@
 		public function countPolysyllablesText($text) {
 			mb_internal_encoding('UTF-8');	//@todo upwards?
 			mb_regex_encoding('UTF-8');	//@todo upwards?
-			
-			$this->loadLanguage();			
-			
+
+			$this->loadLanguage();
+
 			$count = 0;
 			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split) && count($this->parseWord($split)) >= 3) {
 					++$count;
 				}
 			}
-			
+
 			return $count;
 		}
 
 		private function loadLanguage() {
 			$loaded = false;
-			
+
 			$cache = $this->getCache();
 			if ($cache !== null) {
 				$cache->open($this->language);
@@ -365,11 +365,11 @@
 					$this->hyphenation		= $cache->hyphenation;
 					$this->left_min_hyphen	= $cache->left_min_hyphen;
 					$this->right_min_hyphen	= $cache->right_min_hyphen;
-					
+
 					$loaded = true;
 				 }
 			}
-			
+
 			if (!$loaded) {
                 $source = $this->getSource();
 				$this->patterns			= $source->getPatterns();
@@ -383,7 +383,7 @@
                     $this->left_min_hyphen	= $minHyphens[0];
                     $this->right_min_hyphen	= $minHyphens[1];
                 }
-                
+
                 if ($cache !== null) {
                     $cache->version             = self::CACHE_VERSION;
                     $cache->patterns			= $this->patterns;
@@ -404,7 +404,7 @@
          * @param string $word the word to be split.
          * @return array array of syllables.
          */
-		private function parseWord($word) {
+		protected function parseWord($word) {
 			$word_length = mb_strlen($word);
 
 			// Is this word smaller than the miminal length requirement?
@@ -431,7 +431,7 @@
 					$max_length = $text_length - $start;
 				}
 				for ($length = 1; $length <= $max_length; ++$length) {
-					$subword = mb_substr($text, $start, $length);				
+					$subword = mb_substr($text, $start, $length);
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
 						$scores_length = $length + 1;
@@ -453,7 +453,7 @@
 					$score	= (int)$before[$i];
 					if ($score & 1) {	// only odd
 						//$part .= $score; // debugging
-						$parts[] = $part;	
+						$parts[] = $part;
 						$part = '';
 					}
 				}
