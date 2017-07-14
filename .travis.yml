@@ -8,10 +8,10 @@ php:
   - 7.1
   - hhvm
 matrix:
-	allow_failures:
-		- php: hhvm    
     include:
       - php: "5.3"
         dist: precise
+    allow_failures:
+      - php: hhvm    
 before_script:
-    - mkdir -p cache  
+  - mkdir -p cache  
