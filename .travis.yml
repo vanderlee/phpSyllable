@@ -10,8 +10,6 @@ php:
 matrix:
     include:
       - php: "5.3"
-        dist: precise  
-      - php: "5.2"
-        dist: precise  
+        dist: precise
 before_script:
   - mkdir -p cache
