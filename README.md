@@ -1,10 +1,10 @@
 Syllable
 ========
-Version 1.4.5
+Version 1.4.6
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
-Copyright &copy; 2011-2016 Martijn van der Lee.
+Copyright &copy; 2011-2017 Martijn van der Lee.
 MIT Open Source license applies.
 
 Introduction
@@ -52,6 +52,16 @@ Set the language whose rules will be used for hyphenation.
 
 ### public setHyphen( Mixed $hyphen )
 Set the hyphen text or object to use as a hyphen marker.
+
+### public getHyphen( ) : Syllable_Hyphen_Interface
+Get the hyphen object used as a hyphen marker.
+
+### public setMinWordLength( integer $length = 0 )
+Set the minimum length required for a word to be hyphenated.
+Any words with less characters than this length will not be hyphenated.
+
+### public getMinWordLength( ) : int
+Get the minimum length required for a word to be hyphenated.
 
 ### public array splitWord(  $word )
 Split a single word on where the hyphenation would go.
@@ -107,6 +117,13 @@ See the included [demo.php](demo.php) file for a working example.
 
 Changes
 -------
+1.4.6
+-	Added `setMinWordLength($length)` and `getMinWordLength()` to limit
+	hyphenation to words with at least the specified number of characters.
+
+1.4.5
+-	Fixes for composer.
+
 1.4.4
 -	Composer autoloader added
 

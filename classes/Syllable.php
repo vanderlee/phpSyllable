@@ -36,7 +36,15 @@
 		 * @var Syllable_Hyphen_Interface
 		 */
 		private $Hyphen;
+		
+		/**
+		 * @var integer
+		 */
+		private $min_word_length	= 0;		
 
+		/**
+		 * @var string
+		 */
 		private $language;
 		
 		private $left_min_hyphen	= 2;
@@ -166,6 +174,21 @@
 			return $this->Source;
 		}
 
+		/**
+		 * Words need to contain at least this many character to be hyphenated.
+		 * @param integer $length
+		 */
+		public function setMinWordLength($length = 0) {
+			$this->min_word_length = $length;
+		}
+		
+		/**
+		 * @return integer
+		 */
+		public function getMinWordLength() {
+			return $this->min_word_length;
+		}
+		
 		/**
 		 * Split a single word on where the hyphenation would go.
 		 * @param string $text
@@ -408,7 +431,8 @@
 			$word_length = mb_strlen($word);
 
 			// Is this word smaller than the miminal length requirement?
-			if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen) {
+			if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen
+			 || $word_length < $this->min_word_length) {
 				return array($word);
 			}
 

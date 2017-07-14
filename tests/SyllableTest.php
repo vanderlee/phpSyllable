@@ -162,6 +162,35 @@ class SyllableTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @covers Syllable::hyphenateText
+	 * @todo   Implement testHyphenateText().
+	 */
+	public function testMinWordLength() {
+		$this->object->setHyphen('-');
+		$this->object->setLanguage('en-us');
+		
+		$this->assertEquals('I am the same thing en-core in-stead im-poster ven-er-a-ble', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+		
+		$this->object->setMinWordLength(6);
+		$this->assertEquals('I am the same thing en-core in-stead im-poster ven-er-a-ble', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+		
+		$this->object->setMinWordLength(7);
+		$this->assertEquals('I am the same thing encore in-stead im-poster ven-er-a-ble', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+		
+		$this->object->setMinWordLength(8);
+		$this->assertEquals('I am the same thing encore instead im-poster ven-er-a-ble', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+		
+		$this->object->setMinWordLength(9);
+		$this->assertEquals('I am the same thing encore instead imposter ven-er-a-ble', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+		
+		$this->object->setMinWordLength(10);
+		$this->assertEquals('I am the same thing encore instead imposter venerable', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+		
+		$this->object->setMinWordLength();
+		$this->assertEquals('I am the same thing en-core in-stead im-poster ven-er-a-ble', $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+	}
+
+	/**
 	 * @covers Syllable::hyphenateHtml
 	 */
 	public function testHyphenateHtml() {
