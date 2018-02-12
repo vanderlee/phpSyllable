@@ -340,9 +340,29 @@
 			$this->loadLanguage();			
 			
 			$count = 0;
-			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
-				if (mb_strlen($split)) {
+			foreach (mb_split('[^\'[:alpha:]]+', $text) as $word) {
+				if (mb_strlen($word)) {
 					++$count;
+				}
+			}
+			
+			return $count;
+		}
+		/**
+		 * Count the number of syllables in the text.
+		 * @param string $text
+		 * @return int
+		 */
+		public function countSyllablesText($text) {
+			mb_internal_encoding('UTF-8');	//@todo upwards?
+			mb_regex_encoding('UTF-8');	//@todo upwards?
+			
+			$this->loadLanguage();			
+			
+			$count = 0;
+			foreach (mb_split('[^\'[:alpha:]]+', $text) as $word) {
+				if (mb_strlen($word)) {
+					$count += count($this->parseWord($word));
 				}
 			}
 			

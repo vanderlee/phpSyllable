@@ -1,10 +1,10 @@
 Syllable
 ========
-Version 1.4.6
+Version 1.4.7
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
 
-Copyright &copy; 2011-2017 Martijn van der Lee.
+Copyright &copy; 2011-2018 Martijn van der Lee.
 MIT Open Source license applies.
 
 Introduction
@@ -86,8 +86,11 @@ the value.
 ### public integer countWordsText(  $text )
 Count the number of words in the text.
 
+### public integer countSyllablesText(  $text )
+Count the number of syllables in the text.
+
 ### public integer countPolysyllablesText(  $text )
-Count the number of polysyllables in the text.
+Count the number of polysyllables (words with 3 or more syllables) in the text.
 
 Example
 -------
