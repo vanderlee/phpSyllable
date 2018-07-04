@@ -12,13 +12,18 @@ class SyllableTest extends PHPUnit\Framework\TestCase {
 	 * This method is called before a test is executed.
 	 */
 	protected function setUp() {
-		Syllable::setCacheDir(realpath('cache'));
-		Syllable::setLanguageDir(realpath('languages'));
+		Syllable::setCacheDir(realpath(__DIR__.'/../cache'));
+		Syllable::setLanguageDir(realpath(__DIR__.'/../languages'));
+
+        // Make sure the cache dir exists for our tests.
+        if (!file_exists(__DIR__.'/../cache')) {
+            mkdir(__DIR__.'/../cache');
+        }
 		
 		$this->object = new Syllable;
 	}
 
-	/**
+    /**
 	 * @covers Syllable::setLanguage
 	 * @todo   Implement testSetLanguage().
 	 */
