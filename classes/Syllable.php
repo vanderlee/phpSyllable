@@ -28,7 +28,7 @@
 		private	$Cache;
 
 		/**
-		 * @var Syllable_Cache_Interface
+		 * @var Syllable_Source_Interface
 		 */
 		private	$Source;
 
@@ -129,7 +129,7 @@
 		 * Set the treshold.
 		 * This feature is deprecated as it was based on misinterpretation of
 		 * the algorithm.
-		 * @param type $treshold
+		 * @param int $treshold
 		 * @deprecated since version 1.2
 		 */
 		public function setTreshold($treshold = self::TRESHOLD_MOST) {
@@ -191,7 +191,7 @@
 		
 		/**
 		 * Split a single word on where the hyphenation would go.
-		 * @param string $text
+		 * @param string $word
 		 * @return array
 		 */
 		public function splitWord($word) {
@@ -249,7 +249,7 @@
 
 		/**
 		 * Hyphenate a single word.
-		 * @param string $html
+		 * @param string $word
 		 * @return string
 		 */
 		public function hyphenateWord($word) {
@@ -259,7 +259,7 @@
 
 		/**
 		 * Hyphenate all words in the plain text.
-		 * @param string $html
+		 * @param string $text
 		 * @return string
 		 */
 		public function hyphenateText($text) {
