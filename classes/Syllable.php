@@ -53,8 +53,9 @@
 		private $max_pattern		= null;
 		private $hyphenation		= null;
 		
-		private static $cache_dir		= null;
-		private static $language_dir	= null;
+		private static $cache_dir		 = null;
+		private static $language_dir	 = null;
+		private static $multiby_encoding = true; // true per Default so we aint BC
 
 		/**
 		 * Create a new Syllable class, with defaults
@@ -97,6 +98,15 @@
 		public static function setLanguageDir($dir) {
 			self::$language_dir = $dir;
 		}
+
+        /**
+         * Should mb_* functions used to change the current charset environment.
+         *
+         * @param bool $enabled if true it will use mb_* functions to change charset behaviour.
+         */
+		public static function setUseMultibyteEncoding($enabled) {
+		    self::$multiby_encoding = $enabled;
+        }
 
 		/**
 		 * Set the language whose rules will be used for hyphenation.
@@ -195,8 +205,10 @@
 		 * @return array
 		 */
 		public function splitWord($word) {
-			mb_internal_encoding('UTF-8');	//@todo upwards?
-			mb_regex_encoding('UTF-8');	//@todo upwards?
+            if (self::$multiby_encoding) {
+                mb_internal_encoding('UTF-8');	//@todo upwards?
+                mb_regex_encoding('UTF-8');	//@todo upwards?
+            }
 
 			$this->loadLanguage();
 			
@@ -209,8 +221,10 @@
 		 * @return array
 		 */
 		public function splitText($text) {
-			mb_internal_encoding('UTF-8');	//@todo upwards?
-			mb_regex_encoding('UTF-8');	//@todo upwards?
+            if (self::$multiby_encoding) {
+                mb_internal_encoding('UTF-8');	//@todo upwards?
+                mb_regex_encoding('UTF-8');	//@todo upwards?
+            }
 
 			$this->loadLanguage();
 
@@ -308,8 +322,10 @@
 		 * @return array
 		 */
 		public function histogramText($text) {
-			mb_internal_encoding('UTF-8');	//@todo upwards?
-			mb_regex_encoding('UTF-8');	//@todo upwards?
+            if (self::$multiby_encoding) {
+                mb_internal_encoding('UTF-8');	//@todo upwards?
+                mb_regex_encoding('UTF-8');	//@todo upwards?
+            }
 			
 			$this->loadLanguage();			
 			
@@ -334,8 +350,10 @@
 		 * @return int
 		 */
 		public function countWordsText($text) {
-			mb_internal_encoding('UTF-8');	//@todo upwards?
-			mb_regex_encoding('UTF-8');	//@todo upwards?
+            if (self::$multiby_encoding) {
+                mb_internal_encoding('UTF-8');	//@todo upwards?
+                mb_regex_encoding('UTF-8');	//@todo upwards?
+            }
 			
 			$this->loadLanguage();			
 			
@@ -354,8 +372,10 @@
 		 * @return int
 		 */
 		public function countSyllablesText($text) {
-			mb_internal_encoding('UTF-8');	//@todo upwards?
-			mb_regex_encoding('UTF-8');	//@todo upwards?
+		    if (self::$multiby_encoding) {
+                mb_internal_encoding('UTF-8');	//@todo upwards?
+                mb_regex_encoding('UTF-8');	//@todo upwards?
+            }
 			
 			$this->loadLanguage();			
 			
@@ -375,8 +395,10 @@
 		 * @return int
 		 */
 		public function countPolysyllablesText($text) {
-			mb_internal_encoding('UTF-8');	//@todo upwards?
-			mb_regex_encoding('UTF-8');	//@todo upwards?
+            if (self::$multiby_encoding) {
+                mb_internal_encoding('UTF-8');	//@todo upwards?
+                mb_regex_encoding('UTF-8');	//@todo upwards?
+            }
 			
 			$this->loadLanguage();			
 			
