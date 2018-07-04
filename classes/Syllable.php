@@ -22,6 +22,13 @@
 		 */
 		const TRESHOLD_MOST         = PHP_INT_MAX;
 
+        /**
+         * Defines the HTML FIlter mode for hyphenateHtml()
+         */
+		const HTML_FILTER_MODE_WHITELIST = 1;
+		const HTML_FILTER_MODE_BLACKLIST = 2;
+		const HTML_FILTER_MODE_NONE = 0;
+
 		/**
 		 * @var Syllable_Cache_Interface
 		 */
@@ -36,23 +43,23 @@
 		 * @var Syllable_Hyphen_Interface
 		 */
 		private $Hyphen;
-		
+
 		/**
 		 * @var integer
 		 */
-		private $min_word_length	= 0;		
+		private $min_word_length	= 0;
 
 		/**
 		 * @var string
 		 */
 		private $language;
-		
+
 		private $left_min_hyphen	= 2;
 		private $right_min_hyphen	= 2;
 		private $patterns			= null;
 		private $max_pattern		= null;
 		private $hyphenation		= null;
-		
+
 		private static $cache_dir		= null;
 		private static $language_dir	= null;
 
@@ -65,18 +72,18 @@
 			if (!self::$cache_dir) {
 				self::$cache_dir = __DIR__.'/../cache';
 			}
-			$this->setCache(new Syllable_Cache_Json(self::$cache_dir));				
-			
+			$this->setCache(new Syllable_Cache_Json(self::$cache_dir));
+
 			if (!self::$language_dir) {
 				self::$language_dir = __DIR__.'/../languages';
 			}
-						
+
 			$this->setLanguage($language);
-			
-			if ($hyphen === self::TRESHOLD_MOST) {			
+
+			if ($hyphen === self::TRESHOLD_MOST) {
 				$hyphen = func_get_arg(2);
 			}
-			
+
 			$this->setHyphen($hyphen? $hyphen : new Syllable_Hyphen_Soft());
 		}
 
@@ -103,7 +110,7 @@
 		 * @param string $language
 		 */
 		public function setLanguage($language) {
-			$this->language = $language;		
+			$this->language = $language;
 			$this->setSource(new Syllable_Source_File($language, self::$language_dir));
 		}
 
@@ -181,14 +188,14 @@
 		public function setMinWordLength($length = 0) {
 			$this->min_word_length = $length;
 		}
-		
+
 		/**
 		 * @return integer
 		 */
 		public function getMinWordLength() {
 			return $this->min_word_length;
 		}
-		
+
 		/**
 		 * Split a single word on where the hyphenation would go.
 		 * @param string $text
@@ -199,7 +206,7 @@
 			mb_regex_encoding('UTF-8');	//@todo upwards?
 
 			$this->loadLanguage();
-			
+
 			return $this->parseWord($word);
 		}
 
@@ -267,33 +274,56 @@
 			return $this->Hyphen->joinText($parts);
 		}
 
-		/**
-		 * Hyphenate all readable text in the HTML, excluding HTML tags and
-		 * attributes.
-		 * @param string $html
-		 * @return string
-		 */
-		public function hyphenateHtml($html) {
+        /**
+         * Hyphenate all readable text in the HTML, excluding HTML tags and
+         * attributes.
+         *
+         * The filter mode may be used to exclude the text of certain HTML Nodes.
+         * This could be used to allow <script> Elements.
+         *
+         * @param string $html
+         * @param int    $filter_mode See the corresponding Syllable::HTML_FILTER_MODE_* values
+         * @param array  $filter_args Name of Nodes to Filter
+         *
+         * @return string
+         */
+		public function hyphenateHtml($html, $filter_mode = self::HTML_FILTER_MODE_NONE, $filter_args = array()) {
 			$dom = new DOMDocument();
 			$dom->resolveExternals = true;
 			$dom->loadHTML($html);
 
-			$this->hyphenateHtmlDom($dom);
+			$this->hyphenateHtmlDom($dom, $filter_mode, $filter_args);
 
 			return $dom->saveHTML();
 		}
 
-		/**
-		 * Add hyphenation to the DOM nodes.
-		 * @param DOMNode $node
-		 */
-		private function hyphenateHtmlDom(DOMNode $node) {
+        /**
+         * Add hyphenation to the DOM nodes.
+         *
+         * @param DOMNode $node
+         * @param int     $filter_mode
+         * @param array   $filter_args
+         */
+		private function hyphenateHtmlDom(DOMNode $node, $filter_mode, $filter_args) {
 			if ($node->hasChildNodes()) {
 				foreach ($node->childNodes as $child) {
-					$this->hyphenateHtmlDom($child);
+                    if ($filter_mode === self::HTML_FILTER_MODE_BLACKLIST) {
+                        if (in_array($child->nodeName, $filter_args, true)){
+                            continue;
+                        }
+                    }
+
+					$this->hyphenateHtmlDom($child, $filter_mode, $filter_args);
 				}
 			}
+
 			if ($node instanceof DOMText) {
+                if ($filter_mode === self::HTML_FILTER_MODE_WHITELIST) {
+                    if (!in_array($node->parentNode->nodeName, $filter_args, true)){
+                        return;
+                    }
+                }
+
 				$parts = $this->splitText($node->data);
 
 				$this->Hyphen->joinHtmlDom($parts, $node);
@@ -312,7 +342,7 @@
 			mb_regex_encoding('UTF-8');	//@todo upwards?
 			
 			$this->loadLanguage();			
-			
+
 			$counts = array();
 			foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
 				if (mb_strlen($split)) {
@@ -324,7 +354,7 @@
 					}
 				}
 			}
-			
+
 			return $counts;
 		}
 
@@ -345,7 +375,7 @@
 					++$count;
 				}
 			}
-			
+
 			return $count;
 		}
 		/**
@@ -358,14 +388,14 @@
 			mb_regex_encoding('UTF-8');	//@todo upwards?
 			
 			$this->loadLanguage();			
-			
+
 			$count = 0;
 			foreach (mb_split('[^\'[:alpha:]]+', $text) as $word) {
 				if (mb_strlen($word)) {
 					$count += count($this->parseWord($word));
 				}
 			}
-			
+
 			return $count;
 		}
 
@@ -386,13 +416,13 @@
 					++$count;
 				}
 			}
-			
+
 			return $count;
 		}
 
 		private function loadLanguage() {
 			$loaded = false;
-			
+
 			$cache = $this->getCache();
 			if ($cache !== null) {
 				$cache->open($this->language);
@@ -408,11 +438,11 @@
 					$this->hyphenation		= $cache->hyphenation;
 					$this->left_min_hyphen	= $cache->left_min_hyphen;
 					$this->right_min_hyphen	= $cache->right_min_hyphen;
-					
+
 					$loaded = true;
 				 }
 			}
-			
+
 			if (!$loaded) {
                 $source = $this->getSource();
 				$this->patterns			= $source->getPatterns();
@@ -426,7 +456,7 @@
                     $this->left_min_hyphen	= $minHyphens[0];
                     $this->right_min_hyphen	= $minHyphens[1];
                 }
-                
+
                 if ($cache !== null) {
                     $cache->version             = self::CACHE_VERSION;
                     $cache->patterns			= $this->patterns;
@@ -475,7 +505,7 @@
 					$max_length = $text_length - $start;
 				}
 				for ($length = 1; $length <= $max_length; ++$length) {
-					$subword = mb_substr($text, $start, $length);				
+					$subword = mb_substr($text, $start, $length);
 					if (isset($this->patterns[$subword])) {
 						$scores = $this->patterns[$subword];
 						$scores_length = $length + 1;
@@ -497,7 +527,7 @@
 					$score	= (int)$before[$i];
 					if ($score & 1) {	// only odd
 						//$part .= $score; // debugging
-						$parts[] = $part;	
+						$parts[] = $part;
 						$part = '';
 					}
 				}
