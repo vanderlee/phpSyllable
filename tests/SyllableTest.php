@@ -250,4 +250,38 @@ class SyllableTest extends PHPUnit\Framework\TestCase {
 		$this->assertSame(0, $this->object->countSyllablesText('.'));
 		$this->assertSame(1+2+2+3+5+7, $this->object->countSyllablesText('1 is wonder welcome furthermore sophisticated extravagantically.'));
 	}
+
+	public function testHypenateHtmlFilterModeBlacklist(){
+        $this->object->setLanguage('en-us');
+        $this->object->setHyphen('-');
+
+        // Do not Hypenate content within <b>
+        $this->assertEquals(
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text</p></body></html>'
+            . "\n",
+            $this->object->hyphenateHtml(
+                'Ridiculously <b class="unsplittable">complicated</b> metatext',
+                Syllable::HTML_FILTER_MODE_BLACKLIST,
+                array('b')
+            )
+        );
+    }
+
+    public function testHypenateHtmlFilterModeWhitelist(){
+        $this->object->setLanguage('en-us');
+        $this->object->setHyphen('-');
+
+        // Only Hypenate content within <b>
+        $this->assertEquals(
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            . "\n" . '<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext</p></body></html>'
+            . "\n",
+            $this->object->hyphenateHtml(
+                'Ridiculously <b class="unsplittable">complicated</b> metatext',
+                Syllable::HTML_FILTER_MODE_WHITELIST,
+                array('b')
+            )
+        );
+    }
 }
