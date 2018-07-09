@@ -47,6 +47,11 @@ Default to the `cache` subdirectory of the current directory.
 Set the directory where language source files can be found.
 Default to the `languages` subdirectory of the current directory.
 
+### public static function setEncoding(  $encoding = null  )
+Specify the character encoding to use or disable character encoding handling
+completely by specifying `null` as encoding. The default encoding is `UTF-8`,
+which will work in most situations.
+
 ### public setLanguage(  $language )
 Set the language whose rules will be used for hyphenation.
 
@@ -91,6 +96,34 @@ Count the number of syllables in the text.
 
 ### public integer countPolysyllablesText(  $text )
 Count the number of polysyllables (words with 3 or more syllables) in the text.
+
+### public function excludeAll()
+Exclude all HTML elements from hyphenation, allowing explicit whitelisting.
+
+###	public function excludeElement(  $elements  )
+Exclude from hyphenation all HTML content within the given elements.
+
+###	public function excludeAttribute(  $attributes, $value = null  )
+Exclude from hyphenation all HTML content within elements with the given
+attributes. If a value is specified, only those elements with attributes with
+that specific value are excluded.
+
+###	public function excludeXpath(  $queries  )
+Exclude from hyphenation all HTML content within elements matching the
+specified xpath queries.
+
+###	public function includeElement(  $elements  )
+Hyphenate all HTML content within the given elements,
+ignoring any rules which might exclude them from hyphenation.
+
+###	public function includeAttribute(  $attributes, $value = null  )
+Hyphenate all HTML content within elements with the given attributes. If a value
+is specified, only those elements with attributes with that specific value are
+included, ignoring any rules which might exclude them from hyphenation.
+
+###	public function includeXpath(  $queries  )
+Hyphenate all HTML content within elements matching the specified xpath queries,
+ignoring any rules which might exclude them from hyphenation.
 
 Example
 -------

@@ -62,6 +62,8 @@ class Syllable {
 	private static $encoding = 'UTF-8';
 	private static $cache_dir = null;
 	private static $language_dir = null;
+	private $excludes = array();
+	private $includes = array();
 
 	/**
 	 * Create a new Syllable class, with defaults
@@ -228,6 +230,143 @@ class Syllable {
 	}
 
 	/**
+	 * Ensure the language is loaded into cache
+	 */
+	private function loadLanguage()
+	{
+		$loaded = false;
+
+		$cache = $this->getCache();
+		if ($cache !== null) {
+			$cache->open($this->language);
+
+			if (isset($cache->version) && $cache->version == self::CACHE_VERSION && isset($cache->patterns) && isset($cache->max_pattern) && isset($cache->hyphenation) && isset($cache->left_min_hyphen) && isset($cache->right_min_hyphen)) {
+				$this->patterns = $cache->patterns;
+				$this->max_pattern = $cache->max_pattern;
+				$this->hyphenation = $cache->hyphenation;
+				$this->left_min_hyphen = $cache->left_min_hyphen;
+				$this->right_min_hyphen = $cache->right_min_hyphen;
+
+				$loaded = true;
+			}
+		}
+
+		if (!$loaded) {
+			$source = $this->getSource();
+			$this->patterns = $source->getPatterns();
+			$this->max_pattern = $source->getMaxPattern();
+			$this->hyphenation = $source->getHyphentations();
+
+			$this->left_min_hyphen = 2;
+			$this->right_min_hyphen = 2;
+			$minHyphens = $source->getMinHyphens();
+			if ($minHyphens) {
+				$this->left_min_hyphen = $minHyphens[0];
+				$this->right_min_hyphen = $minHyphens[1];
+			}
+
+			if ($cache !== null) {
+				$cache->version = self::CACHE_VERSION;
+				$cache->patterns = $this->patterns;
+				$cache->max_pattern = $this->max_pattern;
+				$cache->hyphenation = $this->hyphenation;
+				$cache->left_min_hyphen = $this->left_min_hyphen;
+				$cache->right_min_hyphen = $this->right_min_hyphen;
+
+				$cache->close();
+			}
+
+			$loaded = true;
+		}
+	}
+
+	/**
+	 * Exclude all elements
+	 */
+	public function excludeAll()
+	{
+		$this->excludes = array('//*');
+	}
+
+	/**
+	 * Add one or more elements to exclude from HTML
+	 * 
+	 * @param string|string[] $elements
+	 */
+	public function excludeElement($elements)
+	{
+		foreach ((array) $elements as $element) {
+			$this->excludes[] = '//' . $element;
+		}
+	}
+
+	/**
+	 * Add one or more elements with attributes to exclude from HTML
+	 * 
+	 * @param string|string[] $attribute
+	 * @param string|null $value
+	 */
+	public function excludeAttribute($attributes, $value = null)
+	{
+		$value = $value === null ? '' : "='{$value}'";
+
+		foreach ((array) $attributes as $attribute) {
+			$this->excludes[] = '//*[@' . $attribute . $value . ']';
+		}
+	}
+
+	/**
+	 * Add one or more xpath queries to exclude from HTML
+	 * 
+	 * @param string|string[] $excludes
+	 */
+	public function excludeXpath($queries)
+	{
+		foreach ((array) $queries as $query) {
+			$this->excludes[] = $query;
+		}
+	}
+
+	/**
+	 * Add one or more elements to include from HTML
+	 * 
+	 * @param string|string[] $elements
+	 */
+	public function includeElement($elements)
+	{
+		foreach ((array) $elements as $elements) {
+			$this->includes[] = '//' . $elements;
+		}
+	}
+
+	/**
+	 * Add one or more elements with attributes to include from HTML
+	 * 
+	 * @param string|string[] $attribute
+	 * @param string|null $value
+	 */
+	public function includeAttribute($attributes, $value = null)
+	{
+		$value = $value === null ? '' : "='{$value}'";
+
+		foreach ((array) $attributes as $attribute) {
+			$this->$includes[] = '//*[@' . $attribute . $value . ']';
+		}
+	}
+
+	/**
+	 * Add one or more xpath queries to include from HTML
+	 * 
+	 * @param string|string[] $excludes
+	 */
+	public function includeXpath($queries)
+	{
+		foreach ((array) $queries as $query) {
+			$this->includes[] = $query;
+		}
+	}
+
+	/**
 	 * Split a single word on where the hyphenation would go.
 	 * @param string $word
 	 * @return array
@@ -317,7 +456,12 @@ class Syllable {
 		$dom->resolveExternals = true;
 		$dom->loadHTML($html);
 
-		$this->hyphenateHtmlDom($dom);
+		// filter excludes
+		$xpath = new DOMXPath($dom);
+		$excludedNodes = $this->excludes ? $xpath->query(join('|', $this->excludes)) : null;
+		$includedNodes = $this->includes ? $xpath->query(join('|', $this->includes)) : null;
+
+		$this->hyphenateHtmlDom($dom, $excludedNodes, $includedNodes);
 
 		return $dom->saveHTML();
 	}
@@ -325,19 +469,48 @@ class Syllable {
 	/**
 	 * Add hyphenation to the DOM nodes.
 	 * @param DOMNode $node
+	 * @param DOMNodeList|null $excludeNodes
+	 * @param DOMNodeList|null $includeNodes
+	 * @param boolean $split
 	 */
-	private function hyphenateHtmlDom(DOMNode $node)
+	private function hyphenateHtmlDom(DOMNode $node, $excludeNodes, $includeNodes, $split = true)
 	{
 		if ($node->hasChildNodes()) {
 			foreach ($node->childNodes as $child) {
-				$this->hyphenateHtmlDom($child);
+				$split_child = $split;
+				if ($excludeNodes && self::hasNode($child, $excludeNodes)) {
+					$split_child = false;
+				}
+				if ($includeNodes && self::hasNode($child, $includeNodes)) {
+					$split_child = true;
+				}
+
+				$this->hyphenateHtmlDom($child, $excludeNodes, $includeNodes, $split_child);
 			}
 		}
-		if ($node instanceof DOMText) {
+
+		if ($split && $node instanceof DOMText) {
 			$parts = $this->splitText($node->data);
 
 			$this->Hyphen->joinHtmlDom($parts, $node);
 		}
+	}
+
+	/**
+	 * Test if the node is known
+	 * 
+	 * @param DOMNode $node
+	 * @param DOMNodeList $nodes
+	 * @return boolean
+	 */
+	private static function hasNode(DOMNode $node, DOMNodeList $nodes)
+	{
+		foreach ($nodes as $test) {
+			if ($node->isSameNode($test)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -425,54 +598,6 @@ class Syllable {
 		}
 
 		return $count;
-	}
-
-	private function loadLanguage()
-	{
-		$loaded = false;
-
-		$cache = $this->getCache();
-		if ($cache !== null) {
-			$cache->open($this->language);
-
-			if (isset($cache->version) && $cache->version == self::CACHE_VERSION && isset($cache->patterns) && isset($cache->max_pattern) && isset($cache->hyphenation) && isset($cache->left_min_hyphen) && isset($cache->right_min_hyphen)) {
-				$this->patterns = $cache->patterns;
-				$this->max_pattern = $cache->max_pattern;
-				$this->hyphenation = $cache->hyphenation;
-				$this->left_min_hyphen = $cache->left_min_hyphen;
-				$this->right_min_hyphen = $cache->right_min_hyphen;
-
-				$loaded = true;
-			}
-		}
-
-		if (!$loaded) {
-			$source = $this->getSource();
-			$this->patterns = $source->getPatterns();
-			$this->max_pattern = $source->getMaxPattern();
-			$this->hyphenation = $source->getHyphentations();
-
-			$this->left_min_hyphen = 2;
-			$this->right_min_hyphen = 2;
-			$minHyphens = $source->getMinHyphens();
-			if ($minHyphens) {
-				$this->left_min_hyphen = $minHyphens[0];
-				$this->right_min_hyphen = $minHyphens[1];
-			}
-
-			if ($cache !== null) {
-				$cache->version = self::CACHE_VERSION;
-				$cache->patterns = $this->patterns;
-				$cache->max_pattern = $this->max_pattern;
-				$cache->hyphenation = $this->hyphenation;
-				$cache->left_min_hyphen = $this->left_min_hyphen;
-				$cache->right_min_hyphen = $this->right_min_hyphen;
-
-				$cache->close();
-			}
-
-			$loaded = true;
-		}
 	}
 
 	/**
