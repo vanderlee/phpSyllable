@@ -350,7 +350,7 @@ class Syllable {
 		$value = $value === null ? '' : "='{$value}'";
 
 		foreach ((array) $attributes as $attribute) {
-			$this->$includes[] = '//*[@' . $attribute . $value . ']';
+			$this->includes[] = '//*[@' . $attribute . $value . ']';
 		}
 	}
 
