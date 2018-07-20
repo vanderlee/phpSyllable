@@ -13,5 +13,15 @@ matrix:
         dist: precise
     allow_failures:
       - php: hhvm    
-before_script:
-  - mkdir -p cache  
+
+install:
+  - composer install --no-interaction
+script:
+  - mkdir -p cache
+  - mkdir -p build/logs
+  - php vendor/bin/phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls
+  # or enable logging
+  - travis_retry php vendor/bin/php-coveralls -v
