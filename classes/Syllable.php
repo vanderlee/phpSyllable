@@ -454,7 +454,7 @@ class Syllable {
 	{
 		$dom = new DOMDocument();
 		$dom->resolveExternals = true;
-		$dom->loadHTML($html);
+		$dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
 		// filter excludes
 		$xpath = new DOMXPath($dom);
