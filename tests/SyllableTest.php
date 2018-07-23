@@ -64,12 +64,12 @@ class SyllableTest extends PHPUnit\Framework\TestCase {
 	public function testGetHyphen()
 	{
 		$this->object->setHyphen('-');
-		$this->assertEquals(new Syllable_Hyphen_Text('-'), $this->object->getHyphen());
-		$this->assertNotEquals(new Syllable_Hyphen_Text('+'), $this->object->getHyphen());
+		$this->assertEquals(new Vanderlee\Syllable\Hyphen\Text('-'), $this->object->getHyphen());
+		$this->assertNotEquals(new Vanderlee\Syllable\Hyphen\Text('+'), $this->object->getHyphen());
 
 		$this->object->setHyphen('/');
-		$this->assertEquals(new Syllable_Hyphen_Text('/'), $this->object->getHyphen());
-		$this->assertNotEquals(new Syllable_Hyphen_Text('-'), $this->object->getHyphen());
+		$this->assertEquals(new Vanderlee\Syllable\Hyphen\Text('/'), $this->object->getHyphen());
+		$this->assertNotEquals(new Vanderlee\Syllable\Hyphen\Text('-'), $this->object->getHyphen());
 	}
 
 	/**

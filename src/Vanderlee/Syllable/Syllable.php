@@ -1,5 +1,7 @@
 <?php
 
+namespace Vanderlee\Syllable;
+
 /**
  * Main class
  */
@@ -75,7 +77,7 @@ class Syllable {
 		if (!self::$cache_dir) {
 			self::$cache_dir = __DIR__ . '/../cache';
 		}
-		$this->setCache(new Syllable_Cache_Json(self::$cache_dir));
+		$this->setCache(new Cache\Json(self::$cache_dir));
 
 		if (!self::$language_dir) {
 			self::$language_dir = __DIR__ . '/../languages';
@@ -87,7 +89,7 @@ class Syllable {
 			$hyphen = func_get_arg(2);
 		}
 
-		$this->setHyphen($hyphen ? $hyphen : new Syllable_Hyphen_Soft());
+		$this->setHyphen($hyphen ? $hyphen : new Hyphen\Soft());
 	}
 
 	/**
@@ -128,7 +130,7 @@ class Syllable {
 	public function setLanguage($language)
 	{
 		$this->language = $language;
-		$this->setSource(new Syllable_Source_File($language, self::$language_dir));
+		$this->setSource(new Source\File($language, self::$language_dir));
 	}
 
 	/**
@@ -137,7 +139,7 @@ class Syllable {
 	 */
 	public function setHyphen($hyphen)
 	{
-		$this->Hyphen = ($hyphen instanceof Syllable_Hyphen_Interface) ? $hyphen : new Syllable_Hyphen_Text($hyphen);
+		$this->Hyphen = ($hyphen instanceof Hyphen\Hyphen) ? $hyphen : new Hyphen\Text($hyphen);
 	}
 
 	/**
@@ -176,9 +178,9 @@ class Syllable {
 
 	/**
 	 *
-	 * @param Syllable_Cache_Interface $Cache
+	 * @param \Vanderlee\Syllable\Cache\Cache $Cache
 	 */
-	public function setCache(Syllable_Cache_Interface $Cache = null)
+	public function setCache(Cache\Cache $Cache = null)
 	{
 		$this->Cache = $Cache;
 	}
@@ -191,7 +193,7 @@ class Syllable {
 		return $this->Cache;
 	}
 
-	public function setSource(Syllable_Source_Interface $Source)
+	public function setSource(Source\Source $Source)
 	{
 		$this->Source = $Source;
 	}
@@ -452,12 +454,12 @@ class Syllable {
 	 */
 	public function hyphenateHtml($html)
 	{
-		$dom = new DOMDocument();
+		$dom = new \DOMDocument();
 		$dom->resolveExternals = true;
 		$dom->loadHTML($html);
 
 		// filter excludes
-		$xpath = new DOMXPath($dom);
+		$xpath = new \DOMXPath($dom);
 		$excludedNodes = $this->excludes ? $xpath->query(join('|', $this->excludes)) : null;
 		$includedNodes = $this->includes ? $xpath->query(join('|', $this->includes)) : null;
 
@@ -468,12 +470,12 @@ class Syllable {
 
 	/**
 	 * Add hyphenation to the DOM nodes.
-	 * @param DOMNode $node
-	 * @param DOMNodeList|null $excludeNodes
-	 * @param DOMNodeList|null $includeNodes
+	 * @param \DOMNode $node
+	 * @param \DOMNodeList|null $excludeNodes
+	 * @param \DOMNodeList|null $includeNodes
 	 * @param boolean $split
 	 */
-	private function hyphenateHtmlDom(DOMNode $node, $excludeNodes, $includeNodes, $split = true)
+	private function hyphenateHtmlDom(\DOMNode $node, $excludeNodes, $includeNodes, $split = true)
 	{
 		if ($node->hasChildNodes()) {
 			foreach ($node->childNodes as $child) {
@@ -489,7 +491,7 @@ class Syllable {
 			}
 		}
 
-		if ($split && $node instanceof DOMText) {
+		if ($split && $node instanceof \DOMText) {
 			$parts = $this->splitText($node->data);
 
 			$this->Hyphen->joinHtmlDom($parts, $node);
@@ -499,11 +501,11 @@ class Syllable {
 	/**
 	 * Test if the node is known
 	 * 
-	 * @param DOMNode $node
-	 * @param DOMNodeList $nodes
+	 * @param \DOMNode $node
+	 * @param \DOMNodeList $nodes
 	 * @return boolean
 	 */
-	private static function hasNode(DOMNode $node, DOMNodeList $nodes)
+	private static function hasNode(\DOMNode $node, \DOMNodeList $nodes)
 	{
 		foreach ($nodes as $test) {
 			if ($node->isSameNode($test)) {
