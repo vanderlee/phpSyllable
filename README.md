@@ -2,7 +2,7 @@ Syllable
 ========
 Version 1.4.7
 
-[![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg)](https://travis-ci.org/vanderlee/phpSyllable)
+[![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg?branch=master)](https://travis-ci.org/vanderlee/phpSyllable)
 
 Copyright &copy; 2011-2018 Martijn van der Lee.
 MIT Open Source license applies.
