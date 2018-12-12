@@ -6,7 +6,6 @@
  */
 class Syllable_Source_File implements Syllable_Source_Interface
 {
-
     private static $minHyphens = null;
     private $path = null;
     private $language = null;
@@ -46,20 +45,20 @@ class Syllable_Source_File implements Syllable_Source_Interface
     private function loadLanguage()
     {
         if (!$this->loaded) {
-            $this->patterns = array();
+            $this->patterns = [];
             $this->max_pattern_length = 0;
-            $this->hyphenations = array();
+            $this->hyphenations = [];
 
             // parser state
-            $command = FALSE;
-            $braces = FALSE;
+            $command = false;
+            $braces = false;
 
             // parse .tex file
             foreach (file("{$this->path}/hyph-{$this->language}.tex") as $line) {
                 $offset = 0;
                 $strlen_line = mb_strlen($line);
                 while ($offset < $strlen_line) {
-                    $char = $line{$offset};
+                    $char = $line[$offset];
 
                     // %comment
                     if ($char === '%') {
@@ -75,8 +74,8 @@ class Syllable_Source_File implements Syllable_Source_Interface
 
                     // {
                     if ($char === '{') {
-                        $braces = TRUE;
-                        ++$offset;
+                        $braces = true;
+                        $offset++;
                         continue; // next token
                     }
 
@@ -98,10 +97,10 @@ class Syllable_Source_File implements Syllable_Source_Interface
                                                 $numbers .= '0';
                                             }
                                             $pattern .= $char;
-                                            ++$strlen;
+                                            $strlen++;
                                             $expect_number = true;
                                         }
-                                        ++$offset;
+                                        $offset++;
                                     }
                                     if ($expect_number) {
                                         $numbers .= '0';
@@ -128,14 +127,14 @@ class Syllable_Source_File implements Syllable_Source_Interface
 
                     // }
                     if ($char === '}') {
-                        $braces = FALSE;
-                        $command = FALSE;
-                        ++$offset;
+                        $braces = false;
+                        $command = false;
+                        $offset++;
                         continue; // next token
                     }
 
                     // ignorable content, skip one char
-                    ++$offset;
+                    $offset++;
                 }
             }
 
@@ -146,19 +145,21 @@ class Syllable_Source_File implements Syllable_Source_Interface
     public function getHyphentations()
     {
         $this->loadLanguage();
+
         return $this->hyphenations;
     }
 
     public function getMaxPattern()
     {
         $this->loadLanguage();
+
         return $this->max_pattern_length;
     }
 
     public function getPatterns()
     {
         $this->loadLanguage();
+
         return $this->patterns;
     }
-
 }
