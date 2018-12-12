@@ -112,7 +112,7 @@ class Syllable_Source_File implements Syllable_Source_Interface
                                         $this->max_pattern_length = $strlen;
                                     }
                                 }
-                                continue; // next token
+                                continue 2; // next token
                                 break;
 
                             case 'hyphenation':
@@ -121,7 +121,7 @@ class Syllable_Source_File implements Syllable_Source_Interface
                                     $this->hyphenations[$hyphenation] = $m[0];
                                     $offset += strlen($m[0]);
                                 }
-                                continue; // next token
+                                continue 2; // next token
                                 break;
                         }
                     }
