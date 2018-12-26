@@ -166,8 +166,8 @@ class SyllableTest extends PHPUnit\Framework\TestCase {
       ]
     ];
 
-    $this->assertEquals($test1_array, $this->object->splitWords(';Redundant, punctuation')));
-    $this->assertEquals($test2_array, $this->object->splitWords('Inexplicable')));
+    $this->assertEquals($test1_array, $this->object->splitWords(';Redundant, punctuation'));
+    $this->assertEquals($test2_array, $this->object->splitWords('Inexplicable'));
   }
 
 	/**
