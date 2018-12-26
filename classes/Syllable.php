@@ -379,6 +379,26 @@ class Syllable {
 		return $this->parseWord($word);
 	}
 
+  /**
+   * 1. Split the text into an array of words
+   * 2. Split the specific words into arrays of syllables
+   * @param string $text
+   * @return array
+   */
+	public function splitWords(string $text)
+  {
+	  self::initEncoding();
+	  $this->loadLanguage();
+
+	  $text = explode(' ', $text);
+	  $words = [];
+	  foreach ($text as $word) {
+	    $words[] = $this->parseWord($word);
+    }
+
+	  return $words;
+  }
+
 	/**
 	 * Split a text on where the hyphenation would go.
 	 * @param string $text

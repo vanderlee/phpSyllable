@@ -133,6 +133,43 @@ class SyllableTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals(array('In', 'ex', 'plic', 'a', 'ble'), $this->object->splitWord('Inexplicable'));
 	}
 
+  /**
+   * @covers Syllable::splitWords
+   * @todo   Implement testSplitWord()
+   */
+  public function testSplitWords()
+  {
+    $this->object->setHyphen('-');
+    $this->object->setLanguage('en-us');
+
+    $test1_array = [
+      0 => [
+        0 => ';Re',
+        1 => 'dun',
+        2 => 'dant,',
+      ],
+      1 => [
+        3 => 'punc',
+        4 => 'tu',
+        5 => 'a',
+        6 => 'tion...'
+      ]
+    ];
+
+    $test2_array = [
+      0 => [
+        0 => 'In',
+        1 => 'ex',
+        2 => 'plic',
+        3 => 'a',
+        4 => 'ble'
+      ]
+    ];
+
+    $this->assertEquals($test1_array, $this->object->splitWords(';Redundant, punctuation')));
+    $this->assertEquals($test2_array, $this->object->splitWords('Inexplicable')));
+  }
+
 	/**
 	 * @covers Syllable::splitText
 	 * @todo   Implement testSplitText().
