@@ -18,7 +18,7 @@ class Text implements Hyphen {
 
 	public function joinHtmlDom($parts, \DOMNode $node)
 	{
-		$node->data = $this->joinText($parts);
+		$node->textContent = $this->joinText($parts);
 	}
 
 	public function stripHtml($html)

@@ -5,7 +5,7 @@ namespace Vanderlee\Syllable\Cache;
 /**
  * Single-file cache using PHP-native serialization to encode data
  */
-class Serialized extends FileAbstract {
+class Serialized extends File {
 
 	protected function encode($array)
 	{

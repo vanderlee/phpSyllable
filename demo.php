@@ -46,10 +46,12 @@ $languages = array(
 asort($languages);
 
 // phpSyllable code
-require_once __DIR__ . '/src/autoloader.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-$syllable = new Syllable($language);
-$syllable->getCache()->setPath(__DIR__ . '/cache');
+$syllable = new \Vanderlee\Syllable\Syllable($language);
+/** @var \Vanderlee\Syllable\Cache\File $cache */
+$cache = $syllable->getCache();
+$cache->setPath(__DIR__ . '/cache');
 $syllable->getSource()->setPath(__DIR__ . '/languages');
 ?><html>
 	<head>
@@ -109,15 +111,19 @@ $syllable->getSource()->setPath(__DIR__ . '/languages');
 
 		<form method="POST">
 			<div>
-				<select name="language">
-					<?php foreach ($languages as $value => $name) { ?>
-						<option value="<?php echo $value; ?>" <?php echo $value == $language ? 'selected="selected"' : '' ?>><?php echo $name; ?></option>
-					<?php } ?>
-				</select>
-			</div>
+                <label>
+                    <select name="language">
+                        <?php foreach ($languages as $value => $name) { ?>
+                            <option value="<?php echo $value; ?>" <?php echo $value == $language ? 'selected="selected"' : '' ?>><?php echo $name; ?></option>
+                        <?php } ?>
+                    </select>
+                </label>
+            </div>
 			<div>
-				<textarea name="source" cols="80" rows="10"><?php echo $source; ?></textarea>
-			</div>
+                <label>
+                    <textarea name="source" cols="80" rows="10"><?php echo $source; ?></textarea>
+                </label>
+            </div>
 			<div>
 				<button>Hyphenate</button>
 			</div>
@@ -153,7 +159,7 @@ $syllable->getSource()->setPath(__DIR__ . '/languages');
 			<h2>Zero-width spaces</h2>
 			<h5>&amp;#8203; entities</h5>
 			<?php
-			$syllable->setHyphen(new Vanderlee\Syllable\Hyphen\ZeroWidthSpace());
+			$syllable->setHyphen(new \Vanderlee\Syllable\Hyphen\ZeroWidthSpace());
 			echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>
@@ -162,7 +168,7 @@ $syllable->getSource()->setPath(__DIR__ . '/languages');
 			<h2>Dashes</h2>
 			<h5>For pre-school reading</h5>
 			<?php
-			$syllable->setHyphen(new Vanderlee\Syllable\Hyphen\Dash());
+			$syllable->setHyphen(new \Vanderlee\Syllable\Hyphen\Dash());
 			echo nl2br($syllable->hyphenateText($source));
 			?>
 		</div>

@@ -19,7 +19,7 @@ class Entity implements Hyphen {
 	public function joinHtmlDom($parts, \DOMNode $node)
 	{
 		if (($p = count($parts)) > 1) {
-			$node->data = $parts[--$p];
+			$node->textContent = $parts[--$p];
 			while (--$p >= 0) {
 				$node = $node->parentNode->insertBefore($node->ownerDocument->createEntityReference($this->entity), $node);
 				$node = $node->parentNode->insertBefore($node->ownerDocument->createTextNode($parts[$p]), $node);

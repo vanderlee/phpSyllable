@@ -5,7 +5,7 @@ namespace Vanderlee\Syllable\Cache;
 /**
  * Single-file cache using JSON format to encode data
  */
-class Json extends FileAbstract {
+class Json extends File {
 
 	protected function encode($array)
 	{

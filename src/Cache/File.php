@@ -2,7 +2,7 @@
 
 namespace Vanderlee\Syllable\Cache;
 
-abstract class FileAbstract implements Cache {
+abstract class File implements Cache {
 
 	private static $language = null;
 	private static $path = null;
@@ -40,9 +40,9 @@ abstract class FileAbstract implements Cache {
 			self::$language = $language;
 			self::$data = null;
 
-			$file = $this->filename($language);
+			$file = $this->filename();
 			if (is_file($file)) {
-				self::$data = $this->decode(file_get_contents($file), true);
+				self::$data = $this->decode(file_get_contents($file));
 			}
 		}
 	}

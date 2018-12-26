@@ -114,7 +114,6 @@ class File implements Source {
 									}
 								}
 								continue; // next token
-								break;
 
 							case 'hyphenation':
 								if (preg_match('~^\S+~u', substr($line, $offset), $m) === 1) {
@@ -123,7 +122,6 @@ class File implements Source {
 									$offset += strlen($m[0]);
 								}
 								continue; // next token
-								break;
 						}
 					}
 
