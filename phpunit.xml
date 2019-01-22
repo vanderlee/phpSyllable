@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
   <testsuites>
-    <testsuite name="phpSyllable">
+    <testsuite name="syllable">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
+
   <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">classes/</directory>
+    <whitelist>
+      <directory>src</directory>
     </whitelist>
+    <blacklist>
+      <directory>tests</directory>
+    </blacklist>
   </filter>
+
+  <logging>
+    <log type="coverage-clover" target="build/logs/clover.xml"/>
+  </logging>
 </phpunit>
