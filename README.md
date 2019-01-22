@@ -1,10 +1,10 @@
 Syllable
 ========
-Version 1.4.7
+Version 1.5.0
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg?branch=master)](https://travis-ci.org/vanderlee/phpSyllable)
 
-Copyright &copy; 2011-2018 Martijn van der Lee.
+Copyright &copy; 2011-2019 Martijn van der Lee.
 MIT Open Source license applies.
 
 Introduction
@@ -21,7 +21,7 @@ italian, romanian, russian, etc. 76 languages in total.
 
 Language sources: http://tug.org/tex-hyphen/#languages
 
-Supports PHP 5.2 and up, so you can use it on older servers.
+Supports PHP 5.6 and up, so you can use it on older servers.
 
 Quick start
 -----------
@@ -153,6 +153,9 @@ See the included [demo.php](demo.php) file for a working example.
 
 Changes
 -------
+1.5
+-   Refactored for modern PHP and support for current PHP version.
+
 1.4.6
 -	Added `setMinWordLength($length)` and `getMinWordLength()` to limit
 	hyphenation to words with at least the specified number of characters.
