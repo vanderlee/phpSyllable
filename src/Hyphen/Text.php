@@ -2,28 +2,28 @@
 
 namespace Vanderlee\Syllable\Hyphen;
 
-class Text implements Hyphen {
+class Text implements Hyphen
+{
 
-	private $text;
+    private $text;
 
-	public function __construct($text)
-	{
-		$this->text = $text;
-	}
+    public function __construct($text)
+    {
+        $this->text = $text;
+    }
 
-	public function joinText($parts)
-	{
-		return join($this->text, $parts);
-	}
+    public function joinText($parts)
+    {
+        return join($this->text, $parts);
+    }
 
-	public function joinHtmlDom($parts, \DOMNode $node)
-	{
-		$node->textContent = $this->joinText($parts);
-	}
+    public function joinHtmlDom($parts, \DOMNode $node)
+    {
+        $node->textContent = $this->joinText($parts);
+    }
 
-	public function stripHtml($html)
-	{
-		return str_replace($this->text, '', $html);
-	}
-
+    public function stripHtml($html)
+    {
+        return str_replace($this->text, '', $html);
+    }
 }

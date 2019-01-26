@@ -2,11 +2,12 @@
 
 namespace Vanderlee\Syllable\Hyphen;
 
-interface Hyphen {
+interface Hyphen
+{
 
-	public function joinText($parts);
+    public function joinText($parts);
 
-	public function joinHtmlDom($parts, \DOMNode $node);
+    public function joinHtmlDom($parts, \DOMNode $node);
 
-	public function stripHtml($html);
+    public function stripHtml($html);
 }

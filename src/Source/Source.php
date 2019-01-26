@@ -7,13 +7,14 @@ namespace Vanderlee\Syllable\Source;
  * Create your own language strategy to load the TeX files from a different
  * source. i.e. filenaming system, database or remote server.
  */
-interface Source {
+interface Source
+{
 
-	public function getMinHyphens();
+    public function getMinHyphens();
 
-	public function getPatterns();
+    public function getPatterns();
 
-	public function getMaxPattern();
+    public function getMaxPattern();
 
-	public function getHyphentations();
+    public function getHyphentations();
 }

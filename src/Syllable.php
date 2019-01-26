@@ -45,27 +45,27 @@ class Syllable
      * @var string
      */
     private $language;
-    private $left_min_hyphen  = 2;
+    private $left_min_hyphen = 2;
     private $right_min_hyphen = 2;
-    private $patterns         = null;
-    private $max_pattern      = null;
-    private $hyphenation      = null;
+    private $patterns = null;
+    private $max_pattern = null;
+    private $hyphenation = null;
 
     /**
      * Character encoding to use.
      *
      * @var string|null
      */
-    private static $encoding     = 'UTF-8';
-    private static $cache_dir    = null;
+    private static $encoding = 'UTF-8';
+    private static $cache_dir = null;
     private static $language_dir = null;
-    private        $excludes     = array();
-    private        $includes     = array();
+    private $excludes = array();
+    private $includes = array();
 
     /**
      * Create a new Syllable class, with defaults
      *
-     * @param string        $language
+     * @param string $language
      * @param string|Hyphen $hyphen
      */
     public function __construct($language = 'en', $hyphen = null)
@@ -267,7 +267,7 @@ class Syllable
      */
     public function excludeElement($elements)
     {
-        foreach ((array) $elements as $element) {
+        foreach ((array)$elements as $element) {
             $this->excludes[] = '//' . $element;
         }
     }
@@ -276,13 +276,13 @@ class Syllable
      * Add one or more elements with attributes to exclude from HTML
      *
      * @param string|string[] $attributes
-     * @param string|null     $value
+     * @param string|null $value
      */
     public function excludeAttribute($attributes, $value = null)
     {
         $value = $value === null ? '' : "='{$value}'";
 
-        foreach ((array) $attributes as $attribute) {
+        foreach ((array)$attributes as $attribute) {
             $this->excludes[] = '//*[@' . $attribute . $value . ']';
         }
     }
@@ -294,7 +294,7 @@ class Syllable
      */
     public function excludeXpath($queries)
     {
-        foreach ((array) $queries as $query) {
+        foreach ((array)$queries as $query) {
             $this->excludes[] = $query;
         }
     }
@@ -306,7 +306,7 @@ class Syllable
      */
     public function includeElement($elements)
     {
-        foreach ((array) $elements as $elements) {
+        foreach ((array)$elements as $elements) {
             $this->includes[] = '//' . $elements;
         }
     }
@@ -315,13 +315,13 @@ class Syllable
      * Add one or more elements with attributes to include from HTML
      *
      * @param string|string[] $attributes
-     * @param string|null     $value
+     * @param string|null $value
      */
     public function includeAttribute($attributes, $value = null)
     {
         $value = $value === null ? '' : "='{$value}'";
 
-        foreach ((array) $attributes as $attribute) {
+        foreach ((array)$attributes as $attribute) {
             $this->includes[] = '//*[@' . $attribute . $value . ']';
         }
     }
@@ -333,7 +333,7 @@ class Syllable
      */
     public function includeXpath($queries)
     {
-        foreach ((array) $queries as $query) {
+        foreach ((array)$queries as $query) {
             $this->includes[] = $query;
         }
     }
@@ -451,17 +451,18 @@ class Syllable
     /**
      * Add hyphenation to the DOM nodes
      *
-     * @param \DOMNode          $node
+     * @param \DOMNode $node
      * @param \DOMNodeList|null $excludeNodes
      * @param \DOMNodeList|null $includeNodes
-     * @param bool              $split
+     * @param bool $split
      */
     private function hyphenateHtmlDom(
         \DOMNode $node,
         \DOMNodeList $excludeNodes = null,
         \DOMNodeList $includeNodes = null,
         $split = true
-    ) {
+    )
+    {
         if ($node->hasChildNodes()) {
             foreach ($node->childNodes as $child) {
                 $split_child = $split;
@@ -486,7 +487,7 @@ class Syllable
     /**
      * Test if the node is known
      *
-     * @param \DOMNode     $node
+     * @param \DOMNode $node
      * @param \DOMNodeList $nodes
      *
      * @return boolean
@@ -650,7 +651,7 @@ class Syllable
         $part = mb_substr($word, 0, $this->left_min_hyphen);
         for ($i = $this->left_min_hyphen + 1; $i < $end; ++$i) {
             if (isset($before[$i])) {
-                $score = (int) $before[$i];
+                $score = (int)$before[$i];
                 if ($score & 1) { // only odd
                     //$part .= $score; // debugging
                     $parts[] = $part;
