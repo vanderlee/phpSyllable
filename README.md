@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.5.0
+Version 1.5.1
 
 [![Build Status](https://travis-ci.org/vanderlee/phpSyllable.svg?branch=master)](https://travis-ci.org/vanderlee/phpSyllable)
 
@@ -153,6 +153,9 @@ See the included [demo.php](demo.php) file for a working example.
 
 Changes
 -------
+1.5.1
+-   Fixed bug reverted in refactoring (continue 2).
+
 1.5
 -   Refactored for modern PHP and support for current PHP version.
 
