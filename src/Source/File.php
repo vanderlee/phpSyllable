@@ -114,7 +114,7 @@ class File implements Source
                                         $this->max_pattern_length = $strlen;
                                     }
                                 }
-                                continue 2; // next token
+                                continue 3; // next token
 
                             case 'hyphenation':
                                 if (preg_match('~^\S+~u', substr($line, $offset), $m) === 1) {
@@ -122,7 +122,7 @@ class File implements Source
                                     $this->hyphenations[$hyphenation] = $m[0];
                                     $offset += strlen($m[0]);
                                 }
-                                continue 2; // next token
+                                continue 3; // next token
                         }
                     }
 
