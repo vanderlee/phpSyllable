@@ -63,6 +63,11 @@ class Syllable
     private $includes = array();
 
     /**
+     * @var int
+     */
+    private $libxmlOptions = 0;
+
+    /**
      * Create a new Syllable class, with defaults
      *
      * @param string $language
@@ -193,6 +198,16 @@ class Syllable
     public function getMinWordLength()
     {
         return $this->min_word_length;
+    }
+
+    /**
+     * Options to use for HTML parsing by libxml
+     * @param integer $libxmlOptions
+     * @see https://www.php.net/manual/de/libxml.constants.php 
+     */
+    public function setLibxmlOptions($libxmlOptions)
+    {
+        $this->libxmlOptions = $libxmlOptions;
     }
 
     private static function initEncoding()
@@ -436,7 +451,7 @@ class Syllable
     {
         $dom = new \DOMDocument();
         $dom->resolveExternals = true;
-        $dom->loadHTML($html);
+        $dom->loadHTML($html, $this->libxmlOptions);
 
         // filter excludes
         $xpath = new \DOMXPath($dom);
