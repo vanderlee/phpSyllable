@@ -637,7 +637,7 @@ class Syllable
                     $scores = $this->patterns[$subword];
                     $scores_length = $length + 1;
                     for ($offset = 0; $offset < $scores_length; ++$offset) {
-                        $score = $scores{$offset};
+                        $score = $scores[$offset];
                         if (!isset($before[($start + $offset)]) || $score > $before[$start + $offset]) {
                             $before[$start + $offset] = $score;
                         }
