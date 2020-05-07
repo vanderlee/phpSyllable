@@ -129,27 +129,29 @@ Example
 -------
 See the included [demo.php](demo.php) file for a working example.
 
-	// Setup the autoloader (if needed)
-	require_once dirname(__FILE__) . '/classes/autoloader.php';
+```php
+// Setup the autoloader (if needed)
+require_once dirname(__FILE__) . '/classes/autoloader.php';
 
-	// Create a new instance for the language
-	$syllable = new Syllable('en-us');
+// Create a new instance for the language
+$syllable = new Syllable('en-us');
 
-	// Set the directory where the .tex files are stored
-	$syllable->getSource()->setPath(__DIR__ . '/languages');
+// Set the directory where the .tex files are stored
+$syllable->getSource()->setPath(__DIR__ . '/languages');
 
-	// Set the directory where Syllable can store cache files
-	$syllable->getCache()->setPath(__DIR__ . '/cache');
+// Set the directory where Syllable can store cache files
+$syllable->getCache()->setPath(__DIR__ . '/cache');
 
-	// Set the hyphen style. In this case, the &shy; HTML entity
-	// for HTML (falls back to '-' for text)
-	$syllable->setHyphen(new Syllable_Hyphen_Soft);
+// Set the hyphen style. In this case, the &shy; HTML entity
+// for HTML (falls back to '-' for text)
+$syllable->setHyphen(new Syllable_Hyphen_Soft);
 
-	// Set the treshold (sensitivity)
-	$syllable->setTreshold(Syllable::TRESHOLD_MOST);
+// Set the treshold (sensitivity)
+$syllable->setTreshold(Syllable::TRESHOLD_MOST);
 
-	// Output hyphenated text
-	echo $syllable->hyphenateText('Provide your own paragraphs...');
+// Output hyphenated text
+echo $syllable->hyphenateText('Provide your own paragraphs...');
+```
 
 Changes
 -------
