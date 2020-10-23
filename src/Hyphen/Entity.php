@@ -32,5 +32,4 @@ class Entity implements Hyphen
     {
         return str_replace('&' . $this->entity . ';', '', $html);
     }
-
 }

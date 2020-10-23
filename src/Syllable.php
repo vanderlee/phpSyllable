@@ -684,5 +684,4 @@ class Syllable
 
         return $parts;
     }
-
 }

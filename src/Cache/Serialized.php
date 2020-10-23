@@ -22,5 +22,4 @@ class Serialized extends File
     {
         return "syllable.{$language}.serialized";
     }
-
 }

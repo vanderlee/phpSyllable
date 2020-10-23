@@ -22,5 +22,4 @@ class Json extends File
     {
         return "syllable.{$language}.json";
     }
-
 }

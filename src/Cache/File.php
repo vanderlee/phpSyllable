@@ -74,5 +74,4 @@ abstract class File implements Cache
     {
         unset(self::$data[$key]);
     }
-
 }
