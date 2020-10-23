@@ -476,8 +476,7 @@ class Syllable
         \DOMNodeList $excludeNodes = null,
         \DOMNodeList $includeNodes = null,
         $split = true
-    )
-    {
+    ) {
         if ($node->hasChildNodes()) {
             foreach ($node->childNodes as $child) {
                 $split_child = $split;
