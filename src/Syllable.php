@@ -203,7 +203,7 @@ class Syllable
     /**
      * Options to use for HTML parsing by libxml
      * @param integer $libxmlOptions
-     * @see https://www.php.net/manual/de/libxml.constants.php 
+     * @see https://www.php.net/manual/de/libxml.constants.php
      */
     public function setLibxmlOptions($libxmlOptions)
     {
