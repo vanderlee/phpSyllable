@@ -9,7 +9,6 @@ namespace Vanderlee\Syllable\Cache;
  */
 interface Cache
 {
-
     public function __set($key, $value);
 
     public function __get($key);

@@ -4,7 +4,6 @@ namespace Vanderlee\Syllable\Hyphen;
 
 class Entity implements Hyphen
 {
-
     private $entity;
 
     public function __construct($entity)

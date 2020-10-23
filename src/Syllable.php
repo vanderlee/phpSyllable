@@ -15,7 +15,6 @@ use Vanderlee\Syllable\Source\Source;
  */
 class Syllable
 {
-
     /**
      * Version string, used to recalculate language caches if needed.
      */

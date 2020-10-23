@@ -9,7 +9,6 @@ namespace Vanderlee\Syllable\Source;
  */
 interface Source
 {
-
     public function getMinHyphens();
 
     public function getPatterns();
