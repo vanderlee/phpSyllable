@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Vanderlee\Syllable\Source;
 
@@ -8,6 +9,7 @@ namespace Vanderlee\Syllable\Source;
  */
 class File implements Source
 {
+
     private static $minHyphens = null;
     private $path = null;
     private $language = null;
@@ -20,31 +22,35 @@ class File implements Source
     {
         $this->setLanguage($language);
         $this->setPath($path);
-        $this->loaded = false;
     }
 
-    public function setPath($path)
+    public function setPath(string $path): void
     {
         $this->path = $path;
         $this->loaded = false;
     }
 
-    public function setLanguage($language)
+    public function setLanguage(string $language): void
     {
         $this->language = strtolower($language);
         $this->loaded = false;
     }
 
-    public function getMinHyphens()
+    /**
+     * @inheritdoc
+     */
+    public function getMinHyphens(): ?array
     {
         if (!self::$minHyphens) {
             self::$minHyphens = json_decode(file_get_contents("{$this->path}/min.json"), true);
         }
 
-        return isset(self::$minHyphens[$this->language]) ? self::$minHyphens[$this->language] : null;
+        return isset(self::$minHyphens[$this->language])
+            ? self::$minHyphens[$this->language]
+            : null;
     }
 
-    private function loadLanguage()
+    private function loadLanguage(): void
     {
         if (!$this->loaded) {
             $this->patterns = [];
@@ -68,7 +74,9 @@ class File implements Source
                     }
 
                     // \command
-                    if ($char === '\\' && preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
+                    if ($char === '\\'
+                        && preg_match('~^\\\\([[:alpha:]]+)~', mb_substr($line, $offset), $m) === 1) {
+
                         $command = $m[1];
                         $offset += mb_strlen($m[0]);
                         continue; // next token
@@ -117,15 +125,16 @@ class File implements Source
 
                             case 'hyphenation':
                                 if (preg_match('~^\S+~u', substr($line, $offset), $m) === 1) {
-                                    $hyphenation = preg_replace('~\-~', '', $m[0]);
+                                    $hyphenation = str_replace('-', '', $m[0]);
                                     $this->hyphenations[$hyphenation] = $m[0];
-                                    $offset += strlen($m[0]);
                                 }
                                 continue 3; // next token
+
+                            default:
                         }
                     }
 
-                    // }
+                    // Parse `}` symbol
                     if ($char === '}') {
                         $braces = false;
                         $command = false;
@@ -142,21 +151,30 @@ class File implements Source
         }
     }
 
-    public function getHyphentations()
+    /**
+     * @inheritdoc
+     */
+    public function getHyphentations(): array
     {
         $this->loadLanguage();
 
         return $this->hyphenations;
     }
 
-    public function getMaxPattern()
+    /**
+     * @inheritdoc
+     */
+    public function getMaxPattern(): int
     {
         $this->loadLanguage();
 
         return $this->max_pattern_length;
     }
 
-    public function getPatterns()
+    /**
+     * @inheritdoc
+     */
+    public function getPatterns(): array
     {
         $this->loadLanguage();
 

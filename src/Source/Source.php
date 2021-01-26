@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Vanderlee\Syllable\Source;
 
@@ -10,11 +11,31 @@ namespace Vanderlee\Syllable\Source;
 interface Source
 {
 
-    public function getMinHyphens();
+    /**
+     * Get the minimum lengths of syllables at the start and end of a word before a hyphenation may occur.
+     *
+     * @return int[]|null
+     */
+    public function getMinHyphens(): ?array;
 
-    public function getPatterns();
+    /**
+     * Get all patterns loaded
+     *
+     * @return array
+     */
+    public function getPatterns(): array;
 
-    public function getMaxPattern();
+    /**
+     * Get the length of the longest pattern loaded
+     *
+     * @return int
+     */
+    public function getMaxPattern(): int;
 
-    public function getHyphentations();
+    /**
+     * Get all exception hyphenations loaded
+     *
+     * @return array
+     */
+    public function getHyphentations(): array;
 }

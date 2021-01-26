@@ -15,7 +15,9 @@ interface Hyphen
      */
     public function joinText(array $parts): string;
 
-    public function joinHtmlDom($parts, DOMNode $node);
-
-    public function stripHtml($html);
+    /**
+     * @param string[] $parts
+     * @param DOMNode  $node
+     */
+    public function joinHtmlDom(array $parts, DOMNode $node): void;
 }

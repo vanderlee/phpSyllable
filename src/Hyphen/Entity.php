@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Vanderlee\Syllable\Hyphen;
 
@@ -7,19 +8,31 @@ use DOMNode;
 class Entity implements Hyphen
 {
 
+    /**
+     * @var string
+     */
     private $entity;
 
-    public function __construct($entity)
+    /**
+     * @param string $entity
+     */
+    public function __construct(string $entity)
     {
         $this->entity = $entity;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function joinText(array $parts): string
     {
         return join('&' . $this->entity . ';', $parts);
     }
 
-    public function joinHtmlDom($parts, DOMNode $node)
+    /**
+     * @inheritdoc
+     */
+    public function joinHtmlDom(array $parts, DOMNode $node): void
     {
         if (($p = count($parts)) > 1) {
             $node->textContent = $parts[--$p];
@@ -28,11 +41,6 @@ class Entity implements Hyphen
                 $node = $node->parentNode->insertBefore($node->ownerDocument->createTextNode($parts[$p]), $node);
             }
         }
-    }
-
-    public function stripHtml($html)
-    {
-        return str_replace('&' . $this->entity . ';', '', $html);
     }
 
 }

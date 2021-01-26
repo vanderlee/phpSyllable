@@ -1,34 +1,39 @@
 <?php
+declare(strict_types=1);
 
 namespace Vanderlee\Syllable\Hyphen;
+
+use DOMNode;
 
 class Text implements Hyphen
 {
 
+    /**
+     * @var string
+     */
     private $text;
 
-    public function __construct($text)
+    /**
+     * @param string $text
+     */
+    public function __construct(string $text)
     {
         $this->text = $text;
     }
 
     /**
-     * @param string[] $parts
-     *
-     * @return string
+     * @inheritdoc
      */
     public function joinText(array $parts): string
     {
         return join($this->text, $parts);
     }
 
-    public function joinHtmlDom($parts, \DOMNode $node)
+    /**
+     * @inheritdoc
+     */
+    public function joinHtmlDom(array $parts, DOMNode $node): void
     {
         $node->textContent = $this->joinText($parts);
-    }
-
-    public function stripHtml($html)
-    {
-        return str_replace($this->text, '', $html);
     }
 }
