@@ -1,7 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Vanderlee\Syllable;
 
+use DOMDocument;
+use DOMNode;
+use DOMNodeList;
+use DOMText;
+use DOMXPath;
 use Vanderlee\Syllable\Cache\Cache;
 use Vanderlee\Syllable\Cache\Json;
 use Vanderlee\Syllable\Hyphen\Hyphen;
@@ -59,8 +65,8 @@ class Syllable
     private static $encoding = 'UTF-8';
     private static $cache_dir = null;
     private static $language_dir = null;
-    private $excludes = array();
-    private $includes = array();
+    private $excludes = [];
+    private $includes = [];
 
     /**
      * @var int
@@ -70,7 +76,7 @@ class Syllable
     /**
      * Create a new Syllable class, with defaults
      *
-     * @param string $language
+     * @param string        $language
      * @param string|Hyphen $hyphen
      */
     public function __construct($language = 'en', $hyphen = null)
@@ -154,7 +160,7 @@ class Syllable
     }
 
     /**
-     * @param Cache $Cache
+     * @param Cache|null $Cache
      */
     public function setCache(Cache $Cache = null)
     {
@@ -202,8 +208,10 @@ class Syllable
 
     /**
      * Options to use for HTML parsing by libxml
+     *
      * @param integer $libxmlOptions
-     * @see https://www.php.net/manual/de/libxml.constants.php 
+     *
+     * @see https://www.php.net/manual/de/libxml.constants.php
      */
     public function setLibxmlOptions($libxmlOptions)
     {
@@ -272,7 +280,7 @@ class Syllable
      */
     public function excludeAll()
     {
-        $this->excludes = array('//*');
+        $this->excludes = ['//*'];
     }
 
     /**
@@ -291,7 +299,7 @@ class Syllable
      * Add one or more elements with attributes to exclude from HTML
      *
      * @param string|string[] $attributes
-     * @param string|null $value
+     * @param string|null     $value
      */
     public function excludeAttribute($attributes, $value = null)
     {
@@ -330,7 +338,7 @@ class Syllable
      * Add one or more elements with attributes to include from HTML
      *
      * @param string|string[] $attributes
-     * @param string|null $value
+     * @param string|null     $value
      */
     public function includeAttribute($attributes, $value = null)
     {
@@ -358,9 +366,9 @@ class Syllable
      *
      * @param string $word
      *
-     * @return array
+     * @return string[]
      */
-    public function splitWord($word)
+    public function splitWord(string $word): array
     {
         self::initEncoding();
         $this->loadLanguage();
@@ -373,15 +381,15 @@ class Syllable
      *
      * @param string $text
      *
-     * @return array
+     * @return string[]
      */
-    public function splitText($text)
+    public function splitText(string $text): array
     {
         self::initEncoding();
         $this->loadLanguage();
 
         $splits = mb_split('[^\'[:alpha:]]+', $text);
-        $parts = array();
+        $parts = [];
         $part = '';
         $pos = 0;
 
@@ -420,9 +428,10 @@ class Syllable
      *
      * @return string
      */
-    public function hyphenateWord($word)
+    public function hyphenateWord(string $word): string
     {
         $parts = $this->splitWord($word);
+
         return $this->Hyphen->joinText($parts);
     }
 
@@ -433,9 +442,10 @@ class Syllable
      *
      * @return string
      */
-    public function hyphenateText($text)
+    public function hyphenateText(string $text): string
     {
         $parts = $this->splitText($text);
+
         return $this->Hyphen->joinText($parts);
     }
 
@@ -449,12 +459,12 @@ class Syllable
      */
     public function hyphenateHtml($html)
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->resolveExternals = true;
         $dom->loadHTML($html, $this->libxmlOptions);
 
         // filter excludes
-        $xpath = new \DOMXPath($dom);
+        $xpath = new DOMXPath($dom);
         $excludedNodes = $this->excludes ? $xpath->query(join('|', $this->excludes)) : null;
         $includedNodes = $this->includes ? $xpath->query(join('|', $this->includes)) : null;
 
@@ -466,18 +476,17 @@ class Syllable
     /**
      * Add hyphenation to the DOM nodes
      *
-     * @param \DOMNode $node
-     * @param \DOMNodeList|null $excludeNodes
-     * @param \DOMNodeList|null $includeNodes
-     * @param bool $split
+     * @param DOMNode          $node
+     * @param DOMNodeList|null $excludeNodes
+     * @param DOMNodeList|null $includeNodes
+     * @param bool              $split
      */
     private function hyphenateHtmlDom(
-        \DOMNode $node,
-        \DOMNodeList $excludeNodes = null,
-        \DOMNodeList $includeNodes = null,
+        DOMNode $node,
+        DOMNodeList $excludeNodes = null,
+        DOMNodeList $includeNodes = null,
         $split = true
-    )
-    {
+    ) {
         if ($node->hasChildNodes()) {
             foreach ($node->childNodes as $child) {
                 $split_child = $split;
@@ -492,7 +501,7 @@ class Syllable
             }
         }
 
-        if ($split && $node instanceof \DOMText) {
+        if ($split && $node instanceof DOMText) {
             $parts = $this->splitText($node->data);
 
             $this->Hyphen->joinHtmlDom($parts, $node);
@@ -502,18 +511,19 @@ class Syllable
     /**
      * Test if the node is known
      *
-     * @param \DOMNode $node
-     * @param \DOMNodeList $nodes
+     * @param DOMNode     $node
+     * @param DOMNodeList $nodes
      *
      * @return boolean
      */
-    private static function hasNode(\DOMNode $node, \DOMNodeList $nodes)
+    private static function hasNode(DOMNode $node, DOMNodeList $nodes)
     {
         foreach ($nodes as $test) {
             if ($node->isSameNode($test)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -531,7 +541,7 @@ class Syllable
         self::initEncoding();
         $this->loadLanguage();
 
-        $counts = array();
+        $counts = [];
         foreach (mb_split('[^\'[:alpha:]]+', $text) as $split) {
             if (mb_strlen($split)) {
                 $count = count($this->parseWord($split));
@@ -617,15 +627,15 @@ class Syllable
      *
      * @param string $word the word to be split.
      *
-     * @return array array of syllables.
+     * @return string[] array of syllables.
      */
-    private function parseWord($word)
+    private function parseWord(string $word): array
     {
         $word_length = mb_strlen($word);
 
         // Is this word smaller than the miminal length requirement?
         if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen || $word_length < $this->min_word_length) {
-            return array($word);
+            return [$word];
         }
 
         // Is it a pre-hyphenated word?
@@ -639,7 +649,7 @@ class Syllable
         $pattern_length = $this->max_pattern < $text_length ? $this->max_pattern : $text_length;
 
         // Maximize
-        $before = array();
+        $before = [];
         $end = $text_length - $this->right_min_hyphen;
         for ($start = 0; $start < $end; ++$start) {
             $max_length = $start + $pattern_length;
@@ -662,7 +672,7 @@ class Syllable
         }
 
         // Output
-        $parts = array();
+        $parts = [];
         $part = mb_substr($word, 0, $this->left_min_hyphen);
         for ($i = $this->left_min_hyphen + 1; $i < $end; ++$i) {
             if (isset($before[$i])) {

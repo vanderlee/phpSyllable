@@ -12,7 +12,12 @@ class Text implements Hyphen
         $this->text = $text;
     }
 
-    public function joinText($parts)
+    /**
+     * @param string[] $parts
+     *
+     * @return string
+     */
+    public function joinText(array $parts): string
     {
         return join($this->text, $parts);
     }

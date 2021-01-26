@@ -2,6 +2,8 @@
 
 namespace Vanderlee\Syllable\Hyphen;
 
+use DOMNode;
+
 class Entity implements Hyphen
 {
 
@@ -12,12 +14,12 @@ class Entity implements Hyphen
         $this->entity = $entity;
     }
 
-    public function joinText($parts)
+    public function joinText(array $parts): string
     {
         return join('&' . $this->entity . ';', $parts);
     }
 
-    public function joinHtmlDom($parts, \DOMNode $node)
+    public function joinHtmlDom($parts, DOMNode $node)
     {
         if (($p = count($parts)) > 1) {
             $node->textContent = $parts[--$p];
