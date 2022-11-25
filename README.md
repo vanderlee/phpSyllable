@@ -26,7 +26,7 @@ Supports PHP 5.6 and up, so you can use it on older servers.
 Quick start
 -----------
 Just include phpSyllable in your project, set up the autoloader to the classes
-directory and instantiate yourself a Sylllable class.
+directory and instantiate yourself a Syllable class.
 
 	$syllable = new Syllable('en-us');
 	echo $syllable->hyphenateText('Provide a plethora of paragraphs');
@@ -132,6 +132,7 @@ See the included [demo.php](demo.php) file for a working example.
 ```php
 // Setup the autoloader (if needed)
 require_once dirname(__FILE__) . '/classes/autoloader.php';
+use Vanderlee\Syllable\Syllable;
 
 // Create a new instance for the language
 $syllable = new Syllable('en-us');
