@@ -4,7 +4,6 @@ namespace Vanderlee\Syllable\Cache;
 
 abstract class File implements Cache
 {
-
     private static $language = null;
     private static $path = null;
     private static $data = null;
@@ -74,5 +73,4 @@ abstract class File implements Cache
     {
         unset(self::$data[$key]);
     }
-
 }

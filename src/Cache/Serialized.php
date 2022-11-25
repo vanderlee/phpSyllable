@@ -7,7 +7,6 @@ namespace Vanderlee\Syllable\Cache;
  */
 class Serialized extends File
 {
-
     protected function encode($array)
     {
         return serialize($array);
@@ -22,5 +21,4 @@ class Serialized extends File
     {
         return "syllable.{$language}.serialized";
     }
-
 }

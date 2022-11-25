@@ -15,7 +15,6 @@ use Vanderlee\Syllable\Source\Source;
  */
 class Syllable
 {
-
     /**
      * Version string, used to recalculate language caches if needed.
      */
@@ -203,7 +202,7 @@ class Syllable
     /**
      * Options to use for HTML parsing by libxml
      * @param integer $libxmlOptions
-     * @see https://www.php.net/manual/de/libxml.constants.php 
+     * @see https://www.php.net/manual/de/libxml.constants.php
      */
     public function setLibxmlOptions($libxmlOptions)
     {
@@ -476,8 +475,7 @@ class Syllable
         \DOMNodeList $excludeNodes = null,
         \DOMNodeList $includeNodes = null,
         $split = true
-    )
-    {
+    ) {
         if ($node->hasChildNodes()) {
             foreach ($node->childNodes as $child) {
                 $split_child = $split;
@@ -684,5 +682,4 @@ class Syllable
 
         return $parts;
     }
-
 }

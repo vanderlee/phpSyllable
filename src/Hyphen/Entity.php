@@ -4,7 +4,6 @@ namespace Vanderlee\Syllable\Hyphen;
 
 class Entity implements Hyphen
 {
-
     private $entity;
 
     public function __construct($entity)
@@ -32,5 +31,4 @@ class Entity implements Hyphen
     {
         return str_replace('&' . $this->entity . ';', '', $html);
     }
-
 }

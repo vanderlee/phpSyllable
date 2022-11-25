@@ -7,7 +7,6 @@ namespace Vanderlee\Syllable\Cache;
  */
 class Json extends File
 {
-
     protected function encode($array)
     {
         return json_encode($array);
@@ -22,5 +21,4 @@ class Json extends File
     {
         return "syllable.{$language}.json";
     }
-
 }
