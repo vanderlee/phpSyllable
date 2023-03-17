@@ -152,6 +152,14 @@ $syllable->setTreshold(Syllable::TRESHOLD_MOST);
 echo $syllable->hyphenateText('Provide your own paragraphs...');
 ```
 
+Update language files
+---------------------
+Run
+```
+php cmd/update-syllables.php
+```
+to fetch the latest language files from remote.
+
 Changes
 -------
 1.5.3
