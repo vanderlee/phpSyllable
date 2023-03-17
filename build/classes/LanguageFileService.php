@@ -1,7 +1,8 @@
 <?php
-require_once 'SyllableUpdateException.php';
 
-class SyllableUpdate
+namespace Vanderlee\SyllableBuild;
+
+class LanguageFileService
 {
     /**
      * @var string
@@ -22,7 +23,7 @@ class SyllableUpdate
     {
         $this->languageUrl = 'http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex';
         $this->maxRedirects = 20;
-        $this->languageDir = realpath(__DIR__ . '/../languages');
+        $this->languageDir = realpath(__DIR__ . '/../../languages');
     }
 
     /**
@@ -75,7 +76,7 @@ class SyllableUpdate
                     $this->printToConsole(sprintf("File %s has not changed.", $fileName));
                     $numUnchanged++;
                 }
-            } catch (SyllableUpdateException $exception) {
+            } catch (LanguageFileServiceException $exception) {
                 $this->printToConsole($exception->getMessage());
                 $numFailed++;
             }
@@ -90,7 +91,7 @@ class SyllableUpdate
     /**
      * @param $fileUrl
      * @return bool|string
-     * @throws SyllableUpdateException
+     * @throws LanguageFileServiceException
      */
     protected function fetchFile($fileUrl)
     {
@@ -106,7 +107,7 @@ class SyllableUpdate
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if ($status < 200 || $status >= 300) {
-            throw new SyllableUpdateException(
+            throw new LanguageFileServiceException(
                 sprintf("Error: Call to URL %s failed with\n%s",
                     $fileUrl, json_encode([
                         'status' => $status,

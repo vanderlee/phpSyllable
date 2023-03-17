@@ -156,7 +156,10 @@ Update language files
 ---------------------
 Run
 ```
-php cmd/update-syllables.php
+# composer install
+# or only
+# composer dump-autoload --dev
+php build/update-language-files.php
 ```
 to fetch the latest language files from remote.
 

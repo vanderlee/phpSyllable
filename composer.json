@@ -28,6 +28,7 @@
     "ext-dom": "*"
   },
   "require-dev": {
+    "ext-curl": "*",
     "codacy/coverage": "1.*",
     "phpunit/phpunit": "6.*",
     "phpmd/phpmd": "2.6.0"
@@ -35,6 +36,11 @@
   "autoload": {
     "psr-4": {
       "Vanderlee\\Syllable\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Vanderlee\\SyllableBuild\\": "build/classes"
     }
   }
 }
