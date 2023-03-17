@@ -23,7 +23,7 @@ class LanguageFileService
     {
         $this->languageUrl = 'http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex';
         $this->maxRedirects = 20;
-        $this->languageDir = realpath(__DIR__ . '/../../languages');
+        $this->languageDir = realpath(__DIR__.'/../../languages');
     }
 
     /**
@@ -59,21 +59,25 @@ class LanguageFileService
         $numUnchanged = 0;
         $numFailed = 0;
 
-        $this->printToConsole(sprintf("Updating %s language files on %s.",
-            $numTotal, date("Y-m-d H:i:s T")));
+        $this->printToConsole(sprintf(
+            'Updating %s language files on %s.',
+            $numTotal,
+            date('Y-m-d H:i:s T')
+        ));
 
         foreach ($languageFiles as $filePath) {
             $fileName = basename($filePath);
             $fileUrl = "{$this->languageUrl}/{$fileName}";
+
             try {
                 $oldFileContent = file_get_contents($filePath);
                 $newFileContent = $this->fetchFile($fileUrl);
                 if ($newFileContent != $oldFileContent) {
                     file_put_contents($filePath, $newFileContent);
-                    $this->printToConsole(sprintf("File %s has CHANGED.", $fileName));
+                    $this->printToConsole(sprintf('File %s has CHANGED.', $fileName));
                     $numChanged++;
                 } else {
-                    $this->printToConsole(sprintf("File %s has not changed.", $fileName));
+                    $this->printToConsole(sprintf('File %s has not changed.', $fileName));
                     $numUnchanged++;
                 }
             } catch (LanguageFileServiceException $exception) {
@@ -84,14 +88,22 @@ class LanguageFileService
 
         $numProcessed = $numChanged + $numUnchanged + $numFailed;
 
-        $this->printToConsole(sprintf("Result: %s/%s files processed, %s changed, %s unchanged and %s failed.",
-            $numProcessed, $numTotal, $numChanged, $numUnchanged, $numFailed));
+        $this->printToConsole(sprintf(
+            'Result: %s/%s files processed, %s changed, %s unchanged and %s failed.',
+            $numProcessed,
+            $numTotal,
+            $numChanged,
+            $numUnchanged,
+            $numFailed
+        ));
     }
 
     /**
      * @param $fileUrl
-     * @return bool|string
+     *
      * @throws LanguageFileServiceException
+     *
+     * @return bool|string
      */
     protected function fetchFile($fileUrl)
     {
@@ -107,16 +119,16 @@ class LanguageFileService
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if ($status < 200 || $status >= 300) {
-            throw new LanguageFileServiceException(
-                sprintf("Error: Call to URL %s failed with\n%s",
-                    $fileUrl, json_encode([
-                        'status' => $status,
-                        'response' => substr($fileContent, 0, 500) . " ..",
-                        'cURL error' => curl_error($curl),
-                        'cURL error number' => curl_errno($curl),
-                    ], JSON_PRETTY_PRINT)
-                )
-            );
+            throw new LanguageFileServiceException(sprintf(
+                "Error: Call to URL %s failed with\n%s",
+                $fileUrl,
+                json_encode([
+                    'status'            => $status,
+                    'response'          => substr($fileContent, 0, 500).' ..',
+                    'cURL error'        => curl_error($curl),
+                    'cURL error number' => curl_errno($curl),
+                ], JSON_PRETTY_PRINT)
+            ));
         }
 
         curl_close($curl);
