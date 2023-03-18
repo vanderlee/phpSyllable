@@ -50,6 +50,9 @@ class LanguageFileService
         $this->languageDir = $languageDir;
     }
 
+    /**
+     * @return bool
+     */
     public function updateLanguageFiles()
     {
         $languageFiles = glob("{$this->languageDir}/*.tex");
@@ -97,6 +100,8 @@ class LanguageFileService
             $numUnchanged,
             $numFailed
         ));
+
+        return $numFailed === 0;
     }
 
     /**
