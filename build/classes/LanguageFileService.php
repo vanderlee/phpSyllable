@@ -19,11 +19,17 @@ class LanguageFileService
      */
     protected $languageDir;
 
+    /**
+     * @var int
+     */
+    protected $logLevel;
+
     public function __construct()
     {
         $this->languageUrl = 'http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex';
         $this->maxRedirects = 20;
         $this->languageDir = realpath(__DIR__.'/../../languages');
+        $this->logLevel = LOG_INFO;
     }
 
     /**
@@ -51,6 +57,14 @@ class LanguageFileService
     }
 
     /**
+     * @param int $logLevel
+     */
+    public function setLogLevel($logLevel)
+    {
+        $this->logLevel = $logLevel;
+    }
+
+    /**
      * @return bool
      */
     public function updateLanguageFiles()
@@ -62,7 +76,7 @@ class LanguageFileService
         $numUnchanged = 0;
         $numFailed = 0;
 
-        $this->printToConsole(sprintf(
+        $this->info(sprintf(
             'Updating %s language files on %s.',
             $numTotal,
             date('Y-m-d H:i:s T')
@@ -77,22 +91,22 @@ class LanguageFileService
                 $newFileContent = $this->fetchFile($fileUrl);
                 if ($newFileContent != $oldFileContent) {
                     file_put_contents($filePath, $newFileContent);
-                    $this->printToConsole(sprintf('File %s has CHANGED.', $fileName));
+                    $this->info(sprintf('File %s has CHANGED.', $fileName));
                     $numChanged++;
                 } else {
-                    $this->printToConsole(sprintf('File %s has not changed.', $fileName));
+                    $this->info(sprintf('File %s has not changed.', $fileName));
                     $numUnchanged++;
                 }
             } catch (LanguageFileServiceException $exception) {
-                $this->printToConsole(sprintf('Update of file %s has failed with:', $fileName));
-                $this->printToConsole($exception->getMessage());
+                $this->warn(sprintf('Update of file %s has failed with:', $fileName));
+                $this->warn($exception->getMessage());
                 $numFailed++;
             }
         }
 
         $numProcessed = $numChanged + $numUnchanged + $numFailed;
 
-        $this->printToConsole(sprintf(
+        $this->info(sprintf(
             'Result: %s/%s files processed, %s changed, %s unchanged and %s failed.',
             $numProcessed,
             $numTotal,
@@ -151,8 +165,20 @@ class LanguageFileService
         return $fileContent;
     }
 
-    protected function printToConsole($text)
+    protected function info($text)
     {
-        echo "${text}\n";
+        $this->log($text, LOG_INFO);
+    }
+
+    protected function warn($text)
+    {
+        $this->log($text, LOG_WARNING);
+    }
+
+    protected function log($text, $logLevel)
+    {
+        if ($logLevel <= $this->logLevel) {
+            echo "${text}\n";
+        }
     }
 }
