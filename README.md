@@ -152,16 +152,27 @@ $syllable->setTreshold(Syllable::TRESHOLD_MOST);
 echo $syllable->hyphenateText('Provide your own paragraphs...');
 ```
 
-Update language files
----------------------
+Development
+-----------
+
+### Update language files
+
 Run
 ```
-# composer install
-# or only
-# composer dump-autoload --dev
+composer dump-autoload --dev
 php build/update-language-files.php
 ```
 to fetch the latest language files from remote.
+
+### Tests
+
+Run
+```
+composer install
+./vendor/bin/phpunit
+```
+to execute the tests.
+
 
 Changes
 -------
