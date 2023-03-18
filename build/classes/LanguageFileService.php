@@ -27,7 +27,7 @@ class LanguageFileService
     public function __construct()
     {
         $this->languageUrl = 'http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex';
-        $this->maxRedirects = 20;
+        $this->maxRedirects = 1;
         $this->languageDir = realpath(__DIR__.'/../../languages');
         $this->logLevel = LOG_INFO;
     }
@@ -53,7 +53,7 @@ class LanguageFileService
      */
     public function setLanguageDir($languageDir)
     {
-        $this->languageDir = $languageDir;
+        $this->languageDir = realpath($languageDir);
     }
 
     /**
@@ -75,10 +75,12 @@ class LanguageFileService
         $numChanged = 0;
         $numUnchanged = 0;
         $numFailed = 0;
+        $languageFolder = basename($this->languageDir);
 
         $this->info(sprintf(
-            'Updating %s language files on %s.',
+            'Updating %s language files in %s/ on %s.',
             $numTotal,
+            $languageFolder,
             date('Y-m-d H:i:s T')
         ));
 

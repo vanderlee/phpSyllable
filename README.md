@@ -162,7 +162,33 @@ Run
 composer dump-autoload --dev
 php build/update-language-files.php
 ```
-to fetch the latest language files from remote.
+to fetch the latest language files remotely and optionally use environment variables to customize the update process:
+
+#### LANGUAGE_URL
+Specify a custom URL from which to retrieve the updated language files.
+Default: `http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex`.
+
+#### MAX_REDIRECTS
+
+Specify the maximum number of URL redirects allowed when retrieving a language file.
+Default: `1`.
+
+#### LANGUAGE_DIR
+
+Specify the absolute path of the local language files to be updated.
+Default: The `languages/` folder of this package.
+
+#### LOG_LEVEL
+
+Set the verbosity of the script to verbose (6), warnings only (4) or silent (0).
+Default: `6`.
+
+For example use
+```
+composer dump-autoload --dev
+LOG_LEVEL=0 php build/update-language-files.php
+```
+to silently run the script without outputting any logging.
 
 ### Tests
 
