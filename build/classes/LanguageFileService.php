@@ -81,6 +81,7 @@ class LanguageFileService
                     $numUnchanged++;
                 }
             } catch (LanguageFileServiceException $exception) {
+                $this->printToConsole(sprintf('Update of file %s has failed with:', $fileName));
                 $this->printToConsole($exception->getMessage());
                 $numFailed++;
             }
@@ -103,7 +104,7 @@ class LanguageFileService
      *
      * @throws LanguageFileServiceException
      *
-     * @return bool|string
+     * @return string
      */
     protected function fetchFile($fileUrl)
     {
@@ -115,6 +116,17 @@ class LanguageFileService
         curl_setopt($curl, CURLOPT_MAXREDIRS, $this->maxRedirects);
 
         $fileContent = curl_exec($curl);
+
+        if ($fileContent === false) {
+            throw new LanguageFileServiceException(sprintf(
+                "Error: Call to URL %s failed with\n%s",
+                $fileUrl,
+                json_encode([
+                    'cURL error'        => curl_error($curl),
+                    'cURL error number' => curl_errno($curl),
+                ], JSON_PRETTY_PRINT)
+            ));
+        }
 
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
