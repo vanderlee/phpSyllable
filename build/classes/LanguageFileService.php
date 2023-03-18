@@ -119,7 +119,7 @@ class LanguageFileService
 
         if ($fileContent === false) {
             throw new LanguageFileServiceException(sprintf(
-                "Error: Call to URL %s failed with\n%s",
+                "Call to URL %s failed with\n%s",
                 $fileUrl,
                 json_encode([
                     'cURL error'        => curl_error($curl),
@@ -130,15 +130,13 @@ class LanguageFileService
 
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        if ($status < 200 || $status >= 300) {
+        if ($fileContent === '' || $status < 200 || $status >= 300) {
             throw new LanguageFileServiceException(sprintf(
-                "Error: Call to URL %s failed with\n%s",
+                "Call to URL %s failed with\n%s",
                 $fileUrl,
                 json_encode([
                     'status'            => $status,
                     'response'          => substr($fileContent, 0, 500).' ..',
-                    'cURL error'        => curl_error($curl),
-                    'cURL error number' => curl_errno($curl),
                 ], JSON_PRETTY_PRINT)
             ));
         }
