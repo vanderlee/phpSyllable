@@ -49,8 +49,10 @@
             "toPath": "../languages/hyph-de-ch-1901.tex"
         },
         {
+            "_comment": "The German language is covered by more specific versions - see above. This one is not available as of 2023-03-20.",
             "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de.tex",
-            "toPath": "../languages/hyph-de.tex"
+            "toPath": "../languages/hyph-de.tex",
+            "disabled": true
         },
         {
             "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-el-monoton.tex",
