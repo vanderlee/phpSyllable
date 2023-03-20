@@ -164,23 +164,33 @@ composer dump-autoload --dev
 ```
 to fetch the latest language files remotely and optionally use environment variables to customize the update process:
 
-#### LANGUAGE_URL
-Specify a custom URL from which to retrieve the updated language files.
-Default: `http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex`.
+#### CONFIGURATION_FILE
+Specify the absolute path of the configuration file where the language files to be downloaded are defined. The 
+configuration file has the following format: 
+```
+{
+	"files": [
+		{
+			"_comment": "<comment>",
+			"fromUrl": "<absolute-remote-file-url>",
+			"toPath": "<relative-local-file-path>",
+			"disabled": <true|false>
+		}
+	]
+}
+```
+where the attributes are self-explanatory and `_comment` and `disabled` are optional. See for example 
+[build/update-language-files.json](build/update-language-files.json). 
+Default: The `build/update-language-files.json` file of this package.
 
 #### MAX_REDIRECTS
 
 Specify the maximum number of URL redirects allowed when retrieving a language file.
 Default: `1`.
 
-#### LANGUAGE_DIR
-
-Specify the absolute path of the local language files to be updated.
-Default: The `languages/` folder of this package.
-
 #### LOG_LEVEL
 
-Set the verbosity of the script to verbose (6), warnings only (4) or silent (0).
+Set the verbosity of the script to verbose (6), warnings and errors (4), errors only (3) or silent (0).
 Default: `6`.
 
 For example use

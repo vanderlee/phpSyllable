@@ -1,0 +1,304 @@
+{
+    "files": [
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-af.tex",
+            "toPath": "../languages/hyph-af.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-as.tex",
+            "toPath": "../languages/hyph-as.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-bg.tex",
+            "toPath": "../languages/hyph-bg.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-bn.tex",
+            "toPath": "../languages/hyph-bn.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ca.tex",
+            "toPath": "../languages/hyph-ca.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-cop.tex",
+            "toPath": "../languages/hyph-cop.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-cs.tex",
+            "toPath": "../languages/hyph-cs.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-cy.tex",
+            "toPath": "../languages/hyph-cy.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-da.tex",
+            "toPath": "../languages/hyph-da.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de-1901.tex",
+            "toPath": "../languages/hyph-de-1901.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de-1996.tex",
+            "toPath": "../languages/hyph-de-1996.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de-ch-1901.tex",
+            "toPath": "../languages/hyph-de-ch-1901.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de.tex",
+            "toPath": "../languages/hyph-de.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-el-monoton.tex",
+            "toPath": "../languages/hyph-el-monoton.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-el-polyton.tex",
+            "toPath": "../languages/hyph-el-polyton.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-en-gb.tex",
+            "toPath": "../languages/hyph-en-gb.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-en-us.tex",
+            "toPath": "../languages/hyph-en-us.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-eo.tex",
+            "toPath": "../languages/hyph-eo.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-es.tex",
+            "toPath": "../languages/hyph-es.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-et.tex",
+            "toPath": "../languages/hyph-et.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-eu.tex",
+            "toPath": "../languages/hyph-eu.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-fi.tex",
+            "toPath": "../languages/hyph-fi.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-fr.tex",
+            "toPath": "../languages/hyph-fr.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-fur.tex",
+            "toPath": "../languages/hyph-fur.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ga.tex",
+            "toPath": "../languages/hyph-ga.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-gl.tex",
+            "toPath": "../languages/hyph-gl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-grc.tex",
+            "toPath": "../languages/hyph-grc.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-gu.tex",
+            "toPath": "../languages/hyph-gu.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hi.tex",
+            "toPath": "../languages/hyph-hi.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hr.tex",
+            "toPath": "../languages/hyph-hr.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hsb.tex",
+            "toPath": "../languages/hyph-hsb.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hu.tex",
+            "toPath": "../languages/hyph-hu.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hy.tex",
+            "toPath": "../languages/hyph-hy.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ia.tex",
+            "toPath": "../languages/hyph-ia.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-id.tex",
+            "toPath": "../languages/hyph-id.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-is.tex",
+            "toPath": "../languages/hyph-is.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-it.tex",
+            "toPath": "../languages/hyph-it.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ka.tex",
+            "toPath": "../languages/hyph-ka.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-kmr.tex",
+            "toPath": "../languages/hyph-kmr.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-kn.tex",
+            "toPath": "../languages/hyph-kn.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-la-x-classic.tex",
+            "toPath": "../languages/hyph-la-x-classic.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-la.tex",
+            "toPath": "../languages/hyph-la.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-lt.tex",
+            "toPath": "../languages/hyph-lt.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-lv.tex",
+            "toPath": "../languages/hyph-lv.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ml.tex",
+            "toPath": "../languages/hyph-ml.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mn-cyrl-x-lmc.tex",
+            "toPath": "../languages/hyph-mn-cyrl-x-lmc.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mn-cyrl.tex",
+            "toPath": "../languages/hyph-mn-cyrl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mr.tex",
+            "toPath": "../languages/hyph-mr.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mul-ethi.tex",
+            "toPath": "../languages/hyph-mul-ethi.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-nb.tex",
+            "toPath": "../languages/hyph-nb.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-nl.tex",
+            "toPath": "../languages/hyph-nl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-nn.tex",
+            "toPath": "../languages/hyph-nn.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-no.tex",
+            "toPath": "../languages/hyph-no.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-or.tex",
+            "toPath": "../languages/hyph-or.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pa.tex",
+            "toPath": "../languages/hyph-pa.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pl.tex",
+            "toPath": "../languages/hyph-pl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pms.tex",
+            "toPath": "../languages/hyph-pms.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pt.tex",
+            "toPath": "../languages/hyph-pt.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-rm.tex",
+            "toPath": "../languages/hyph-rm.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ro.tex",
+            "toPath": "../languages/hyph-ro.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ru.tex",
+            "toPath": "../languages/hyph-ru.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sa.tex",
+            "toPath": "../languages/hyph-sa.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sh-cyrl.tex",
+            "toPath": "../languages/hyph-sh-cyrl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sh-latn.tex",
+            "toPath": "../languages/hyph-sh-latn.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sk.tex",
+            "toPath": "../languages/hyph-sk.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sl.tex",
+            "toPath": "../languages/hyph-sl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sr-cyrl.tex",
+            "toPath": "../languages/hyph-sr-cyrl.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sv.tex",
+            "toPath": "../languages/hyph-sv.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ta.tex",
+            "toPath": "../languages/hyph-ta.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-te.tex",
+            "toPath": "../languages/hyph-te.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-th.tex",
+            "toPath": "../languages/hyph-th.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-tk.tex",
+            "toPath": "../languages/hyph-tk.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-tr.tex",
+            "toPath": "../languages/hyph-tr.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-uk.tex",
+            "toPath": "../languages/hyph-uk.tex"
+        },
+        {
+            "fromUrl": "http://mirror.ctan.org/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-zh-latn-pinyin.tex",
+            "toPath": "../languages/hyph-zh-latn-pinyin.tex"
+        }
+    ]
+}

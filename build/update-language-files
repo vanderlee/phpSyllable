@@ -1,29 +1,23 @@
 #!/usr/bin/env php
 <?php
 
-use Vanderlee\SyllableBuild\LanguageFileService;
+use Vanderlee\SyllableBuild\DownloadManager;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$languageUrl = getenv('LANGUAGE_URL');
+$configurationFile = getenv('CONFIGURATION_FILE');
 $maxRedirects = getenv('MAX_REDIRECTS');
-$languageDir = getenv('LANGUAGE_DIR');
 $logLevel = getenv('LOG_LEVEL');
 
-$languageFileService = new LanguageFileService();
-if ($languageUrl !== false) {
-    $languageFileService->setLanguageUrl($languageUrl);
-}
-if ($maxRedirects !== false) {
-    $languageFileService->setMaxRedirects((int) $maxRedirects);
-}
-if ($languageDir !== false) {
-    $languageFileService->setLanguageDir($languageDir);
-}
-if ($logLevel !== false) {
-    $languageFileService->setLogLevel((int) $logLevel);
-}
-$result = $languageFileService->updateLanguageFiles();
+$configurationFile = $configurationFile !== false ? $configurationFile : __DIR__.'/update-language-files.json';
+$maxRedirects = $maxRedirects !== false ? (int) $maxRedirects : 1;
+$logLevel = $logLevel !== false ? (int) $logLevel : LOG_INFO;
+
+$downloadManager = new DownloadManager();
+$downloadManager->setConfigurationFile($configurationFile);
+$downloadManager->setMaxRedirects($maxRedirects);
+$downloadManager->setLogLevel($logLevel);
+$result = $downloadManager->download();
 
 if ($result === false) {
     exit(1);
