@@ -90,7 +90,7 @@ class DownloadManager
 
             try {
                 $remoteFileContent = $this->readRemoteFile($fileUrl);
-                $localFileContent = $this->readLocalFile($filePath);
+                $localFileContent = $this->readLocalFile($filePath, false);
                 if ($remoteFileContent != $localFileContent) {
                     $this->writeLocalFile($filePath, $remoteFileContent);
                     $this->info(sprintf('File %s has CHANGED.', $fileName));
@@ -141,7 +141,7 @@ class DownloadManager
      */
     protected function readConfiguration()
     {
-        $configurationContent = $this->readLocalFile($this->configurationFile);
+        $configurationContent = $this->readLocalFile($this->configurationFile, true);
         $configurationDir = dirname($this->configurationFile);
         $configuration = json_decode($configurationContent, true);
         $configuration['files'] = array_filter($configuration['files'], function ($file) {
@@ -155,16 +155,17 @@ class DownloadManager
 
     /**
      * @param $filePath
+     * @param $throwException
      *
      * @throws DownloadManagerException
      *
-     * @return string
+     * @return false|string
      */
-    protected function readLocalFile($filePath)
+    protected function readLocalFile($filePath, $throwException)
     {
         $fileContent = @file_get_contents($filePath);
 
-        if ($fileContent === false) {
+        if ($fileContent === false && $throwException) {
             $error = error_get_last();
 
             throw new DownloadManagerException(sprintf(
@@ -183,8 +184,6 @@ class DownloadManager
      * @param $rootPath
      * @param $filePath
      *
-     * @throws DownloadManagerException
-     *
      * @return string
      */
     protected function getAbsoluteFilePath($rootPath, $filePath)
@@ -195,15 +194,6 @@ class DownloadManager
             $absoluteFilePath = $rootPath.$filePath;
         } else {
             $absoluteFilePath = $rootPath.'/'.$filePath;
-        }
-        $absoluteFilePath = realpath($absoluteFilePath);
-
-        if ($absoluteFilePath === false) {
-            throw new DownloadManagerException(sprintf(
-                "Accessing %s from path %s failed.",
-                $filePath,
-                $rootPath
-            ));
         }
 
         return $absoluteFilePath;
