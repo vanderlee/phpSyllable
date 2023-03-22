@@ -125,7 +125,7 @@ ignoring any rules which might exclude them from hyphenation.
 
 Example
 -------
-See the included [demo.php](demo.php) file for a working example.
+See the [demo.php](demo.php) file for a working example.
 
 ```php
 // Setup the autoloader (if needed)
