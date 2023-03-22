@@ -1,0 +1,51 @@
+name: Languages
+
+on:
+  # Run manually on demand.
+  workflow_dispatch:
+  # Run automatically on the first day of the month at midnight.
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  update:
+    name: 'Update languages'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: 'curl'
+
+      - name: Download latest language files
+        run: |
+          composer dump-autoload --dev
+          ./build/update-language-files
+
+      - name: Commit changed language files
+        run: |
+          if [ -n "$(git diff --name-only -- languages)" ]; then
+            languageCount=$(git diff --name-only -- languages | wc -l)
+            languageNames=$(git diff --name-only -- languages | xargs basename -a | xargs)
+          
+            git config user.name "Martijn van der Lee"
+            git config user.email "martijn@vanderlee.com"
+          
+            git add languages
+            if [ "${languageCount}" -le 2 ]; then
+              git commit -m "Automatic update of ${languageNames}" \
+                          -m "Updated via .github/workflows/languages.yml:jobs.update."
+            else
+              git commit -m "Automatic update of ${languageCount} languages" \
+                          -m "Updated via .github/workflows/languages.yml:jobs.update."
+            fi
+            git push
+          fi
