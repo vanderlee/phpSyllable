@@ -29,9 +29,7 @@
   },
   "require-dev": {
     "ext-curl": "*",
-    "codacy/coverage": "1.*",
-    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.5",
-    "phpmd/phpmd": "2.6.0"
+    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.5"
   },
   "autoload": {
     "psr-4": {
