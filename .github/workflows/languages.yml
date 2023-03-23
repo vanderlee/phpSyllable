@@ -14,6 +14,7 @@ jobs:
 
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -31,21 +32,29 @@ jobs:
           ./build/update-language-files
 
       - name: Commit changed language files
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          if [ -n "$(git diff --name-only -- languages)" ]; then
-            languageCount=$(git diff --name-only -- languages | wc -l)
-            languageNames=$(git diff --name-only -- languages | xargs basename -a | xargs)
+          [ -z "$(git diff --name-only -- languages)" ] && exit 0
           
-            git config user.name "Martijn van der Lee"
-            git config user.email "martijn@vanderlee.com"
+          baseBranch="${{ github.ref_name }}"
+          featureBranch="language-update-$(printf '%(%Y-%m-%d-%H-%M-%S)T')"
+          languageCount=$(git diff --name-only -- languages | wc -l)
+          languageNames=$(git diff --name-only -- languages | xargs basename -a | xargs)
           
-            git add languages
-            if [ "${languageCount}" -le 2 ]; then
-              git commit -m "Automatic update of ${languageNames}" \
-                          -m "Updated via .github/workflows/languages.yml:jobs.update."
-            else
-              git commit -m "Automatic update of ${languageCount} languages" \
-                          -m "Updated via .github/workflows/languages.yml:jobs.update."
-            fi
-            git push
+          git config user.name "Martijn van der Lee"
+          git config user.email "martijn@vanderlee.com"
+        
+          git checkout -b ${featureBranch}
+          git add languages
+          if [ "${languageCount}" -le 2 ]; then
+            git commit -m "Automatic update of ${languageNames}" \
+                        -m "Updated via .github/workflows/languages.yml:jobs.update."
+          else
+            git commit -m "Automatic update of ${languageCount} languages" \
+                        -m "Updated via .github/workflows/languages.yml:jobs.update."
           fi
+          git push --set-upstream origin ${featureBranch}
+        
+          gh pr create --fill --base ${baseBranch}
+          gh pr merge --auto --rebase --delete-branch
