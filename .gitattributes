@@ -7,4 +7,3 @@ demo.php export-ignore
 .gitignore export-ignore
 index.html export-ignore
 phpunit.xml export-ignore
-.travis.yml export-ignore

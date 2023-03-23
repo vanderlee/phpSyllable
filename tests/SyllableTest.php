@@ -14,8 +14,13 @@ class SyllableTest extends TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
+     *
+     * Note: Use the @before annotation instead of the reserved setUp()
+     * to be compatible with a wide range of PHPUnit versions.
+     *
+     * @before
      */
-    protected function setUp()
+    protected function setUpFixture()
     {
         Syllable::setCacheDir(realpath(__DIR__ . '/../cache'));
         Syllable::setLanguageDir(realpath(__DIR__ . '/../languages'));
