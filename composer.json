@@ -30,7 +30,7 @@
   "require-dev": {
     "ext-curl": "*",
     "codacy/coverage": "1.*",
-    "phpunit/phpunit": "6.*",
+    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.5",
     "phpmd/phpmd": "2.6.0"
   },
   "autoload": {

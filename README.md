@@ -2,6 +2,8 @@ Syllable
 ========
 Version 1.5.3
 
+[![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
+
 Copyright &copy; 2011-2019 Martijn van der Lee.
 MIT Open Source license applies.
 
