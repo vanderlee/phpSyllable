@@ -32,3 +32,33 @@ jobs:
       - name: Run tests
         run: |
           ./vendor/bin/phpunit
+
+# The coverage service on https://coveralls.io requires registration of this project
+# for receiving the coverage report.
+#
+#      - name: Run tests
+#        run: |
+#          ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+#
+#      - name: Send coverage report to Coveralls
+#        env:
+#          COVERALLS_RUN_LOCALLY: 1
+#          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+#        run: |
+#          composer require --dev php-coveralls/php-coveralls
+#          ./vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
+
+# The code quality service on https://app.codacy.com/gh/vanderlee/phpSyllable requires
+# the project registration token for receiving the coverage report.
+# See: https://docs.codacy.com/getting-started/configuring-your-repository/#adding-coverage
+# See: https://github.com/codacy/codacy-coverage-reporter-action.
+#
+#      - name: Run tests
+#        run: |
+#          ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+#
+#      - name: Send coverage report to Codacy
+#        uses: codacy/codacy-coverage-reporter-action@v1
+#        with:
+#          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#          coverage-reports: 'build/logs/clover.xml'
