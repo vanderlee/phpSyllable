@@ -5,7 +5,6 @@ use Vanderlee\Syllable\Syllable;
 
 class SyllableTest extends TestCase
 {
-
     /**
      * @var Syllable
      */
@@ -22,15 +21,15 @@ class SyllableTest extends TestCase
      */
     protected function setUpFixture()
     {
-        Syllable::setCacheDir(realpath(__DIR__ . '/../cache'));
-        Syllable::setLanguageDir(realpath(__DIR__ . '/../languages'));
+        Syllable::setCacheDir(realpath(__DIR__.'/../cache'));
+        Syllable::setLanguageDir(realpath(__DIR__.'/../languages'));
 
         // Make sure the cache dir exists for our tests.
-        if (!file_exists(__DIR__ . '/../cache')) {
-            mkdir(__DIR__ . '/../cache');
+        if (!file_exists(__DIR__.'/../cache')) {
+            mkdir(__DIR__.'/../cache');
         }
 
-        $this->object = new Syllable;
+        $this->object = new Syllable();
     }
 
     /**
@@ -41,16 +40,22 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
 
         $this->object->setLanguage('en-us');
-        $this->assertEquals('Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious',
-            $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
+        $this->assertEquals(
+            'Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious',
+            $this->object->hyphenateText('Supercalifragilisticexpialidocious')
+        );
 
         $this->object->setLanguage('nl');
-        $this->assertEquals('Su-per-ca-lifra-gi-lis-ti-c-ex-pi-a-li-do-cious',
-            $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
+        $this->assertEquals(
+            'Su-per-ca-lifra-gi-lis-ti-c-ex-pi-a-li-do-cious',
+            $this->object->hyphenateText('Supercalifragilisticexpialidocious')
+        );
 
         $this->object->setLanguage('fr');
-        $this->assertEquals('Su-per-ca-li-fra-gi-lis-ti-cex-pia-li-do-cious',
-            $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
+        $this->assertEquals(
+            'Su-per-ca-li-fra-gi-lis-ti-cex-pia-li-do-cious',
+            $this->object->hyphenateText('Supercalifragilisticexpialidocious')
+        );
     }
 
     /**
@@ -61,12 +66,16 @@ class SyllableTest extends TestCase
         $this->object->setLanguage('en-us');
 
         $this->object->setHyphen('-');
-        $this->assertEquals('Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious',
-            $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
+        $this->assertEquals(
+            'Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious',
+            $this->object->hyphenateText('Supercalifragilisticexpialidocious')
+        );
 
         $this->object->setHyphen('/');
-        $this->assertEquals('Su/per/cal/ifrag/ilis/tic/ex/pi/ali/do/cious',
-            $this->object->hyphenateText('Supercalifragilisticexpialidocious'));
+        $this->assertEquals(
+            'Su/per/cal/ifrag/ilis/tic/ex/pi/ali/do/cious',
+            $this->object->hyphenateText('Supercalifragilisticexpialidocious')
+        );
     }
 
     /**
@@ -135,9 +144,11 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(array(';Re', 'dun', 'dan', 't, punc', 'tu', 'a', 'tion...'),
-            $this->object->splitWord(';Redundant, punctuation...'));
-        $this->assertEquals(array('In', 'ex', 'plic', 'a', 'ble'), $this->object->splitWord('Inexplicable'));
+        $this->assertEquals(
+            [';Re', 'dun', 'dan', 't, punc', 'tu', 'a', 'tion...'],
+            $this->object->splitWord(';Redundant, punctuation...')
+        );
+        $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitWord('Inexplicable'));
     }
 
     /**
@@ -148,9 +159,11 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(array(';Re', 'dun', 'dant, punc', 'tu', 'a', 'tion...'),
-            $this->object->splitText(';Redundant, punctuation...'));
-        $this->assertEquals(array('In', 'ex', 'plic', 'a', 'ble'), $this->object->splitText('Inexplicable'));
+        $this->assertEquals(
+            [';Re', 'dun', 'dant, punc', 'tu', 'a', 'tion...'],
+            $this->object->splitText(';Redundant, punctuation...')
+        );
+        $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('Inexplicable'));
     }
 
     /**
@@ -161,8 +174,10 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(';Re-dun-dan-t, punc-tu-a-tion...',
-            $this->object->hyphenateWord(';Redundant, punctuation...'));
+        $this->assertEquals(
+            ';Re-dun-dan-t, punc-tu-a-tion...',
+            $this->object->hyphenateWord(';Redundant, punctuation...')
+        );
         $this->assertEquals('In-ex-plic-a-ble', $this->object->hyphenateWord('Inexplicable'));
     }
 
@@ -174,13 +189,17 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(';Re-dun-dant, punc-tu-a-tion...',
-            $this->object->hyphenateText(';Redundant, punctuation...'));
+        $this->assertEquals(
+            ';Re-dun-dant, punc-tu-a-tion...',
+            $this->object->hyphenateText(';Redundant, punctuation...')
+        );
         $this->assertEquals('In-ex-plic-a-ble', $this->object->hyphenateText('Inexplicable'));
 
         // note that HTML attributes are hyphenated too!
-        $this->assertEquals('Ridicu-lous-ly <b class="un-split-table">com-pli-cat-ed</b> meta-text',
-            $this->object->hyphenateText('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+        $this->assertEquals(
+            'Ridicu-lous-ly <b class="un-split-table">com-pli-cat-ed</b> meta-text',
+            $this->object->hyphenateText('Ridiculously <b class="unsplittable">complicated</b> metatext')
+        );
     }
 
     /**
@@ -191,32 +210,46 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals('I am the same thing en-core in-stead im-poster ven-er-a-ble',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing en-core in-stead im-poster ven-er-a-ble',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
 
         $this->object->setMinWordLength(6);
-        $this->assertEquals('I am the same thing en-core in-stead im-poster ven-er-a-ble',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing en-core in-stead im-poster ven-er-a-ble',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
 
         $this->object->setMinWordLength(7);
-        $this->assertEquals('I am the same thing encore in-stead im-poster ven-er-a-ble',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing encore in-stead im-poster ven-er-a-ble',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
 
         $this->object->setMinWordLength(8);
-        $this->assertEquals('I am the same thing encore instead im-poster ven-er-a-ble',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing encore instead im-poster ven-er-a-ble',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
 
         $this->object->setMinWordLength(9);
-        $this->assertEquals('I am the same thing encore instead imposter ven-er-a-ble',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing encore instead imposter ven-er-a-ble',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
 
         $this->object->setMinWordLength(10);
-        $this->assertEquals('I am the same thing encore instead imposter venerable',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing encore instead imposter venerable',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
 
         $this->object->setMinWordLength();
-        $this->assertEquals('I am the same thing en-core in-stead im-poster ven-er-a-ble',
-            $this->object->hyphenateText('I am the same thing encore instead imposter venerable'));
+        $this->assertEquals(
+            'I am the same thing en-core in-stead im-poster ven-er-a-ble',
+            $this->object->hyphenateText('I am the same thing encore instead imposter venerable')
+        );
     }
 
     public function testHyphenateHtml()
@@ -225,12 +258,12 @@ class SyllableTest extends TestCase
         $this->object->setLanguage('en-us');
 
         $this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
-            . "\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
+            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
 
         $this->object->setLibxmlOptions(LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $this->assertEquals('<p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p>'
-            . "\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
     }
 
     public function testCaseInsensitivity()
@@ -238,40 +271,48 @@ class SyllableTest extends TestCase
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(array('IN', 'EX', 'PLIC', 'A', 'BLE'), $this->object->splitText('INEXPLICABLE'));
-        $this->assertEquals(array('in', 'ex', 'plic', 'a', 'ble'), $this->object->splitText('inexplicable'));
+        $this->assertEquals(['IN', 'EX', 'PLIC', 'A', 'BLE'], $this->object->splitText('INEXPLICABLE'));
+        $this->assertEquals(['in', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('inexplicable'));
     }
 
     public function testHistogramText()
     {
         $this->object->setLanguage('en-us');
-        $this->assertSame(array(), $this->object->histogramText('.'));
-        $this->assertSame(array(1 => 1, 2 => 2, 3 => 1, 5 => 1, 7 => 1),
-            $this->object->histogramText('1 is wonder welcome furthermore sophisticated extravagantically.'));
+        $this->assertSame([], $this->object->histogramText('.'));
+        $this->assertSame(
+            [1 => 1, 2 => 2, 3 => 1, 5 => 1, 7 => 1],
+            $this->object->histogramText('1 is wonder welcome furthermore sophisticated extravagantically.')
+        );
     }
 
     public function testCountWordsText()
     {
         $this->object->setLanguage('en-us');
         $this->assertSame(0, $this->object->countWordsText('.'));
-        $this->assertSame(6,
-            $this->object->countWordsText('1 is wonder welcome furthermore sophisticated extravagantically.'));
+        $this->assertSame(
+            6,
+            $this->object->countWordsText('1 is wonder welcome furthermore sophisticated extravagantically.')
+        );
     }
 
     public function testCountPolysyllablesText()
     {
         $this->object->setLanguage('en-us');
         $this->assertSame(0, $this->object->countPolysyllablesText('.'));
-        $this->assertSame(3,
-            $this->object->countPolysyllablesText('1 is wonder welcome furthermore sophisticated extravagantically.'));
+        $this->assertSame(
+            3,
+            $this->object->countPolysyllablesText('1 is wonder welcome furthermore sophisticated extravagantically.')
+        );
     }
 
     public function testCountSyllablesText()
     {
         $this->object->setLanguage('en-us');
         $this->assertSame(0, $this->object->countSyllablesText('.'));
-        $this->assertSame(1 + 2 + 2 + 3 + 5 + 7,
-            $this->object->countSyllablesText('1 is wonder welcome furthermore sophisticated extravagantically.'));
+        $this->assertSame(
+            1 + 2 + 2 + 3 + 5 + 7,
+            $this->object->countSyllablesText('1 is wonder welcome furthermore sophisticated extravagantically.')
+        );
     }
 
     public function testExcludeElement()
@@ -283,8 +324,8 @@ class SyllableTest extends TestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -293,13 +334,13 @@ class SyllableTest extends TestCase
     {
         $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
-        $this->object->excludeElement(array('b', 'i'));
+        $this->object->excludeElement(['b', 'i']);
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -314,8 +355,8 @@ class SyllableTest extends TestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -330,8 +371,8 @@ class SyllableTest extends TestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated <i>extravaganza</i></b> metatext')
         );
     }
@@ -345,8 +386,8 @@ class SyllableTest extends TestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -360,10 +401,9 @@ class SyllableTest extends TestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i class="go right ahead">extravaganza</i>')
         );
     }
-
 }
