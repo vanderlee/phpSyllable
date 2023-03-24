@@ -28,8 +28,10 @@ Quick start
 Just include phpSyllable in your project, set up the autoloader to the classes
 directory and instantiate yourself a Syllable class.
 
-	$syllable = new Syllable('en-us');
-	echo $syllable->hyphenateText('Provide a plethora of paragraphs');
+```php
+$syllable = new Syllable('en-us');
+echo $syllable->hyphenateText('Provide a plethora of paragraphs');
+```
 
 `Syllable` class reference
 --------------------------
