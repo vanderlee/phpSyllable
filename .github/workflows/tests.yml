@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
   # Run automatically on every push and pull request. The runtime is only ~ 30s due to parallelization.
   push:
+    # Avoid a double run for tagged commits.
+    branches:
+      - '*'
   pull_request:
 
 jobs:

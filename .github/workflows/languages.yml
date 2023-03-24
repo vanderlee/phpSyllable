@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Include tags.
+          fetch-depth: 0
 
       - name: Setup PHP 7.4
         uses: shivammathur/setup-php@v2
@@ -26,35 +29,60 @@ jobs:
           php-version: '7.4'
           extensions: 'curl'
 
-      - name: Download latest language files
+      - name: Prepare environment
         run: |
+          git config --global user.name "Martijn van der Lee"
+          git config --global user.email "martijn@vanderlee.com"
+          
           composer dump-autoload --dev
-          ./build/update-language-files
 
-      - name: Commit changed language files
+      - name: Checkout new feature branch
+        run: |
+          git checkout -b "language-update-$(printf '%(%Y-%m-%d-%H-%M-%S)T')"
+
+      - name: Commit updated language files
+        id: update-language-files
+        run: |
+          baseBranch="${{ github.ref_name }}"
+          baseBranchTag="$(git describe --tags --abbrev=0 ${baseBranch})"
+          baseBranchTagLong="$(git describe --tags ${baseBranch})"
+          
+          WITH_COMMIT=1 ./build/update-language-files
+          
+          echo "CHANGED_LANGUAGES=$(git rev-list ${baseBranch}..HEAD)" >> $GITHUB_OUTPUT
+          echo "RELEASED_BASE_BRANCH=$( [ ${baseBranchTag} = ${baseBranchTagLong} ] && echo 1 || echo 0 )" >> $GITHUB_OUTPUT
+
+      - name: Commit patch release (if base branch was also previously released)
+        id: patch-release
+        if: ${{ steps.update-language-files.outputs.CHANGED_LANGUAGES && steps.update-language-files.outputs.RELEASED_BASE_BRANCH == 1 }}
+        run: |
+          WITH_COMMIT=1 ./build/create-release
+          
+          echo "RELEASE_TAG=$(git describe --tags --abbrev=0 HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Merge feature branch into base branch
+        if: ${{ steps.update-language-files.outputs.CHANGED_LANGUAGES }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          [ -z "$(git diff --name-only -- languages)" ] && exit 0
-          
           baseBranch="${{ github.ref_name }}"
-          featureBranch="language-update-$(printf '%(%Y-%m-%d-%H-%M-%S)T')"
-          languageCount=$(git diff --name-only -- languages | wc -l)
-          languageNames=$(git diff --name-only -- languages | xargs basename -a | xargs)
+          featureBranch="$(git rev-parse --abbrev-ref HEAD)"
           
-          git config user.name "Martijn van der Lee"
-          git config user.email "martijn@vanderlee.com"
-        
-          git checkout -b ${featureBranch}
-          git add languages
-          if [ "${languageCount}" -le 2 ]; then
-            git commit -m "Automatic update of ${languageNames}" \
-                        -m "Updated via .github/workflows/languages.yml:jobs.update."
-          else
-            git commit -m "Automatic update of ${languageCount} languages" \
-                        -m "Updated via .github/workflows/languages.yml:jobs.update."
-          fi
           git push --set-upstream origin ${featureBranch}
-        
+          # Do not push the local release tag because the referenced commit changes 
+          # when it is merged with the base branch. Instead, release the base branch 
+          # via GitHub CLI after the feature branch is merged (see next step).
+          # git push --tags
           gh pr create --fill --base ${baseBranch}
+          # Avoid occasional GitHub error "Pull request Pull request is in clean status".
+          sleep 1s
           gh pr merge --auto --rebase --delete-branch
+
+      - name: Release base branch (if base branch was also previously released)
+        if: ${{ steps.update-language-files.outputs.CHANGED_LANGUAGES && steps.update-language-files.outputs.RELEASED_BASE_BRANCH == 1 }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          baseBranch="${{ github.ref_name }}"
+          
+          gh release create ${{ steps.patch-release.outputs.RELEASE_TAG }} --target ${baseBranch}

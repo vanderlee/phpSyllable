@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+use Vanderlee\SyllableBuild\ReleaseManager;
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$releaseType = getenv('RELEASE_TYPE');
+$withCommit = getenv('WITH_COMMIT');
+$logLevel = getenv('LOG_LEVEL');
+
+$releaseType = $releaseType !== false ? (int) $releaseType : ReleaseManager::PATCH_RELEASE;
+$withCommit = $withCommit !== false ? (int) $withCommit === 1 : false;
+$logLevel = $logLevel !== false ? (int) $logLevel : LOG_INFO;
+
+$releaseManager = new ReleaseManager();
+$releaseManager->setReleaseType($releaseType);
+$releaseManager->setWithCommit($withCommit);
+$releaseManager->setLogLevel($logLevel);
+$result = $releaseManager->delegate();
+
+if ($result === false) {
+    exit(1);
+}
+exit(0);

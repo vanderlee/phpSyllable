@@ -192,6 +192,11 @@ Default: The `build/update-language-files.json` file of this package.
 Specify the maximum number of URL redirects allowed when retrieving a language file.
 Default: `1`.
 
+#### WITH_COMMIT
+
+Create (1) or skip (0) a Git commit from the updated language files.
+Default: `0`.
+
 #### LOG_LEVEL
 
 Set the verbosity of the script to verbose (6), warnings and errors (4), errors only (3) or silent (0).
@@ -203,6 +208,31 @@ composer dump-autoload --dev
 LOG_LEVEL=0 ./build/update-language-files
 ```
 to silently run the script without outputting any logging.
+
+### Create release
+
+Run
+```
+composer dump-autoload --dev
+./build/create-release
+```
+to create a local release of the project by adding a changelog to this README.md. 
+Optionally, you can use environment variables to modify the release process:
+
+#### RELEASE_TYPE
+
+Set the release type to major (0), minor (1) or patch (2) release.
+Default: `2`.
+
+#### WITH_COMMIT
+
+Create (1) or skip (0) a Git commit from the adapted files and apply the release tag.
+Default: `0`.
+
+#### LOG_LEVEL
+
+Set the verbosity of the script to verbose (6), warnings and errors (4), errors only (3) or silent (0).
+Default: `6`.
 
 ### Tests
 
