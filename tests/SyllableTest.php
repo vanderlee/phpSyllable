@@ -1,6 +1,9 @@
 <?php
 
+namespace Vanderlee\SyllableTest;
+
 use PHPUnit\Framework\TestCase;
+use Vanderlee\Syllable\Hyphen\Text;
 use Vanderlee\Syllable\Syllable;
 
 class SyllableTest extends TestCase
@@ -84,12 +87,12 @@ class SyllableTest extends TestCase
     public function testGetHyphen()
     {
         $this->object->setHyphen('-');
-        $this->assertEquals(new Vanderlee\Syllable\Hyphen\Text('-'), $this->object->getHyphen());
-        $this->assertNotEquals(new Vanderlee\Syllable\Hyphen\Text('+'), $this->object->getHyphen());
+        $this->assertEquals(new Text('-'), $this->object->getHyphen());
+        $this->assertNotEquals(new Text('+'), $this->object->getHyphen());
 
         $this->object->setHyphen('/');
-        $this->assertEquals(new Vanderlee\Syllable\Hyphen\Text('/'), $this->object->getHyphen());
-        $this->assertNotEquals(new Vanderlee\Syllable\Hyphen\Text('-'), $this->object->getHyphen());
+        $this->assertEquals(new Text('/'), $this->object->getHyphen());
+        $this->assertNotEquals(new Text('-'), $this->object->getHyphen());
     }
 
     /**
