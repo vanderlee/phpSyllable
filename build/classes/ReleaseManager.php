@@ -4,10 +4,6 @@ namespace Vanderlee\SyllableBuild;
 
 class ReleaseManager extends Manager
 {
-    const MAJOR_RELEASE = 0;
-    const MINOR_RELEASE = 1;
-    const PATCH_RELEASE = 2;
-
     /**
      * @var int
      */
@@ -24,12 +20,16 @@ class ReleaseManager extends Manager
 
     protected $releaseTag;
 
+    protected $semanticVersioning;
+
     public function __construct()
     {
         parent::__construct();
 
-        $this->releaseType = self::PATCH_RELEASE;
+        $this->releaseType = SemanticVersioning::PATCH_RELEASE;
         $this->withCommit = false;
+
+        $this->semanticVersioning = new SemanticVersioning();
     }
 
     /**
@@ -79,22 +79,7 @@ class ReleaseManager extends Manager
     {
         $this->branch = $this->getBranch();
         $this->tag = $this->getTag();
-        $this->releaseTag = $this->createReleaseTag();
-    }
-
-    /**
-     * @return string
-     */
-    protected function createReleaseTag()
-    {
-        $tagPrefix = substr($this->tag, 0, strcspn($this->tag, '0123456789'));
-        $tagVersion = substr($this->tag, strlen($tagPrefix));
-        $tagVersionParts = explode('.', $tagVersion);
-        $releaseVersionParts = array_slice($tagVersionParts, 0, $this->releaseType + 1);
-        $releaseVersionParts[$this->releaseType]++;
-        $releaseVersion = implode('.', $releaseVersionParts);
-
-        return $tagPrefix.$releaseVersion;
+        $this->releaseTag = $this->semanticVersioning->getNextReleaseTag($this->tag, $this->releaseType);
     }
 
     /**

@@ -2,13 +2,17 @@
 <phpunit colors="true">
   <testsuites>
     <testsuite name="syllable">
-      <directory>tests</directory>
+      <directory>tests/src</directory>
+    </testsuite>
+    <testsuite name="syllable-build">
+      <directory>tests/build</directory>
     </testsuite>
   </testsuites>
 
   <filter>
     <whitelist>
       <directory>src</directory>
+      <directory>build/classes</directory>
     </whitelist>
     <blacklist>
       <directory>tests</directory>
