@@ -45,13 +45,12 @@ abstract class Manager
     }
 
     /**
-     * @param string $command CLI command.
-     * @param bool $returnOutput Return full multiline output instead of first line result?
+     * @param string $command      CLI command.
+     * @param bool   $returnOutput Return full multiline output instead of first line result?
      *
      * @throws ManagerException
      *
      * @return array|string First line result or full multiline output.
-     *
      */
     protected function exec($command, $returnOutput = false)
     {
@@ -61,7 +60,7 @@ abstract class Manager
 
         if ($result === false) {
             throw new ManagerException(
-                "PHP fails to execute external programs."
+                'PHP fails to execute external programs.'
             );
         } elseif ($resultCode !== 0) {
             throw new ManagerException(sprintf(
