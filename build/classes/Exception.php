@@ -2,6 +2,6 @@
 
 namespace Vanderlee\SyllableBuild;
 
-class ManagerException extends \Exception
+class Exception extends \Exception
 {
 }

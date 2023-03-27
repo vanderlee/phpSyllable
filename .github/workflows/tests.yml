@@ -22,6 +22,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Include tags.
+          fetch-depth: 0
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2

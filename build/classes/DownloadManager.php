@@ -20,6 +20,16 @@ class DownloadManager extends Manager
     protected $withCommit;
 
     /**
+     * @var Git
+     */
+    protected $git;
+
+    /**
+     * @var Console
+     */
+    protected $console;
+
+    /**
      * @var array{'files': <int, array{'_comment': string, 'fromUrl': string, 'toPath': string, 'disabled': boolean}>}
      */
     protected $configuration;
@@ -43,6 +53,9 @@ class DownloadManager extends Manager
         $this->configurationFile = 'to-be-set';
         $this->maxRedirects = 1;
         $this->withCommit = false;
+
+        $this->git = new Git();
+        $this->console = new Console();
     }
 
     /**
@@ -70,6 +83,22 @@ class DownloadManager extends Manager
     }
 
     /**
+     * @param Git $git
+     */
+    public function setGit($git)
+    {
+        $this->git = $git;
+    }
+
+    /**
+     * @param Console $console
+     */
+    public function setConsole($console)
+    {
+        $this->console = $console;
+    }
+
+    /**
      * @return bool
      */
     public function delegate()
@@ -79,7 +108,7 @@ class DownloadManager extends Manager
             $this->readConfiguration();
             $this->download();
             $this->createCommitIfFilesChanged();
-        } catch (ManagerException $exception) {
+        } catch (Exception $exception) {
             $this->error($exception->getMessage());
             $this->error('Aborting.');
 
@@ -90,21 +119,21 @@ class DownloadManager extends Manager
     }
 
     /**
-     * @throws ManagerException
+     * @throws Exception
      *
      * @return void
      */
     protected function checkPrerequisites()
     {
-        if ($this->withCommit && !$this->hasCleanWorkingTree()) {
-            throw new ManagerException(
+        if ($this->withCommit && !$this->git->hasCleanWorkingTree()) {
+            throw new Exception(
                 'The project has uncommitted changes.'
             );
         }
     }
 
     /**
-     * @throws ManagerException
+     * @throws Exception
      *
      * @return void
      */
@@ -121,8 +150,8 @@ class DownloadManager extends Manager
                 $file['toPath'] = $this->getAbsoluteFilePath($configurationDir, $file['toPath']);
             }
             $this->configuration = $configuration;
-        } catch (ManagerException $exception) {
-            throw new ManagerException(sprintf(
+        } catch (Exception $exception) {
+            throw new Exception(sprintf(
                 "Reading configuration has failed with:\n%s",
                 $exception->getMessage()
             ));
@@ -162,7 +191,7 @@ class DownloadManager extends Manager
                     $this->info(sprintf('File %s has not changed.', $fileName));
                     $numUnchanged++;
                 }
-            } catch (ManagerException $exception) {
+            } catch (Exception $exception) {
                 $this->warn(sprintf('Update of file %s has failed with:', $fileName));
                 $this->warn($exception->getMessage());
                 $numFailed++;
@@ -192,7 +221,7 @@ class DownloadManager extends Manager
      * @param $filePath
      * @param $throwException
      *
-     * @throws ManagerException
+     * @throws Exception
      *
      * @return false|string
      */
@@ -203,7 +232,7 @@ class DownloadManager extends Manager
         if ($fileContent === false && $throwException) {
             $error = error_get_last();
 
-            throw new ManagerException(sprintf(
+            throw new Exception(sprintf(
                 "Reading from path %s failed with\n%s",
                 $filePath,
                 json_encode([
@@ -238,7 +267,7 @@ class DownloadManager extends Manager
      * @param $filePath
      * @param $fileContent
      *
-     * @throws ManagerException
+     * @throws Exception
      *
      * @return void
      */
@@ -249,7 +278,7 @@ class DownloadManager extends Manager
         if ($result === false) {
             $error = error_get_last();
 
-            throw new ManagerException(sprintf(
+            throw new Exception(sprintf(
                 "Writing to path %s failed with\n%s",
                 $filePath,
                 json_encode([
@@ -262,7 +291,7 @@ class DownloadManager extends Manager
     /**
      * @param $fileUrl
      *
-     * @throws ManagerException
+     * @throws Exception
      *
      * @return string
      */
@@ -278,7 +307,7 @@ class DownloadManager extends Manager
         $fileContent = curl_exec($curl);
 
         if ($fileContent === false) {
-            throw new ManagerException(sprintf(
+            throw new Exception(sprintf(
                 "Call to URL %s failed with\n%s",
                 $fileUrl,
                 json_encode([
@@ -290,8 +319,9 @@ class DownloadManager extends Manager
 
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        if ($fileContent === '' || $status < 200 || $status >= 300) {
-            throw new ManagerException(sprintf(
+        // Allow status code '0' for retrieving local files in tests.
+        if ($fileContent === '' || $status > 0 && ($status < 200 || $status >= 300)) {
+            throw new Exception(sprintf(
                 "Call to URL %s failed with\n%s",
                 $fileUrl,
                 json_encode([
@@ -306,6 +336,11 @@ class DownloadManager extends Manager
         return $fileContent;
     }
 
+    /**
+     * @throws Exception
+     *
+     * @return void
+     */
     protected function createCommitIfFilesChanged()
     {
         if ($this->withCommit === false || $this->numChanged === 0) {
@@ -317,7 +352,7 @@ class DownloadManager extends Manager
             $message = sprintf('Automatic update of %s', basename($this->filesChanged[0]));
         }
 
-        $this->exec('git add .');
-        $this->exec(sprintf('git commit -m "%s"', $message));
+        $this->console->exec('git add .');
+        $this->console->exec(sprintf('git commit -m "%s"', $message));
     }
 }

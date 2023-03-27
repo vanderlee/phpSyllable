@@ -2,10 +2,9 @@
 
 namespace Vanderlee\SyllableBuildTest;
 
-use PHPUnit\Framework\TestCase;
 use Vanderlee\SyllableBuild\SemanticVersioning;
 
-class SemanticVersioningTest extends TestCase
+class SemanticVersioningTest extends AbstractTestCase
 {
     /**
      * @var SemanticVersioning
