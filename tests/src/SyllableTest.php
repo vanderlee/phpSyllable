@@ -43,9 +43,6 @@ class SyllableTest extends AbstractTestCase
         $this->removeTestDirectory();
     }
 
-    /**
-     * @todo   Implement testSetLanguage().
-     */
     public function testSetLanguage()
     {
         $this->object->setHyphen('-');
@@ -69,9 +66,6 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @todo   Implement testSetHyphen().
-     */
     public function testSetHyphen()
     {
         $this->object->setLanguage('en-us');
@@ -89,9 +83,6 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @todo   Implement testGetHyphen().
-     */
     public function testGetHyphen()
     {
         $this->object->setHyphen('-');
@@ -147,9 +138,6 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @todo   Implement testSplitWord().
-     */
     public function testSplitWord()
     {
         $this->object->setHyphen('-');
@@ -162,9 +150,6 @@ class SyllableTest extends AbstractTestCase
         $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitWord('Inexplicable'));
     }
 
-    /**
-     * @todo   Implement testSplitText().
-     */
     public function testSplitText()
     {
         $this->object->setHyphen('-');
@@ -177,9 +162,6 @@ class SyllableTest extends AbstractTestCase
         $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('Inexplicable'));
     }
 
-    /**
-     * @todo   Implement testHyphenateWord().
-     */
     public function testHyphenateWord()
     {
         $this->object->setHyphen('-');
@@ -192,9 +174,6 @@ class SyllableTest extends AbstractTestCase
         $this->assertEquals('In-ex-plic-a-ble', $this->object->hyphenateWord('Inexplicable'));
     }
 
-    /**
-     * @todo   Implement testHyphenateText().
-     */
     public function testHyphenateText()
     {
         $this->object->setHyphen('-');
@@ -213,9 +192,6 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @todo   Implement testHyphenateText().
-     */
     public function testMinWordLength()
     {
         $this->object->setHyphen('-');
