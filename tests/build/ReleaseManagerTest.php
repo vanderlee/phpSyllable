@@ -1,10 +1,11 @@
 <?php
 
-namespace Vanderlee\SyllableBuildTest;
+namespace Vanderlee\SyllableTest\Build;
 
 use Vanderlee\SyllableBuild\Git;
 use Vanderlee\SyllableBuild\ReleaseManager;
 use Vanderlee\SyllableBuild\SemanticVersioning;
+use Vanderlee\SyllableTest\AbstractTestCase;
 
 class ReleaseManagerTest extends AbstractTestCase
 {

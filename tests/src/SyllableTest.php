@@ -1,12 +1,12 @@
 <?php
 
-namespace Vanderlee\SyllableTest;
+namespace Vanderlee\SyllableTest\Src;
 
-use PHPUnit\Framework\TestCase;
 use Vanderlee\Syllable\Hyphen\Text;
 use Vanderlee\Syllable\Syllable;
+use Vanderlee\SyllableTest\AbstractTestCase;
 
-class SyllableTest extends TestCase
+class SyllableTest extends AbstractTestCase
 {
     /**
      * @var Syllable
@@ -24,15 +24,23 @@ class SyllableTest extends TestCase
      */
     protected function setUpFixture()
     {
-        Syllable::setCacheDir(realpath(__DIR__.'/../../cache'));
+        $this->createTestDirectory();
+
+        Syllable::setCacheDir($this->getTestDirectory());
         Syllable::setLanguageDir(realpath(__DIR__.'/../../languages'));
 
-        // Make sure the cache dir exists for our tests.
-        if (!file_exists(__DIR__.'/../../cache')) {
-            mkdir(__DIR__.'/../../cache');
-        }
-
         $this->object = new Syllable();
+    }
+
+    /**
+     * Note: Use the @after annotation instead of the reserved tearDown()
+     * to be compatible with a wide range of PHPUnit versions.
+     *
+     * @after
+     */
+    protected function tearDownFixture()
+    {
+        $this->removeTestDirectory();
     }
 
     /**

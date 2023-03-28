@@ -39,8 +39,9 @@
   "autoload-dev": {
     "psr-4": {
       "Vanderlee\\SyllableBuild\\": "build/classes",
-      "Vanderlee\\SyllableBuildTest\\": "tests/build",
-      "Vanderlee\\SyllableTest\\": "tests/src"
+      "Vanderlee\\SyllableTest\\": "tests",
+      "Vanderlee\\SyllableTest\\Build\\": "tests/build",
+      "Vanderlee\\SyllableTest\\Src\\": "tests/src"
     }
   }
 }
