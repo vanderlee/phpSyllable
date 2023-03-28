@@ -60,7 +60,7 @@ Changes
         // API that is available in most test environments. We only specify that the latest
         // version is the real existing 1.5.3 to be able to control the test flow.
         $gitStub = $this->getMockBuilder(Git::class)
-            ->enableProxyingToOriginalMethods()
+            ->setMethods(['getTag'])
             ->getMock();
         $gitStub->expects($this->any())->method('getTag')->willReturn('1.5.3');
 
