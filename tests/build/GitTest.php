@@ -1,9 +1,10 @@
 <?php
 
-namespace Vanderlee\SyllableBuildTest;
+namespace Vanderlee\SyllableTest\Build;
 
 use Vanderlee\SyllableBuild\Console;
 use Vanderlee\SyllableBuild\Git;
+use Vanderlee\SyllableTest\AbstractTestCase;
 
 class GitTest extends AbstractTestCase
 {

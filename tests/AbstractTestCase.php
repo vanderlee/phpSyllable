@@ -1,6 +1,6 @@
 <?php
 
-namespace Vanderlee\SyllableBuildTest;
+namespace Vanderlee\SyllableTest;
 
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +18,13 @@ abstract class AbstractTestCase extends TestCase
         $inheritingClassFQCN = get_class($this);
         $inheritingClassName = substr($inheritingClassFQCN, strrpos($inheritingClassFQCN, '\\') + 1);
 
-        return __DIR__.'/'.$inheritingClassName;
+        try {
+            $inheritingClassDirectory = dirname((new \ReflectionClass($inheritingClassFQCN))->getFileName());
+        } catch (\ReflectionException $exception) {
+            $inheritingClassDirectory = __DIR__;
+        }
+
+        return $inheritingClassDirectory.'/'.$inheritingClassName;
     }
 
     protected function removeTestDirectory()

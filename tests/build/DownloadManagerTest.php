@@ -1,8 +1,9 @@
 <?php
 
-namespace Vanderlee\SyllableBuildTest;
+namespace Vanderlee\SyllableTest\Build;
 
 use Vanderlee\SyllableBuild\DownloadManager;
+use Vanderlee\SyllableTest\AbstractTestCase;
 
 class DownloadManagerTest extends AbstractTestCase
 {
