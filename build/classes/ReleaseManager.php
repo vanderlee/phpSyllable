@@ -109,9 +109,8 @@ class ReleaseManager extends Manager
         try {
             $this->getContext();
             $this->checkPrerequisites();
-            $this->info(sprintf('Create release %s.', $this->releaseTag));
+            $this->getReleaseTag();
             $this->updateReadme();
-            $this->checkPostConditions();
             $this->createCommit();
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
@@ -132,7 +131,6 @@ class ReleaseManager extends Manager
     {
         $this->branch = $this->git->getBranch();
         $this->tag = $this->git->getTag();
-        $this->releaseTag = $this->semanticVersioning->getNextReleaseTag($this->tag, $this->releaseType);
     }
 
     /**
@@ -157,6 +155,12 @@ class ReleaseManager extends Manager
         }
     }
 
+    protected function getReleaseTag()
+    {
+        $this->releaseTag = $this->semanticVersioning->getNextReleaseTag($this->tag, $this->releaseType);
+        $this->info(sprintf('Create release %s.', $this->releaseTag));
+    }
+
     /**
      * @throws Exception
      *
@@ -173,29 +177,33 @@ class ReleaseManager extends Manager
 
         $readme = file($this->readmeFile);
         $readmeContent = '';
+        $readmeState = 0;
         foreach ($readme as $line) {
             if (strpos($line, "Version $this->tag") === 0) {
                 $readmeContent .= str_replace($this->tag, $this->releaseTag, $line);
+                $readmeState += 1;
             } elseif (strpos($line, $this->tag) === 0) {
                 $readmeContent .= str_replace($this->tag, "$changelog\n$this->tag", $line);
+                $readmeState += 2;
             } else {
                 $readmeContent .= $line;
             }
         }
         file_put_contents($this->readmeFile, $readmeContent);
-    }
 
-    /**
-     * @throws Exception
-     *
-     * @return void
-     */
-    protected function checkPostConditions()
-    {
-        if ($this->git->hasCleanWorkingTree()) {
-            throw new Exception(
-                'Could not update README.md. The format has probably changed.'
-            );
+        if ($readmeState < 3) {
+            if (!($readmeState & 1)) {
+                $errors[] = sprintf("Missing note 'Version %s' of the last release below the title.", $this->tag);
+            }
+            if (!($readmeState & 2)) {
+                $errors[] = sprintf("Missing changelog entry '%s: ..' from the last release.", $this->tag);
+            }
+            if (isset($errors)) {
+                throw new Exception(sprintf(
+                    "Could not update README.md. The format has probably changed:\n%s",
+                    json_encode($errors, JSON_PRETTY_PRINT)
+                ));
+            }
         }
     }
 

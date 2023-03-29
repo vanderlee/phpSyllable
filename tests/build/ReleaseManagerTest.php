@@ -56,9 +56,9 @@ Changes
 -   Fixed PHP 7.4 compatibility (#37) by @Dargmuesli.
         ');
 
-        // Stub only the minimum required. We rely here for the most part on an existing Git
-        // API that is available in most test environments. We only specify that the latest
-        // version is the real existing 1.5.3 to be able to control the test flow.
+        // Replace only the minimum required with a test double. We rely here mainly on an
+        // existing Git API - which is available in most test environments. We only pretend
+        // that the latest release is 1.5.3, and we expect 1.5.4 to be released now.
         $gitStub = $this->getMockBuilder(Git::class)
             ->setMethods(['getTag'])
             ->getMock();
@@ -101,5 +101,58 @@ Changes
         $this->assertTrue($result);
         $this->expectOutputRegex($expectedOutputRegex);
         $this->assertStringMatchesFormat($expectedReadme, file_get_contents($readmeFile));
+    }
+
+    /**
+     * @test
+     */
+    public function delegateFailsIfReadmeFormatChanges()
+    {
+        $readme = trim('
+Syllable
+========
+Version v1.5.3
+
+..
+
+Changes
+-------
+v1.5.3
+-   Fixed PHP 7.4 compatibility (#37) by @Dargmuesli.
+        ');
+
+        // Replace only the minimum required with a test double. We rely here mainly on an
+        // existing Git API - which is available in most test environments. We only pretend
+        // that the latest release is 1.5.3, and we expect 1.5.4 to be released now.
+        $gitStub = $this->getMockBuilder(Git::class)
+            ->setMethods(['getTag'])
+            ->getMock();
+        $gitStub->expects($this->any())->method('getTag')->willReturn('1.5.3');
+
+        $expectedOutput = trim('
+Create release 1.5.4.
+Could not update README.md. The format has probably changed:
+[
+    "Missing note \'Version 1.5.3\' of the last release below the title.",
+    "Missing changelog entry \'1.5.3: ..\' from the last release."
+]
+Aborting.
+        ')."\n";
+        $expectedReadme = $readme;
+
+        $this->addFileToTestDirectory('README.md', $readme);
+
+        $releaseType = SemanticVersioning::PATCH_RELEASE;
+        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+
+        $releaseManager = new ReleaseManager();
+        $releaseManager->setReleaseType($releaseType);
+        $releaseManager->setReadmeFile($readmeFile);
+        $releaseManager->setGit($gitStub);
+        $result = $releaseManager->delegate();
+
+        $this->assertFalse($result);
+        $this->expectOutputString($expectedOutput);
+        $this->assertEquals($expectedReadme, file_get_contents($readmeFile));
     }
 }
