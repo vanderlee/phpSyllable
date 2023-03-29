@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTestCase extends TestCase
 {
+    protected $testDirectory = '';
+
     protected function createTestDirectory()
     {
         if (!is_dir($this->getTestDirectory())) {
@@ -15,16 +17,20 @@ abstract class AbstractTestCase extends TestCase
 
     protected function getTestDirectory()
     {
-        $inheritingClassFQCN = get_class($this);
-        $inheritingClassName = substr($inheritingClassFQCN, strrpos($inheritingClassFQCN, '\\') + 1);
+        if ($this->testDirectory === '') {
+            $inheritingClassFQCN = get_class($this);
+            $inheritingClassName = substr($inheritingClassFQCN, strrpos($inheritingClassFQCN, '\\') + 1);
 
-        try {
-            $inheritingClassDirectory = dirname((new \ReflectionClass($inheritingClassFQCN))->getFileName());
-        } catch (\ReflectionException $exception) {
-            $inheritingClassDirectory = __DIR__;
+            try {
+                $inheritingClassDirectory = dirname((new \ReflectionClass($inheritingClassFQCN))->getFileName());
+            } catch (\ReflectionException $exception) {
+                $inheritingClassDirectory = __DIR__;
+            }
+
+            $this->testDirectory = $inheritingClassDirectory.'/'.$inheritingClassName;
         }
 
-        return $inheritingClassDirectory.'/'.$inheritingClassName;
+        return $this->testDirectory;
     }
 
     protected function removeTestDirectory()
