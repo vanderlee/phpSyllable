@@ -1,10 +1,10 @@
 Syllable
 ========
-Version 1.5.3
+Version 1.5.4
 
 [![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
 
-Copyright &copy; 2011-2019 Martijn van der Lee.
+Copyright &copy; 2011-2023 Martijn van der Lee.
 MIT Open Source license applies.
 
 Introduction
@@ -246,6 +246,16 @@ to execute the tests.
 
 Changes
 -------
+1.5.4
+-   Automatically run tests for every push and pull request
+-   Automatic monthly update and release of language files
+-   Fix small typo in README and add 'use' in example.
+-   Use same code format as in src/Source/File.php
+-   Fix opening brace
+-   Remove whitespace
+-   Fix closing brace
+-   Use PHP syntax highlighting
+
 1.5.3
 -   Fixed PHP 7.4 compatibility (#37) by @Dargmuesli.
 
