@@ -48,6 +48,8 @@ Syllable
 ========
 Version 1.5.3
 
+Copyright &copy; 2011-2019 Martijn van der Lee.
+
 ..
 
 Changes
@@ -69,6 +71,8 @@ Changes
 Syllable
 ========
 Version 1.5.4
+
+Copyright &copy; 2011-'.date('Y').' Martijn van der Lee.
 
 ..
 
@@ -113,6 +117,8 @@ Syllable
 ========
 Version v1.5.3
 
+&copy; 2011-2019 Martijn van der Lee.
+
 ..
 
 Changes
@@ -134,6 +140,7 @@ Create release 1.5.4.
 Could not update README.md. The format has probably changed:
 [
     "Missing note \'Version 1.5.3\' of the last release below the title.",
+    "Missing copyright claim \'Copyright &copy; 2011-{year} Martijn van der Lee.\'",
     "Missing changelog entry \'1.5.3: ..\' from the last release."
 ]
 Aborting.
