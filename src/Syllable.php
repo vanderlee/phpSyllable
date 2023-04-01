@@ -373,6 +373,9 @@ class Syllable
     /**
      * Split a single word on where the hyphenation would go.
      *
+     * Punctuation is not supported, only simple words. For parsing whole sentences
+     * please use Syllable::splitWords() or Syllable::splitText().
+     *
      * @param string $word
      *
      * @return array
@@ -386,8 +389,9 @@ class Syllable
     }
 
     /**
-     * 1. Split the text into an array of words
-     * 2. Split the specific words into arrays of syllables
+     * Split a text into an array of punctuation marks and words,
+     * splitting each word on where the hyphenation would go.
+     *
      * @param string $text
      * @return array
      */
@@ -396,26 +400,30 @@ class Syllable
         self::initEncoding();
         $this->loadLanguage();
 
-        $words = [];
-        $word = [];
-        foreach ($this->splitText($text) as $splitPart) {
-            $syllables = mb_split('\s+', $splitPart);
+        $words = mb_split('[^\'[:alpha:]]+', $text);
+        $parts = [];
+        $textPosition = 0;
+        $textLength = mb_strlen($text);
 
-            $word[] = $syllables[0];
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $wordPosition = mb_stripos($text, $word, $textPosition);
 
-            if (count($syllables) > 1) {
-                $words[] = $word;
-                $word = [
-                    $syllables[1],
-                ];
+                if ($wordPosition > $textPosition) {
+                    $parts[][] = mb_substr($text, $textPosition, $wordPosition - $textPosition);
+                }
+
+                $parts[] = $this->parseWord($word);
+
+                $textPosition = $wordPosition + mb_strlen($word);
             }
         }
 
-        if (!empty($word)) {
-            $words[] = $word;
+        if ($textPosition < $textLength - 1) {
+            $parts[][] = mb_substr($text, $textPosition);
         }
 
-        return $words;
+        return $parts;
     }
 
     /**
@@ -430,35 +438,32 @@ class Syllable
         self::initEncoding();
         $this->loadLanguage();
 
-        $splits = mb_split('[^\'[:alpha:]]+', $text);
+        $words = mb_split('[^\'[:alpha:]]+', $text);
         $parts = [];
         $part = '';
-        $pos = 0;
+        $textPosition = 0;
 
-        foreach ($splits as $split) {
-            if (mb_strlen($split)) {
-                $p = mb_stripos($text, $split, $pos);
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $wordPosition = mb_stripos($text, $word, $textPosition);
 
-                $length = $p - $pos;
-                if ($length >= 1) {
-                    $part .= mb_substr($text, $pos, $length);
+                if ($wordPosition > $textPosition) {
+                    $part .= mb_substr($text, $textPosition, $wordPosition - $textPosition);
                 }
-                if (!empty($split)) {
-                    $parsedWord = $this->parseWord($split);
-                    $index = 0;
-                    $part .= $parsedWord[$index++];
-                    $parsedWordCount = count($parsedWord);
-                    if ($parsedWordCount > 1) {
-                        do {
-                            $parts[] = $part;
-                            $part = $parsedWord[$index++];
-                        } while ($index < $parsedWordCount);
-                    }
+
+                $syllables = $this->parseWord($word);
+
+                $part .= $syllables[0];
+                for ($i=1; $i < count($syllables); $i++) {
+                    $parts[] = $part;
+                    $part = $syllables[$i];
                 }
-                $pos = $p + mb_strlen($split);
+
+                $textPosition = $wordPosition + mb_strlen($word);
             }
         }
-        $parts[] = $part.mb_substr($text, $pos);
+
+        $parts[] = $part . mb_substr($text, $textPosition);
 
         return $parts;
     }

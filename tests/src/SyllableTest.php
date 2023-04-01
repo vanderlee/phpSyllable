@@ -148,13 +148,24 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
+     * @return array[]
+     */
+    public function dataSplitWord()
+    {
+        return [
+            [
+                'Inexplicable',
+                ['In', 'ex', 'plic', 'a', 'ble'],
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider dataSplitWord
      * @return void
      */
-    public function testSplitWord($expected, $word)
+    public function testSplitWord($word, $expected)
     {
-        $this->markTestIncomplete('splitWord is known to fail in specific cases');
-
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
@@ -164,25 +175,110 @@ class SyllableTest extends AbstractTestCase
     /**
      * @return array[]
      */
-    public function dataSplitWord()
+    public function dataSplitWordDoesNotSupportPunctuation()
     {
         return [
-            'simple' => [
-                ['In', 'ex', 'plic', 'a', 'ble'],
-                'Inexplicable',
-            ],
-
-            'punctuation' => [
-                [';Re', 'dun', 'dant,'],
+            [
                 ';Redundant,',
+                [';Re', 'dun', 'dan', 't,'],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataSplitWordDoesNotSupportPunctuation
+     * @return void
+     */
+    public function testSplitWordDoesNotSupportPunctuation($word, $expected)
+    {
+        $this->object->setHyphen('-');
+        $this->object->setLanguage('en-us');
+
+        $this->assertEquals($expected, $this->object->splitWord($word));
+    }
+
+    /**
+     * @return array
+     */
+    public function dataSplitWords()
+    {
+        return [
+            'simple word' => [
+                'Inexplicable',
+                [
+                    ['In', 'ex', 'plic', 'a', 'ble']
+                ],
+            ],
+            'text with punctuation' => [
+                ';Redundant, punctuation...',
+                [
+                    [';'],
+                    ['Re', 'dun', 'dant'],
+                    [', '],
+                    ['punc', 'tu', 'a', 'tion'],
+                    ['...'],
+                ],
+            ],
+            'large text' => [
+                'A syllable is a unit of organization for a sequence of speech sounds typically made up of a syllable ' .
+                'nucleus (most often a vowel) with optional initial and final margins (typically, consonants). ' .
+                'Syllables are often considered the phonological "building blocks" of words.[1] They can influence the ' .
+                'rhythm of a language, its prosody, its poetic metre and its stress patterns. Speech can usually be ' .
+                'divided up into a whole number of syllables: for example, the word ignite is made of two syllables: ' .
+                'ig and nite. Syllabic writing began several hundred years before the first letters. The earliest ' .
+                'recorded syllables are on tablets written around 2800 BC in the Sumerian city of Ur. This shift from ' .
+                'pictograms to syllables has been called "the most important advance in the history of writing".[2] ' .
+                'Syllable is an Anglo-Norman variation of Old French sillabe, from Latin syllaba, from Koine Greek ' .
+                'συλλαβή syllabḗ (Greek pronunciation: [sylːabɛ:]). συλλαβή means "the taken together", referring to ' .
+                'letters that are taken together to make a single sound.[3]',
+                [
+                    ['A'], [' '], ['syl', 'la', 'ble'], [' '], ['is'], [' '], ['a'], [' '], ['unit'], [' '], ['of'],
+                    [' '], ['or', 'ga', 'ni', 'za', 'tion'], [' '], ['for'], [' '], ['a'], [' '], ['se', 'quence'],
+                    [' '], ['of'], [' '], ['speech'], [' '], ['sounds'], [' '], ['typ', 'i', 'cal', 'ly'], [' '],
+                    ['made'], [' '], ['up'], [' '], ['of'], [' '], ['a'], [' '], ['syl', 'la', 'ble'], [' '],
+                    ['nu', 'cle', 'us'], [' ('], ['most'], [' '], ['of', 'ten'], [' '], ['a'], [' '], ['vow', 'el'],
+                    [') '], ['with'], [' '], ['op', 'tion', 'al'], [' '], ['ini', 'tial'], [' '], ['and'], [' '],
+                    ['fi', 'nal'], [' '], ['mar', 'gins'], [' ('], ['typ', 'i', 'cal', 'ly'], [', '],
+                    ['con', 'so', 'nants'], ['). '], ['Syl', 'la', 'bles'], [' '], ['are'], [' '], ['of', 'ten'],
+                    [' '], ['con', 'sid', 'ered'], [' '], ['the'], [' '], ['phono', 'log', 'i', 'cal'], [' "'],
+                    ['build', 'ing'], [' '], ['blocks'], ['" '], ['of'], [' '], ['words'], ['.[1] '], ['They'], [' '],
+                    ['can'], [' '], ['in', 'flu', 'ence'], [' '], ['the'], [' '], ['rhythm'], [' '], ['of'], [' '],
+                    ['a'], [' '], ['lan', 'guage'], [', '], ['its'], [' '], ['prosody'], [', '], ['its'], [' '],
+                    ['po', 'et', 'ic'], [' '], ['me', 'tre'], [' '], ['and'], [' '], ['its'], [' '], ['stress'], [' '],
+                    ['pat', 'terns'], ['. '], ['Speech'], [' '], ['can'], [' '], ['usu', 'al', 'ly'], [' '], ['be'],
+                    [' '], ['di', 'vid', 'ed'], [' '], ['up'], [' '], ['in', 'to'], [' '], ['a'], [' '], ['whole'],
+                    [' '], ['num', 'ber'], [' '], ['of'], [' '], ['syl', 'la', 'bles'], [': '], ['for'], [' '],
+                    ['ex', 'am', 'ple'], [', '], ['the'], [' '], ['word'], [' '], ['ig', 'nite'], [' '], ['is'], [' '],
+                    ['made'], [' '], ['of'], [' '], ['two'], [' '], ['syl', 'la', 'bles'], [': '], ['ig'], [' '],
+                    ['and'], [' '], ['nite'], ['. '], ['Syl', 'lab', 'ic'], [' '], ['writ', 'ing'], [' '],
+                    ['be', 'gan'], [' '], ['sev', 'er', 'al'], [' '], ['hun', 'dred'], [' '], ['years'], [' '],
+                    ['be', 'fore'], [' '], ['the'], [' '], ['first'], [' '], ['let', 'ters'], ['. '], ['The'], [' '],
+                    ['ear', 'li', 'est'], [' '], ['record', 'ed'], [' '], ['syl', 'la', 'bles'], [' '], ['are'], [' '],
+                    ['on'], [' '], ['tablets'], [' '], ['writ', 'ten'], [' '], ['around'], [' 2800 '], ['BC'], [' '],
+                    ['in'], [' '], ['the'], [' '], ['Sumer', 'ian'], [' '], ['city'], [' '], ['of'], [' '], ['Ur'],
+                    ['. '], ['This'], [' '], ['shift'], [' '], ['from'], [' '], ['pic', 'tograms'], [' '], ['to'],
+                    [' '], ['syl', 'la', 'bles'], [' '], ['has'], [' '], ['been'], [' '], ['called'], [' "'], ['the'],
+                    [' '], ['most'], [' '], ['im', 'por', 'tant'], [' '], ['ad', 'vance'], [' '], ['in'], [' '],
+                    ['the'], [' '], ['his', 'to', 'ry'], [' '], ['of'], [' '], ['writ', 'ing'], ['".[2] '],
+                    ['Syl', 'la', 'ble'], [' '], ['is'], [' '], ['an'], [' '], ['An', 'glo'], ['-'], ['Nor', 'man'],
+                    [' '], ['vari', 'a', 'tion'], [' '], ['of'], [' '], ['Old'], [' '], ['French'], [' '],
+                    ['sil', 'l', 'abe'], [', '], ['from'], [' '], ['Latin'], [' '], ['syl', 'la', 'ba'], [', '],
+                    ['from'], [' '], ['Koine'], [' '], ['Greek'], [' '], ['συλλαβή'], [' '], ['syl', 'labḗ'], [' ('],
+                    ['Greek'], [' '], ['pro', 'nun', 'ci', 'a', 'tion'], [': ['], ['sylːabɛ'], [':]). '],
+                    ['συλλαβή'], [' '], ['means'], [' "'], ['the'], [' '], ['tak', 'en'], [' '], ['to', 'geth', 'er'],
+                    ['", '], ['re', 'fer', 'ring'], [' '], ['to'], [' '], ['let', 'ters'], [' '], ['that'], [' '],
+                    ['are'], [' '], ['tak', 'en'], [' '], ['to', 'geth', 'er'], [' '], ['to'], [' '], ['make'], [' '],
+                    ['a'], [' '], ['sin', 'gle'], [' '], ['sound'], ['.[3]' ]
+                ]
             ],
         ];
     }
 
     /**
      * @dataProvider dataSplitWords
+     * @return void
      */
-    public function testSplitWords($expected, $text)
+    public function testSplitWords($text, $expected)
     {
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
@@ -193,54 +289,61 @@ class SyllableTest extends AbstractTestCase
     /**
      * @return array
      */
-    public function dataSplitWords()
+    public function dataSplitText()
     {
         return [
             'simple word' => [
-                [
-                    0 => [
-                        0 => 'In',
-                        1 => 'ex',
-                        2 => 'plic',
-                        3 => 'a',
-                        4 => 'ble'
-                    ]
-                ],
                 'Inexplicable',
+                ['In', 'ex', 'plic', 'a', 'ble'],
             ],
-
-            'words with punctuation' => [
+            'text with punctuation' => [
+                ';Redundant, punctuation...',
+                [';Re', 'dun', 'dant, punc', 'tu', 'a', 'tion...'],
+            ],
+            'large text' => [
+                'A syllable is a unit of organization for a sequence of speech sounds typically made up of a syllable ' .
+                'nucleus (most often a vowel) with optional initial and final margins (typically, consonants). ' .
+                'Syllables are often considered the phonological "building blocks" of words.[1] They can influence the ' .
+                'rhythm of a language, its prosody, its poetic metre and its stress patterns. Speech can usually be ' .
+                'divided up into a whole number of syllables: for example, the word ignite is made of two syllables: ' .
+                'ig and nite. Syllabic writing began several hundred years before the first letters. The earliest ' .
+                'recorded syllables are on tablets written around 2800 BC in the Sumerian city of Ur. This shift from ' .
+                'pictograms to syllables has been called "the most important advance in the history of writing".[2] ' .
+                'Syllable is an Anglo-Norman variation of Old French sillabe, from Latin syllaba, from Koine Greek ' .
+                'συλλαβή syllabḗ (Greek pronunciation: [sylːabɛ:]). συλλαβή means "the taken together", referring to ' .
+                'letters that are taken together to make a single sound.[3]',
                 [
-                    0 => [
-                        0 => ';Re',
-                        1 => 'dun',
-                        2 => 'dant,',
-                    ],
-                    1 => [
-                        0 => 'punc',
-                        1 => 'tu',
-                        2 => 'a',
-                        3 => 'tion...'
-                    ]
-                ],
-                ';Redundant, punctuation...'
+                    'A syl', 'la', 'ble is a unit of or','ga', 'ni', 'za', 'tion for a se',
+                    'quence of speech sounds typ', 'i', 'cal', 'ly made up of a syl', 'la', 'ble nu', 'cle',
+                    'us (most of', 'ten a vow', 'el) with op', 'tion', 'al ini', 'tial and fi', 'nal mar',
+                    'gins (typ', 'i', 'cal', 'ly, con', 'so', 'nants). Syl', 'la', 'bles are of', 'ten con', 'sid',
+                    'ered the phono', 'log', 'i', 'cal "build', 'ing blocks" of words.[1] They can in', 'flu',
+                    'ence the rhythm of a lan', 'guage, its prosody, its po', 'et', 'ic me', 'tre and its stress pat',
+                    'terns. Speech can usu', 'al', 'ly be di', 'vid', 'ed up in', 'to a whole num', 'ber of syl', 'la',
+                    'bles: for ex', 'am', 'ple, the word ig', 'nite is made of two syl', 'la', 'bles: ig and nite. Syl',
+                    'lab', 'ic writ', 'ing be', 'gan sev', 'er', 'al hun', 'dred years be', 'fore the first let',
+                    'ters. The ear', 'li', 'est record', 'ed syl', 'la', 'bles are on tablets writ',
+                    'ten around 2800 BC in the Sumer', 'ian city of Ur. This shift from pic', 'tograms to syl', 'la',
+                    'bles has been called "the most im', 'por', 'tant ad', 'vance in the his', 'to', 'ry of writ',
+                    'ing".[2] Syl', 'la', 'ble is an An', 'glo-Nor', 'man vari', 'a', 'tion of Old French sil', 'l',
+                    'abe, from Latin syl', 'la', 'ba, from Koine Greek συλλαβή syl', 'labḗ (Greek pro', 'nun', 'ci',
+                    'a', 'tion: [sylːabɛ:]). συλλαβή means "the tak', 'en to', 'geth', 'er", re', 'fer', 'ring to let',
+                    'ters that are tak', 'en to', 'geth', 'er to make a sin', 'gle sound.[3]'
+                ]
             ],
         ];
     }
 
     /**
+     * @dataProvider dataSplitText
      * @return void
      */
-    public function testSplitText()
+    public function testSplitText($text, $expected)
     {
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(
-            [';Re', 'dun', 'dant, punc', 'tu', 'a', 'tion...'],
-            $this->object->splitText(';Redundant, punctuation...')
-        );
-        $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('Inexplicable'));
+        $this->assertEquals($expected, $this->object->splitText($text));
     }
 
     /**

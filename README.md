@@ -73,6 +73,13 @@ Get the minimum length required for a word to be hyphenated.
 ### public array splitWord(  $word )
 Split a single word on where the hyphenation would go.
 
+Punctuation is not supported, only simple words. For parsing whole sentences
+please use Syllable::splitWords() or Syllable::splitText().
+
+### public array splitWords( $text )
+Split a text into an array of punctuation marks and words, 
+splitting each word on where the hyphenation would go.
+
 ### public array splitText(  $text )
 Split a text on where the hyphenation would go.
 
