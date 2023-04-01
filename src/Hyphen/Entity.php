@@ -2,6 +2,8 @@
 
 namespace Vanderlee\Syllable\Hyphen;
 
+use DOMNode;
+
 class Entity implements Hyphen
 {
     private $entity;
@@ -16,13 +18,20 @@ class Entity implements Hyphen
         return join('&'.$this->entity.';', $parts);
     }
 
-    public function joinHtmlDom($parts, \DOMNode $node)
+    public function joinHtmlDom($parts, DOMNode $node)
     {
         if (($p = count($parts)) > 1) {
             $node->textContent = $parts[--$p];
             while (--$p >= 0) {
-                $node = $node->parentNode->insertBefore($node->ownerDocument->createEntityReference($this->entity), $node);
-                $node = $node->parentNode->insertBefore($node->ownerDocument->createTextNode($parts[$p]), $node);
+                $node = $node->parentNode->insertBefore(
+                    $node->ownerDocument->createEntityReference($this->entity),
+                    $node
+                );
+
+                $node = $node->parentNode->insertBefore(
+                    $node->ownerDocument->createTextNode($parts[$p]),
+                    $node
+                );
             }
         }
     }

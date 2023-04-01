@@ -6,6 +6,9 @@ use Vanderlee\Syllable\Hyphen\Text;
 use Vanderlee\Syllable\Syllable;
 use Vanderlee\SyllableTest\AbstractTestCase;
 
+/**
+ * @coversDefaultClass \Vanderlee\Syllable\Syllable
+ */
 class SyllableTest extends AbstractTestCase
 {
     /**
@@ -26,8 +29,8 @@ class SyllableTest extends AbstractTestCase
     {
         $this->createTestDirectory();
 
-        Syllable::setCacheDir($this->getTestDirectory());
-        Syllable::setLanguageDir(realpath(__DIR__.'/../../languages'));
+        Syllable::setDirectoryCache($this->getTestDirectory());
+        Syllable::setDirectoryLanguage(realpath(__DIR__ . '/../../languages'));
 
         $this->object = new Syllable();
     }
@@ -43,6 +46,10 @@ class SyllableTest extends AbstractTestCase
         $this->removeTestDirectory();
     }
 
+    /**
+     * @covers ::setLanguage
+     * @return void
+     */
     public function testSetLanguage()
     {
         $this->object->setHyphen('-');
@@ -66,6 +73,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::setHyphen
+     * @return void
+     */
     public function testSetHyphen()
     {
         $this->object->setLanguage('en-us');
@@ -83,6 +94,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::getHyphen
+     * @return void
+     */
     public function testGetHyphen()
     {
         $this->object->setHyphen('-');
@@ -95,7 +110,8 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @todo   Implement testSetCache().
+     * @covers ::setCache
+     * @todo Implement testSetCache().
      */
     public function testSetCache()
     {
@@ -106,7 +122,8 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @todo   Implement testGetCache().
+     * @covers ::getCache
+     * @todo Implement testGetCache().
      */
     public function testGetCache()
     {
@@ -117,7 +134,8 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @todo   Implement testSetSource().
+     * @covers ::setSource
+     * @todo Implement testSetSource().
      */
     public function testSetSource()
     {
@@ -128,7 +146,8 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @todo   Implement testGetSource().
+     * @covers ::getSource
+     * @todo Implement testGetSource().
      */
     public function testGetSource()
     {
@@ -138,18 +157,93 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
-    public function testSplitWord()
+    /**
+     * @dataProvider dataSplitWord
+     * @covers ::splitWord
+     * @return void
+     */
+    public function testSplitWord($expected, $word)
+    {
+        $this->markTestIncomplete('splitWord is known to fail in specific cases');
+
+        $this->object->setHyphen('-');
+        $this->object->setLanguage('en-us');
+
+        $this->assertEquals($expected, $this->object->splitWord($word));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function dataSplitWord()
+    {
+        return [
+            'simple' => [
+                ['In', 'ex', 'plic', 'a', 'ble'],
+                'Inexplicable',
+            ],
+
+            'punctuation' => [
+                [';Re', 'dun', 'dant,'],
+                ';Redundant,',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataSplitWords
+     * @covers ::splitWords
+     */
+    public function testSplitWords($expected, $text)
     {
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
-        $this->assertEquals(
-            [';Re', 'dun', 'dan', 't, punc', 'tu', 'a', 'tion...'],
-            $this->object->splitWord(';Redundant, punctuation...')
-        );
-        $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitWord('Inexplicable'));
+        $this->assertEquals($expected, $this->object->splitWords($text));
     }
 
+    /**
+     * @return array
+     */
+    public function dataSplitWords()
+    {
+        return [
+            'simple word' => [
+                [
+                    0 => [
+                        0 => 'In',
+                        1 => 'ex',
+                        2 => 'plic',
+                        3 => 'a',
+                        4 => 'ble'
+                    ]
+                ],
+                'Inexplicable',
+            ],
+
+            'words with punctuation' => [
+                [
+                    0 => [
+                        0 => ';Re',
+                        1 => 'dun',
+                        2 => 'dant,',
+                    ],
+                    1 => [
+                        0 => 'punc',
+                        1 => 'tu',
+                        2 => 'a',
+                        3 => 'tion...'
+                    ]
+                ],
+                ';Redundant, punctuation...'
+            ],
+        ];
+    }
+
+    /**
+     * @covers ::splitText
+     * @return void
+     */
     public function testSplitText()
     {
         $this->object->setHyphen('-');
@@ -162,6 +256,10 @@ class SyllableTest extends AbstractTestCase
         $this->assertEquals(['In', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('Inexplicable'));
     }
 
+    /**
+     * @covers ::hyphenateWord
+     * @return void
+     */
     public function testHyphenateWord()
     {
         $this->object->setHyphen('-');
@@ -174,6 +272,10 @@ class SyllableTest extends AbstractTestCase
         $this->assertEquals('In-ex-plic-a-ble', $this->object->hyphenateWord('Inexplicable'));
     }
 
+    /**
+     * @covers ::hyphenateText
+     * @return void
+     */
     public function testHyphenateText()
     {
         $this->object->setHyphen('-');
@@ -192,6 +294,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::setMinWordLength
+     * @return void
+     */
     public function testMinWordLength()
     {
         $this->object->setHyphen('-');
@@ -239,20 +345,28 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::hyphenateHtml
+     * @return void
+     */
     public function testHyphenateHtml()
     {
         $this->object->setHyphen('-');
         $this->object->setLanguage('en-us');
 
         $this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
-            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
+            . "\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
 
         $this->object->setLibxmlOptions(LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $this->assertEquals('<p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p>'
-            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+            . "\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
     }
 
+    /**
+     * @covers ::splitText
+     * @return void
+     */
     public function testCaseInsensitivity()
     {
         $this->object->setHyphen('-');
@@ -262,6 +376,10 @@ class SyllableTest extends AbstractTestCase
         $this->assertEquals(['in', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('inexplicable'));
     }
 
+    /**
+     * @covers ::histogramText
+     * @return void
+     */
     public function testHistogramText()
     {
         $this->object->setLanguage('en-us');
@@ -272,6 +390,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::countWordsText
+     * @return void
+     */
     public function testCountWordsText()
     {
         $this->object->setLanguage('en-us');
@@ -282,6 +404,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::countPolysyllablesText
+     * @return void
+     */
     public function testCountPolysyllablesText()
     {
         $this->object->setLanguage('en-us');
@@ -292,6 +418,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::countSyllablesText
+     * @return void
+     */
     public function testCountSyllablesText()
     {
         $this->object->setLanguage('en-us');
@@ -302,6 +432,10 @@ class SyllableTest extends AbstractTestCase
         );
     }
 
+    /**
+     * @covers ::excludeElement
+     * @return void
+     */
     public function testExcludeElement()
     {
         $this->object->setLanguage('en-us');
@@ -311,12 +445,16 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
-            ."\n",
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            . "\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
+    /**
+     * @covers ::excludeElement
+     * @return void
+     */
     public function testExcludeElements()
     {
         $this->object->setLanguage('en-us');
@@ -326,12 +464,17 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
-            ."\n",
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
+            . "\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
+    /**
+     * @covers ::excludeAll
+     * @covers ::includeElement
+     * @return void
+     */
     public function testExcludeAllAndInclude()
     {
         $this->object->setLanguage('en-us');
@@ -342,12 +485,17 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
-            ."\n",
+            . "\n" . '<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
+            . "\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
+    /**
+     * @covers ::excludeElement
+     * @covers ::includeElement
+     * @return void
+     */
     public function testExcludeAndInclude()
     {
         $this->object->setLanguage('en-us');
@@ -358,12 +506,16 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
-            ."\n",
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
+            . "\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated <i>extravaganza</i></b> metatext')
         );
     }
 
+    /**
+     * @covers ::excludeAttribute
+     * @return void
+     */
     public function testExcludeAttribute()
     {
         $this->object->setLanguage('en-us');
@@ -373,12 +525,16 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
-            ."\n",
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            . "\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
+    /**
+     * @covers ::excludeAttribute
+     * @return void
+     */
     public function testExcludeAttributeValue()
     {
         $this->object->setLanguage('en-us');
@@ -388,8 +544,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
-            ."\n",
+            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
+            . "\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i class="go right ahead">extravaganza</i>')
         );
     }

@@ -2,6 +2,8 @@
 
 namespace Vanderlee\Syllable\Hyphen;
 
+use DOMNode;
+
 class Text implements Hyphen
 {
     private $text;
@@ -16,7 +18,7 @@ class Text implements Hyphen
         return join($this->text, $parts);
     }
 
-    public function joinHtmlDom($parts, \DOMNode $node)
+    public function joinHtmlDom($parts, DOMNode $node)
     {
         $node->textContent = $this->joinText($parts);
     }

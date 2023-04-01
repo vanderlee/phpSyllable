@@ -11,9 +11,9 @@ class File implements Source
     private static $minHyphens = null;
     private $path = null;
     private $language = null;
-    private $loaded = false;
+    private $loaded;
     private $patterns = null;
-    private $max_pattern_length = null;
+    private $maxPatternLength = null;
     private $hyphenations = null;
 
     public function __construct($language, $path)
@@ -38,7 +38,7 @@ class File implements Source
     public function getMinHyphens()
     {
         if (!self::$minHyphens) {
-            self::$minHyphens = json_decode(file_get_contents("{$this->path}/min.json"), true);
+            self::$minHyphens = json_decode(file_get_contents("$this->path/min.json"), true);
         }
 
         return isset(self::$minHyphens[$this->language]) ? self::$minHyphens[$this->language] : null;
@@ -48,7 +48,7 @@ class File implements Source
     {
         if (!$this->loaded) {
             $this->patterns = [];
-            $this->max_pattern_length = 0;
+            $this->maxPatternLength = 0;
             $this->hyphenations = [];
 
             // parser state
@@ -56,10 +56,10 @@ class File implements Source
             $braces = false;
 
             // parse .tex file
-            foreach (file("{$this->path}/hyph-{$this->language}.tex") as $line) {
+            foreach (file("$this->path/hyph-$this->language.tex") as $line) {
                 $offset = 0;
-                $strlen_line = mb_strlen($line);
-                while ($offset < $strlen_line) {
+                $strlenLine = mb_strlen($line);
+                while ($offset < $strlenLine) {
                     $char = $line[$offset];
 
                     // %comment
@@ -74,7 +74,7 @@ class File implements Source
                         continue; // next token
                     }
 
-                    // {
+                    // opening brace
                     if ($char === '{') {
                         $braces = true;
                         $offset++;
@@ -89,35 +89,35 @@ class File implements Source
                                     $numbers = '';
                                     $pattern = '';
                                     $strlen = 0;
-                                    $expect_number = true;
+                                    $expectNumber = true;
                                     foreach (preg_split('/(?<!^)(?!$)/u', $m[0]) as $char) {
                                         if (is_numeric($char)) {
                                             $numbers .= $char;
-                                            $expect_number = false;
+                                            $expectNumber = false;
                                         } else {
-                                            if ($expect_number) {
+                                            if ($expectNumber) {
                                                 $numbers .= '0';
                                             }
                                             $pattern .= $char;
                                             $strlen++;
-                                            $expect_number = true;
+                                            $expectNumber = true;
                                         }
                                         $offset++;
                                     }
-                                    if ($expect_number) {
+                                    if ($expectNumber) {
                                         $numbers .= '0';
                                     }
 
                                     $this->patterns[$pattern] = $numbers;
-                                    if ($strlen > $this->max_pattern_length) {
-                                        $this->max_pattern_length = $strlen;
+                                    if ($strlen > $this->maxPatternLength) {
+                                        $this->maxPatternLength = $strlen;
                                     }
                                 }
                                 continue 3; // next token
 
                             case 'hyphenation':
                                 if (preg_match('~^\S+~u', substr($line, $offset), $m) === 1) {
-                                    $hyphenation = preg_replace('~\-~', '', $m[0]);
+                                    $hyphenation = str_replace('-', '', $m[0]);
                                     $this->hyphenations[$hyphenation] = $m[0];
                                     $offset += strlen($m[0]);
                                 }
@@ -125,7 +125,7 @@ class File implements Source
                         }
                     }
 
-                    // }
+                    // closing brace
                     if ($char === '}') {
                         $braces = false;
                         $command = false;
@@ -153,7 +153,7 @@ class File implements Source
     {
         $this->loadLanguage();
 
-        return $this->max_pattern_length;
+        return $this->maxPatternLength;
     }
 
     public function getPatterns()
