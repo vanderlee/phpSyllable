@@ -29,7 +29,7 @@ abstract class File implements Cache
 
     private function filename()
     {
-        return self::$path . '/' . $this->getFilename(self::$language);
+        return self::$path.'/'.$this->getFilename(self::$language);
     }
 
     public function open($language)

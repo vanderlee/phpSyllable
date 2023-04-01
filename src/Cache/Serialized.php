@@ -3,7 +3,7 @@
 namespace Vanderlee\Syllable\Cache;
 
 /**
- * Single-file cache using PHP-native serialization to encode data
+ * Single-file cache using PHP-native serialization to encode data.
  */
 class Serialized extends File
 {
