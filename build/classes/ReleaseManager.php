@@ -182,20 +182,28 @@ class ReleaseManager extends Manager
             if (strpos($line, "Version $this->tag") === 0) {
                 $readmeContent .= str_replace($this->tag, $this->releaseTag, $line);
                 $readmeState += 1;
+            } elseif (strpos($line, 'Copyright') === 0) {
+                $readmeContent .= preg_replace('#2011(\s*)-(\s*)[0-9]+#', '2011${1}-${2}'.date('Y'), $line, 1, $count);
+                if ($count === 1) {
+                    $readmeState += 2;
+                }
             } elseif (strpos($line, $this->tag) === 0) {
                 $readmeContent .= str_replace($this->tag, "$changelog\n$this->tag", $line);
-                $readmeState += 2;
+                $readmeState += 4;
             } else {
                 $readmeContent .= $line;
             }
         }
         file_put_contents($this->readmeFile, $readmeContent);
 
-        if ($readmeState < 3) {
+        if ($readmeState < 7) {
             if (!($readmeState & 1)) {
                 $errors[] = sprintf("Missing note 'Version %s' of the last release below the title.", $this->tag);
             }
             if (!($readmeState & 2)) {
+                $errors[] = "Missing copyright claim 'Copyright &copy; 2011-{year} Martijn van der Lee.'";
+            }
+            if (!($readmeState & 4)) {
                 $errors[] = sprintf("Missing changelog entry '%s: ..' from the last release.", $this->tag);
             }
             if (isset($errors)) {
