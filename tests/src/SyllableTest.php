@@ -6,9 +6,6 @@ use Vanderlee\Syllable\Hyphen\Text;
 use Vanderlee\Syllable\Syllable;
 use Vanderlee\SyllableTest\AbstractTestCase;
 
-/**
- * @coversDefaultClass \Vanderlee\Syllable\Syllable
- */
 class SyllableTest extends AbstractTestCase
 {
     /**
@@ -47,7 +44,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::setLanguage
      * @return void
      */
     public function testSetLanguage()
@@ -74,7 +70,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::setHyphen
      * @return void
      */
     public function testSetHyphen()
@@ -95,7 +90,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getHyphen
      * @return void
      */
     public function testGetHyphen()
@@ -110,7 +104,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::setCache
      * @todo Implement testSetCache().
      */
     public function testSetCache()
@@ -122,7 +115,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getCache
      * @todo Implement testGetCache().
      */
     public function testGetCache()
@@ -134,7 +126,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::setSource
      * @todo Implement testSetSource().
      */
     public function testSetSource()
@@ -146,7 +137,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getSource
      * @todo Implement testGetSource().
      */
     public function testGetSource()
@@ -159,7 +149,6 @@ class SyllableTest extends AbstractTestCase
 
     /**
      * @dataProvider dataSplitWord
-     * @covers ::splitWord
      * @return void
      */
     public function testSplitWord($expected, $word)
@@ -192,7 +181,6 @@ class SyllableTest extends AbstractTestCase
 
     /**
      * @dataProvider dataSplitWords
-     * @covers ::splitWords
      */
     public function testSplitWords($expected, $text)
     {
@@ -241,7 +229,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::splitText
      * @return void
      */
     public function testSplitText()
@@ -257,7 +244,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::hyphenateWord
      * @return void
      */
     public function testHyphenateWord()
@@ -273,7 +259,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::hyphenateText
      * @return void
      */
     public function testHyphenateText()
@@ -295,7 +280,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::setMinWordLength
      * @return void
      */
     public function testMinWordLength()
@@ -346,7 +330,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::hyphenateHtml
      * @return void
      */
     public function testHyphenateHtml()
@@ -364,7 +347,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::splitText
      * @return void
      */
     public function testCaseInsensitivity()
@@ -377,7 +359,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::histogramText
      * @return void
      */
     public function testHistogramText()
@@ -391,7 +372,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::countWordsText
      * @return void
      */
     public function testCountWordsText()
@@ -405,7 +385,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::countPolysyllablesText
      * @return void
      */
     public function testCountPolysyllablesText()
@@ -419,7 +398,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::countSyllablesText
      * @return void
      */
     public function testCountSyllablesText()
@@ -433,7 +411,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::excludeElement
      * @return void
      */
     public function testExcludeElement()
@@ -452,7 +429,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::excludeElement
      * @return void
      */
     public function testExcludeElements()
@@ -471,8 +447,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::excludeAll
-     * @covers ::includeElement
      * @return void
      */
     public function testExcludeAllAndInclude()
@@ -492,8 +466,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::excludeElement
-     * @covers ::includeElement
      * @return void
      */
     public function testExcludeAndInclude()
@@ -513,7 +485,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::excludeAttribute
      * @return void
      */
     public function testExcludeAttribute()
@@ -532,7 +503,6 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::excludeAttribute
      * @return void
      */
     public function testExcludeAttributeValue()
