@@ -13,7 +13,7 @@ class Entity implements Hyphen
 
     public function joinText($parts)
     {
-        return join('&' . $this->entity . ';', $parts);
+        return join('&'.$this->entity.';', $parts);
     }
 
     public function joinHtmlDom($parts, \DOMNode $node)
@@ -29,6 +29,6 @@ class Entity implements Hyphen
 
     public function stripHtml($html)
     {
-        return str_replace('&' . $this->entity . ';', '', $html);
+        return str_replace('&'.$this->entity.';', '', $html);
     }
 }
