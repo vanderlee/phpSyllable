@@ -77,7 +77,8 @@ jobs:
           gh pr create --fill --base ${baseBranch}
           # Avoid occasional GitHub error "Pull request Pull request is in clean status".
           sleep 1s
-          gh pr merge --auto --rebase --delete-branch
+          # Skip the check for manual revisions in the merge process.
+          gh pr merge --admin --rebase --delete-branch
 
       - name: Release base branch (if base branch was also previously released)
         if: ${{ steps.update-language-files.outputs.CHANGED_LANGUAGES && steps.update-language-files.outputs.RELEASED_BASE_BRANCH == 1 }}
