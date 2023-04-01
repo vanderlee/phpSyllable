@@ -3,7 +3,7 @@
 namespace Vanderlee\Syllable\Cache;
 
 /**
- * Single-file cache using JSON format to encode data
+ * Single-file cache using JSON format to encode data.
  */
 class Json extends File
 {
