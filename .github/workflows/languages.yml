@@ -3,7 +3,7 @@ name: Languages
 on:
   # Run manually on demand.
   workflow_dispatch:
-  # Run automatically on the first day of the month at midnight.
+  # Run automatically on the first day of the month at midnight. Skip running the scheduler in forks (see job condition).
   schedule:
     - cron: '0 0 1 * *'
 
@@ -11,6 +11,7 @@ jobs:
   update:
     name: 'Update languages'
     runs-on: ubuntu-latest
+    if: github.event_name != 'schedule' || github.repository == 'vanderlee/phpSyllable'
 
     permissions:
       contents: write

@@ -3,11 +3,8 @@ name: Tests
 on:
   # Run manually on demand.
   workflow_dispatch:
-  # Run automatically on every push and pull request. The runtime is only ~ 30s due to parallelization.
-  push:
-    # Avoid a double run for tagged commits.
-    branches:
-      - '*'
+  # Run automatically when a pull request is created and on each push to it.
+  # The runtime is only ~ 30s due to parallelization.
   pull_request:
 
 jobs:
