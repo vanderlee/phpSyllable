@@ -27,7 +27,7 @@ class SyllableTest extends AbstractTestCase
         $this->createTestDirectory();
 
         Syllable::setDirectoryCache($this->getTestDirectory());
-        Syllable::setDirectoryLanguage(realpath(__DIR__ . '/../../languages'));
+        Syllable::setDirectoryLanguage(realpath(__DIR__.'/../../languages'));
 
         $this->object = new Syllable();
     }
@@ -162,6 +162,7 @@ class SyllableTest extends AbstractTestCase
 
     /**
      * @dataProvider dataSplitWord
+     *
      * @return void
      */
     public function testSplitWord($word, $expected)
@@ -187,6 +188,7 @@ class SyllableTest extends AbstractTestCase
 
     /**
      * @dataProvider dataSplitWordDoesNotSupportPunctuation
+     *
      * @return void
      */
     public function testSplitWordDoesNotSupportPunctuation($word, $expected)
@@ -216,12 +218,13 @@ class SyllableTest extends AbstractTestCase
             [
                 'pictograms',
                 ['pic', 'tograms'],
-            ]
+            ],
         ];
     }
 
     /**
      * @dataProvider dataSplitWordDoesNotAlwaysProvideFullHyphenation
+     *
      * @return void
      */
     public function testSplitWordDoesNotAlwaysProvideFullHyphenation($word, $expected)
@@ -241,7 +244,7 @@ class SyllableTest extends AbstractTestCase
             'simple word' => [
                 'Inexplicable',
                 [
-                    ['In', 'ex', 'plic', 'a', 'ble']
+                    ['In', 'ex', 'plic', 'a', 'ble'],
                 ],
             ],
             'text with punctuation' => [
@@ -255,16 +258,16 @@ class SyllableTest extends AbstractTestCase
                 ],
             ],
             'large text' => [
-                'A syllable is a unit of organization for a sequence of speech sounds typically made up of a syllable ' .
-                'nucleus (most often a vowel) with optional initial and final margins (typically, consonants). ' .
-                'Syllables are often considered the phonological "building blocks" of words.[1] They can influence the ' .
-                'rhythm of a language, its prosody, its poetic metre and its stress patterns. Speech can usually be ' .
-                'divided up into a whole number of syllables: for example, the word ignite is made of two syllables: ' .
-                'ig and nite. Syllabic writing began several hundred years before the first letters. The earliest ' .
-                'recorded syllables are on tablets written around 2800 BC in the Sumerian city of Ur. This shift from ' .
-                'pictograms to syllables has been called "the most important advance in the history of writing".[2] ' .
-                'Syllable is an Anglo-Norman variation of Old French sillabe, from Latin syllaba, from Koine Greek ' .
-                'συλλαβή syllabḗ (Greek pronunciation: [sylːabɛ:]). συλλαβή means "the taken together", referring to ' .
+                'A syllable is a unit of organization for a sequence of speech sounds typically made up of a syllable '.
+                'nucleus (most often a vowel) with optional initial and final margins (typically, consonants). '.
+                'Syllables are often considered the phonological "building blocks" of words.[1] They can influence the '.
+                'rhythm of a language, its prosody, its poetic metre and its stress patterns. Speech can usually be '.
+                'divided up into a whole number of syllables: for example, the word ignite is made of two syllables: '.
+                'ig and nite. Syllabic writing began several hundred years before the first letters. The earliest '.
+                'recorded syllables are on tablets written around 2800 BC in the Sumerian city of Ur. This shift from '.
+                'pictograms to syllables has been called "the most important advance in the history of writing".[2] '.
+                'Syllable is an Anglo-Norman variation of Old French sillabe, from Latin syllaba, from Koine Greek '.
+                'συλλαβή syllabḗ (Greek pronunciation: [sylːabɛ:]). συλλαβή means "the taken together", referring to '.
                 'letters that are taken together to make a single sound.[3]',
                 [
                     ['A'], [' '], ['syl', 'la', 'ble'], [' '], ['is'], [' '], ['a'], [' '], ['unit'], [' '], ['of'],
@@ -303,14 +306,15 @@ class SyllableTest extends AbstractTestCase
                     ['συλλαβή'], [' '], ['means'], [' "'], ['the'], [' '], ['tak', 'en'], [' '], ['to', 'geth', 'er'],
                     ['", '], ['re', 'fer', 'ring'], [' '], ['to'], [' '], ['let', 'ters'], [' '], ['that'], [' '],
                     ['are'], [' '], ['tak', 'en'], [' '], ['to', 'geth', 'er'], [' '], ['to'], [' '], ['make'], [' '],
-                    ['a'], [' '], ['sin', 'gle'], [' '], ['sound'], ['.[3]' ]
-                ]
+                    ['a'], [' '], ['sin', 'gle'], [' '], ['sound'], ['.[3]'],
+                ],
             ],
         ];
     }
 
     /**
      * @dataProvider dataSplitWords
+     *
      * @return void
      */
     public function testSplitWords($text, $expected)
@@ -336,19 +340,19 @@ class SyllableTest extends AbstractTestCase
                 [';Re', 'dun', 'dant, punc', 'tu', 'a', 'tion...'],
             ],
             'large text' => [
-                'A syllable is a unit of organization for a sequence of speech sounds typically made up of a syllable ' .
-                'nucleus (most often a vowel) with optional initial and final margins (typically, consonants). ' .
-                'Syllables are often considered the phonological "building blocks" of words.[1] They can influence the ' .
-                'rhythm of a language, its prosody, its poetic metre and its stress patterns. Speech can usually be ' .
-                'divided up into a whole number of syllables: for example, the word ignite is made of two syllables: ' .
-                'ig and nite. Syllabic writing began several hundred years before the first letters. The earliest ' .
-                'recorded syllables are on tablets written around 2800 BC in the Sumerian city of Ur. This shift from ' .
-                'pictograms to syllables has been called "the most important advance in the history of writing".[2] ' .
-                'Syllable is an Anglo-Norman variation of Old French sillabe, from Latin syllaba, from Koine Greek ' .
-                'συλλαβή syllabḗ (Greek pronunciation: [sylːabɛ:]). συλλαβή means "the taken together", referring to ' .
+                'A syllable is a unit of organization for a sequence of speech sounds typically made up of a syllable '.
+                'nucleus (most often a vowel) with optional initial and final margins (typically, consonants). '.
+                'Syllables are often considered the phonological "building blocks" of words.[1] They can influence the '.
+                'rhythm of a language, its prosody, its poetic metre and its stress patterns. Speech can usually be '.
+                'divided up into a whole number of syllables: for example, the word ignite is made of two syllables: '.
+                'ig and nite. Syllabic writing began several hundred years before the first letters. The earliest '.
+                'recorded syllables are on tablets written around 2800 BC in the Sumerian city of Ur. This shift from '.
+                'pictograms to syllables has been called "the most important advance in the history of writing".[2] '.
+                'Syllable is an Anglo-Norman variation of Old French sillabe, from Latin syllaba, from Koine Greek '.
+                'συλλαβή syllabḗ (Greek pronunciation: [sylːabɛ:]). συλλαβή means "the taken together", referring to '.
                 'letters that are taken together to make a single sound.[3]',
                 [
-                    'A syl', 'la', 'ble is a unit of or','ga', 'ni', 'za', 'tion for a se',
+                    'A syl', 'la', 'ble is a unit of or', 'ga', 'ni', 'za', 'tion for a se',
                     'quence of speech sounds typ', 'i', 'cal', 'ly made up of a syl', 'la', 'ble nu', 'cle',
                     'us (most of', 'ten a vow', 'el) with op', 'tion', 'al ini', 'tial and fi', 'nal mar',
                     'gins (typ', 'i', 'cal', 'ly, con', 'so', 'nants). Syl', 'la', 'bles are of', 'ten con', 'sid',
@@ -363,14 +367,15 @@ class SyllableTest extends AbstractTestCase
                     'ing".[2] Syl', 'la', 'ble is an An', 'glo-Nor', 'man vari', 'a', 'tion of Old French sil', 'l',
                     'abe, from Latin syl', 'la', 'ba, from Koine Greek συλλαβή syl', 'labḗ (Greek pro', 'nun', 'ci',
                     'a', 'tion: [sylːabɛ:]). συλλαβή means "the tak', 'en to', 'geth', 'er", re', 'fer', 'ring to let',
-                    'ters that are tak', 'en to', 'geth', 'er to make a sin', 'gle sound.[3]'
-                ]
+                    'ters that are tak', 'en to', 'geth', 'er to make a sin', 'gle sound.[3]',
+                ],
             ],
         ];
     }
 
     /**
      * @dataProvider dataSplitText
+     *
      * @return void
      */
     public function testSplitText($text, $expected)
@@ -476,12 +481,12 @@ class SyllableTest extends AbstractTestCase
         $this->object->setLanguage('en-us');
 
         $this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
-            . "\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
+            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
 
         $this->object->setLibxmlOptions(LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $this->assertEquals('<p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p>'
-            . "\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
     }
 
     /**
@@ -560,8 +565,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -578,8 +583,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -597,8 +602,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -616,8 +621,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated <i>extravaganza</i></b> metatext')
         );
     }
@@ -634,8 +639,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
@@ -652,8 +657,8 @@ class SyllableTest extends AbstractTestCase
         // Do not Hypenate content within <b>
         $this->assertEquals(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
-            . "\n" . '<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
-            . "\n",
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i class="go right ahead">extravaganza</i>')
         );
     }

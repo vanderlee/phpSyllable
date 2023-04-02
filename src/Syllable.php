@@ -244,7 +244,6 @@ class Syllable
                 && isset($cache->hyphenation)
                 && isset($cache->left_min_hyphen)
                 && isset($cache->right_min_hyphen)) {
-
                 $this->patterns = $cache->patterns;
                 $this->maxPattern = $cache->max_pattern;
                 $this->hyphenation = $cache->hyphenation;
@@ -393,6 +392,7 @@ class Syllable
      * splitting each word on where the hyphenation would go.
      *
      * @param string $text
+     *
      * @return array
      */
     public function splitWords($text)
@@ -454,7 +454,7 @@ class Syllable
                 $syllables = $this->parseWord($word);
 
                 $part .= $syllables[0];
-                for ($i=1; $i < count($syllables); $i++) {
+                for ($i = 1; $i < count($syllables); $i++) {
                     $parts[] = $part;
                     $part = $syllables[$i];
                 }
@@ -463,7 +463,7 @@ class Syllable
             }
         }
 
-        $parts[] = $part . mb_substr($text, $textPosition);
+        $parts[] = $part.mb_substr($text, $textPosition);
 
         return $parts;
     }
@@ -526,7 +526,7 @@ class Syllable
      * @param DOMNode          $node
      * @param DOMNodeList|null $excludeNodes
      * @param DOMNodeList|null $includeNodes
-     * @param bool              $split
+     * @param bool             $split
      */
     private function hyphenateHtmlDom(
         DOMNode $node,
