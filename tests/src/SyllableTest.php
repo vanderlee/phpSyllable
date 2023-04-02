@@ -198,6 +198,41 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
+     * This is a collection of words that are not fully hyphenated.
+     *
+     * Please add words here if they were insufficiently hyphenated when using the package.
+     * This may be caused by an insufficient pattern in the TeX language file or by an error
+     * of Syllable::parseWord() and needs to be investigated.
+     *
+     * @return array[]
+     */
+    public function dataSplitWordDoesNotAlwaysProvideFullHyphenation()
+    {
+        return [
+            [
+                'prosody',
+                ['prosody'],
+            ],
+            [
+                'pictograms',
+                ['pic', 'tograms'],
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider dataSplitWordDoesNotAlwaysProvideFullHyphenation
+     * @return void
+     */
+    public function testSplitWordDoesNotAlwaysProvideFullHyphenation($word, $expected)
+    {
+        $this->object->setHyphen('-');
+        $this->object->setLanguage('en-us');
+
+        $this->assertEquals($expected, $this->object->splitWord($word));
+    }
+
+    /**
      * @return array
      */
     public function dataSplitWords()
