@@ -219,6 +219,22 @@ class SyllableTest extends AbstractTestCase
                 'pictograms',
                 ['pic', 'tograms'],
             ],
+            [
+                'abeyant',
+                ['abeyant'],
+            ],
+            [
+                'abradant',
+                ['abradant'],
+            ],
+            [
+                'abraxas',
+                ['abraxas'],
+            ],
+            [
+                'pipeline',
+                ['pipeline'],
+            ],
         ];
     }
 
