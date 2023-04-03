@@ -38,7 +38,7 @@ echo $syllable->hyphenateText('Provide a plethora of paragraphs');
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
-### public __construct($language="en", string|Hyphen $hyphen=null)
+### public __construct($language = 'en', string|Hyphen $hyphen = null)
 
 Create a new Syllable class, with defaults.
 
@@ -47,7 +47,7 @@ Create a new Syllable class, with defaults.
 Set the directory where compiled language files may be stored.
 Default to the `cache` subdirectory of the current directory.
 
-### public static setEncoding(string|null $encoding=null)
+### public static setEncoding(string|null $encoding = null)
 
 Set the character encoding to use.
 Specify `null` encoding to not apply any encoding at all.
@@ -69,7 +69,7 @@ Set the hyphen text or object to use as a hyphen marker.
 
 Get the current hyphen object.
 
-### public setCache(Cache $cache=null)
+### public setCache(Cache $cache = null)
 
 ### public getCache(): Cache
 
@@ -77,7 +77,7 @@ Get the current hyphen object.
 
 ### public getSource(): Source
 
-### public setMinWordLength(int $length=0)
+### public setMinWordLength(int $length = 0)
 
 Words need to contain at least this many character to be hyphenated.
 
@@ -96,7 +96,7 @@ Exclude all elements.
 
 Add one or more elements to exclude from HTML.
 
-### public excludeAttribute(string|string[] $attributes, $value=null)
+### public excludeAttribute(string|string[] $attributes, $value = null)
 
 Add one or more elements with attributes to exclude from HTML.
 
@@ -108,7 +108,7 @@ Add one or more xpath queries to exclude from HTML.
 
 Add one or more elements to include from HTML.
 
-### public includeAttribute(string|string[] $attributes, $value=null)
+### public includeAttribute(string|string[] $attributes, $value = null)
 
 Add one or more elements with attributes to include from HTML.
 
