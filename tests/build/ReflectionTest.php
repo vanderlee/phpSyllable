@@ -34,15 +34,15 @@ class ReflectionTest extends AbstractTestCase
         $expected = [
             [
                 'signature' => 'public setMethods(array $methods)',
-                'comment' => "The public setter method.\nSee https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.",
+                'comment'   => "The public setter method.\nSee https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.",
             ],
             [
                 'signature' => 'public getMethods(): array',
-                'comment' => 'The public getter method.',
+                'comment'   => 'The public getter method.',
             ],
             [
                 'signature' => 'public static getParameters(): array',
-                'comment' => 'The public static method.',
+                'comment'   => 'The public static method.',
             ],
         ];
 

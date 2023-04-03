@@ -18,6 +18,7 @@ class ReflectionFixture
      * The public setter method.
      *
      * @param array $methods
+     *
      * @return void
      *
      * @see https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php

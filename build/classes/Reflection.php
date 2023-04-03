@@ -13,9 +13,9 @@ class Reflection
     protected $methods;
 
     /**
-     * @throws Exception
-     *
      * @param string $class
+     *
+     * @throws Exception
      *
      * @return array
      */
@@ -45,13 +45,13 @@ class Reflection
                                 '='.$parameter['defaultValue']))) : '';
                 $signature .= $i < $count - 1 ? ', ' : '';
             }
-            $signature .= ")";
+            $signature .= ')';
             $signature .= !empty($method['returnType']) ? ': '.$method['returnType'] : '';
             $comment = !empty($method['commentLines']) ? implode("\n", $method['commentLines']) : '';
 
             $methods[] = [
                 'signature' => $signature,
-                'comment' => $comment,
+                'comment'   => $comment,
             ];
         }
 
@@ -84,7 +84,7 @@ class Reflection
 
                 if ($reflectionMethod->getDocComment() !== false) {
                     $docCommentLines = explode("\n", $reflectionMethod->getDocComment());
-                    $docCommentLines = array_map(function($line){return ltrim($line, '/* ');}, $docCommentLines);
+                    $docCommentLines = array_map(function ($line) {return ltrim($line, '/* '); }, $docCommentLines);
                     foreach ($docCommentLines as $line) {
                         if (strpos($line, '@param') === 0) {
                             $annotation = explode(' ', $line);
