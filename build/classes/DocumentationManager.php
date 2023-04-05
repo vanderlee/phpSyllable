@@ -194,7 +194,7 @@ class DocumentationManager extends Manager
             return;
         }
 
-        $this->console->exec('git add .');
+        $this->console->exec('git add --all');
         $this->console->exec('git commit -m "Update API documentation"');
     }
 }

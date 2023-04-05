@@ -226,7 +226,7 @@ class ReleaseManager extends Manager
             return;
         }
 
-        $this->console->exec('git add .');
+        $this->console->exec('git add --all');
         $this->console->exec(sprintf('git commit -m "Release %s"', $this->releaseTag));
         $this->console->exec(sprintf('git tag %s', $this->releaseTag));
     }
