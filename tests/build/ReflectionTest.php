@@ -33,7 +33,7 @@ class ReflectionTest extends AbstractTestCase
 
         $expected = [
             [
-                'signature' => 'public setMethods(array $methods)',
+                'signature' => 'public setMethods(array $methods = [])',
                 'comment'   => "The public setter method.\nSee https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.",
             ],
             [
@@ -60,5 +60,52 @@ class ReflectionTest extends AbstractTestCase
         $this->expectExceptionMessage('Reflecting class Vanderlee\SyllableTest\Build\NonExisting has failed with:');
 
         $this->reflection->getPublicMethodsWithSignatureAndComment($class);
+    }
+
+    public function getArrayAsSignatureDataProvider()
+    {
+        return [
+            [
+                [],
+                '[]',
+            ],
+            [
+                ['123456789'],
+                "['123456789']",
+            ],
+            [
+                ['--extra', 'flags'],
+                "['--extra', 'flags']",
+            ],
+            [
+                ['key' => '--extra', 'value' => 'flags'],
+                "['key' => '--extra', 'value' => 'flags']"],
+            [
+                ['param' => ['key' => '--extra', 'value' => 'flags']],
+                "['param' => ['key' => '--extra', 'value' => 'flags']]",
+            ],
+            [
+                [
+                    'param1' => ['key' => '--extra1', 'value' => 'flags1'],
+                    'param2' => ['key' => '--extra2', 'value' => 'flags2'],
+                ],
+                '['.
+                    "'param1' => ['key' => '--extra1', 'value' => 'flags1'], ".
+                    "'param2' => ['key' => '--extra2', 'value' => 'flags2']".
+                ']',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider getArrayAsSignatureDataProvider
+     */
+    public function getArrayAsSignature($array, $expected)
+    {
+        $actual = $this->reflection->getArrayAsSignature($array);
+
+        $this->assertEquals($expected, $actual);
     }
 }

@@ -23,7 +23,7 @@ class ReflectionFixture
      *
      * @see https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php
      */
-    public function setMethods($methods)
+    public function setMethods($methods = [])
     {
         $this->methods = $methods;
     }

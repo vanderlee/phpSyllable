@@ -47,7 +47,7 @@ class DocumentationManagerTest extends AbstractTestCase
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
-### public setMethods(array $methods)
+### public setMethods(array $methods = [])
 
 ..
 
@@ -62,7 +62,7 @@ Example
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
-### public setMethods(array $methods)
+### public setMethods(array $methods = [])
 
 The public setter method.
 See https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.
@@ -104,7 +104,7 @@ Syllable class reference
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
-### public setMethods(array $methods)
+### public setMethods(array $methods = [])
 
 ..
 

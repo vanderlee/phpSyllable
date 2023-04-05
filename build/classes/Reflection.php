@@ -37,12 +37,14 @@ class Reflection
                 $signature .= $parameter['name'];
                 $signature .= array_key_exists('defaultValue', $parameter) ?
                     ($parameter['defaultValueIsConstant'] ?
-                        '='.$parameter['defaultValue'] :
+                        ' = '.$parameter['defaultValue'] :
                         (is_string($parameter['defaultValue']) ?
-                            "='".$parameter['defaultValue']."'" :
+                            " = '".$parameter['defaultValue']."'" :
                             (is_null($parameter['defaultValue']) ?
-                                '=null' :
-                                '='.$parameter['defaultValue']))) : '';
+                                ' = null' :
+                                (is_array($parameter['defaultValue']) ?
+                                    ' = '.$this->getArrayAsSignature($parameter['defaultValue']) :
+                                    ' = '.$parameter['defaultValue'])))) : '';
                 $signature .= $i < $count - 1 ? ', ' : '';
             }
             $signature .= ')';
@@ -56,6 +58,25 @@ class Reflection
         }
 
         return $methods;
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return string
+     */
+    public function getArrayAsSignature($array)
+    {
+        if (empty($array)) {
+            return '[]';
+        }
+
+        $signature = var_export($array, true);
+        $signature = preg_replace("#\n\s*#", '', $signature);
+        $signature = str_replace(['array (', ',)'], ['[', ']'], $signature);
+        $signature = preg_replace(['#\s*\d+ => #', '#\s*([\'"]\w+[\'"]) => #'], ['', '$1 => '], $signature);
+
+        return str_replace(',', ', ', $signature);
     }
 
     /**
