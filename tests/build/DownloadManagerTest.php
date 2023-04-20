@@ -41,30 +41,30 @@ class DownloadManagerTest extends AbstractTestCase
      */
     public function delegateSucceeds()
     {
-        $this->addFileToTestDirectory('hyph-af.tex', 'original');
-        $this->addFileToTestDirectory('remote-hyph-af.tex', 'original');
-        $this->addFileToTestDirectory('hyph-as.tex', 'original');
-        $this->addFileToTestDirectory('remote-hyph-as.tex', 'changed');
-        $this->addFileToTestDirectory('configuration.json', json_encode([
+        $this->createFileInTestDirectory('hyph-af.tex', 'original');
+        $this->createFileInTestDirectory('remote-hyph-af.tex', 'original');
+        $this->createFileInTestDirectory('hyph-as.tex', 'original');
+        $this->createFileInTestDirectory('remote-hyph-as.tex', 'changed');
+        $this->createFileInTestDirectory('configuration.json', json_encode([
             'files' => [
                 [
-                    'fromUrl' => $this->getPathOfTestDirectoryFileAsUrl('remote-hyph-af.tex'),
-                    'toPath'  => $this->getPathOfTestDirectoryFile('hyph-af.tex'),
+                    'fromUrl' => $this->getPathInTestDirectoryAsUrl('remote-hyph-af.tex'),
+                    'toPath'  => $this->getPathInTestDirectory('hyph-af.tex'),
                 ],
                 [
-                    'fromUrl' => $this->getPathOfTestDirectoryFileAsUrl('remote-hyph-as.tex'),
-                    'toPath'  => $this->getPathOfTestDirectoryFile('hyph-as.tex'),
+                    'fromUrl' => $this->getPathInTestDirectoryAsUrl('remote-hyph-as.tex'),
+                    'toPath'  => $this->getPathInTestDirectory('hyph-as.tex'),
                 ],
                 [
-                    'fromUrl' => $this->getPathOfTestDirectoryFileAsUrl('remote-not-available.tex'),
-                    'toPath'  => $this->getPathOfTestDirectoryFile('hyph-bg.tex'),
+                    'fromUrl' => $this->getPathInTestDirectoryAsUrl('remote-not-available.tex'),
+                    'toPath'  => $this->getPathInTestDirectory('hyph-bg.tex'),
                 ],
             ],
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         $expectedOutputRegex = '#Result: 3/3 files processed, 1 changed, 1 unchanged and 1 failed.#';
 
-        $configurationFile = $this->getPathOfTestDirectoryFile('configuration.json');
+        $configurationFile = $this->getPathInTestDirectory('configuration.json');
 
         $this->downloadManager->setConfigurationFile($configurationFile);
         $result = $this->downloadManager->delegate();

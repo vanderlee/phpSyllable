@@ -91,10 +91,10 @@ Changes
 -   Fixed PHP 7.4 compatibility (#37) by @Dargmuesli.
         ');
 
-        $this->addFileToTestDirectory('README.md', $readme);
+        $this->createFileInTestDirectory('README.md', $readme);
 
         $releaseType = SemanticVersioning::PATCH_RELEASE;
-        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+        $readmeFile = $this->getPathInTestDirectory('README.md');
 
         $this->releaseManager->setReleaseType($releaseType);
         $this->releaseManager->setReadmeFile($readmeFile);
@@ -146,10 +146,10 @@ Aborting.
         ')."\n";
         $expectedReadme = $readme;
 
-        $this->addFileToTestDirectory('README.md', $readme);
+        $this->createFileInTestDirectory('README.md', $readme);
 
         $releaseType = SemanticVersioning::PATCH_RELEASE;
-        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+        $readmeFile = $this->getPathInTestDirectory('README.md');
 
         $this->releaseManager->setReleaseType($releaseType);
         $this->releaseManager->setReadmeFile($readmeFile);

@@ -79,9 +79,9 @@ Example
 -------
         ');
 
-        $this->addFileToTestDirectory('README.md', $readme);
+        $this->createFileInTestDirectory('README.md', $readme);
 
-        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+        $readmeFile = $this->getPathInTestDirectory('README.md');
         $apiClass = ReflectionFixture::class;
 
         $this->documentationManager->setReadmeFile($readmeFile);
@@ -121,9 +121,9 @@ Aborting.
         ')."\n";
         $expectedReadme = $readme;
 
-        $this->addFileToTestDirectory('README.md', $readme);
+        $this->createFileInTestDirectory('README.md', $readme);
 
-        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+        $readmeFile = $this->getPathInTestDirectory('README.md');
 
         $this->documentationManager->setReadmeFile($readmeFile);
         $this->documentationManager->setApiClass(ReflectionFixture::class);

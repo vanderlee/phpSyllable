@@ -2,6 +2,8 @@
 
 namespace Vanderlee\SyllableTest\Src;
 
+use Vanderlee\Syllable\Cache\Json;
+use Vanderlee\Syllable\Cache\Serialized;
 use Vanderlee\Syllable\Hyphen\Text;
 use Vanderlee\Syllable\Syllable;
 use Vanderlee\SyllableTest\AbstractTestCase;
@@ -104,25 +106,75 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @todo Implement testSetCache().
+     * @return array[]
      */
-    public function testSetCache()
+    public function dataCache()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        return [
+            [
+                Json::class,
+                'en-us',
+                'json',
+                'json/syllable.en-us.json',
+                '{'.
+                    '"version":1.4,'.
+                    '"patterns":{%a},'.
+                    '"max_pattern":9,'.
+                    '"hyphenation":{%a},'.
+                    '"left_min_hyphen":2,'.
+                    '"right_min_hyphen":2'.
+                '}',
+            ],
+            [
+                Serialized::class,
+                'en-us',
+                'serialized',
+                'serialized/syllable.en-us.serialized',
+                'a:6:{'.
+                    's:7:"version";d:1.4;'.
+                    's:8:"patterns";a:4939:{%a}'.
+                    's:11:"max_pattern";i:9;'.
+                    's:11:"hyphenation";a:15:{%a}'.
+                    's:15:"left_min_hyphen";i:2;'.
+                    's:16:"right_min_hyphen";i:2;'.
+                '}',
+            ],
+        ];
     }
 
     /**
-     * @todo Implement testGetCache().
+     * @dataProvider dataCache
+     *
+     * @return void
      */
-    public function testGetCache()
+    public function testCache($cacheClass, $language, $cacheDirectory, $cacheFile, $expectedCacheContent)
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->createDirectoryInTestDirectory($cacheDirectory);
+
+        $cacheDirectory = $this->getPathInTestDirectory($cacheDirectory);
+        $cacheFile = $this->getPathInTestDirectory($cacheFile);
+
+        $this->object->setLanguage($language);
+        $this->object->setCache(new $cacheClass($cacheDirectory));
+
+        $this->assertFileNotExists($cacheFile);
+        $this->assertFalse($this->object->getCache()->__isset('version'));
+        $this->assertFalse($this->object->getCache()->__isset('patterns'));
+        $this->assertFalse($this->object->getCache()->__isset('max_pattern'));
+        $this->assertFalse($this->object->getCache()->__isset('hyphenation'));
+        $this->assertFalse($this->object->getCache()->__isset('left_min_hyphen'));
+        $this->assertFalse($this->object->getCache()->__isset('right_min_hyphen'));
+
+        $this->object->hyphenateWord('Supercalifragilisticexpialidocious');
+
+        $this->assertFileExists($cacheFile);
+        $this->assertStringMatchesFormat($expectedCacheContent, file_get_contents($cacheFile));
+        $this->assertSame(1.4, $this->object->getCache()->__get('version'));
+        $this->assertNotEmpty($this->object->getCache()->__get('patterns'));
+        $this->assertGreaterThan(0, $this->object->getCache()->__get('max_pattern'));
+        $this->assertNotEmpty($this->object->getCache()->__get('hyphenation'));
+        $this->assertInternalType('int', $this->object->getCache()->__get('left_min_hyphen'));
+        $this->assertInternalType('int', $this->object->getCache()->__get('right_min_hyphen'));
     }
 
     /**
