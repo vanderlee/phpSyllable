@@ -28,8 +28,8 @@ class SyllableTest extends AbstractTestCase
     {
         $this->createTestDirectory();
 
-        Syllable::setDirectoryCache($this->getTestDirectory());
-        Syllable::setDirectoryLanguage(realpath(__DIR__.'/../../languages'));
+        Syllable::setCacheDir($this->getTestDirectory());
+        Syllable::setLanguageDir(realpath(__DIR__.'/../../languages'));
 
         $this->object = new Syllable();
     }

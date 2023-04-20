@@ -61,8 +61,8 @@ class Syllable
      * @var string|null
      */
     private static $encoding = 'UTF-8';
-    private static $directoryCache = null;
-    private static $directoryLanguage = null;
+    private static $cacheDir = null;
+    private static $languageDir = null;
     private $excludes = [];
     private $includes = [];
 
@@ -79,13 +79,13 @@ class Syllable
      */
     public function __construct($language = 'en', $hyphen = null)
     {
-        if (!self::$directoryCache) {
-            self::$directoryCache = __DIR__.'/../cache';
+        if (!self::$cacheDir) {
+            self::$cacheDir = __DIR__.'/../cache';
         }
-        $this->setCache(new Json(self::$directoryCache));
+        $this->setCache(new Json(self::$cacheDir));
 
-        if (!self::$directoryLanguage) {
-            self::$directoryLanguage = __DIR__.'/../languages';
+        if (!self::$languageDir) {
+            self::$languageDir = __DIR__.'/../languages';
         }
 
         $this->setLanguage($language);
@@ -99,9 +99,9 @@ class Syllable
      *
      * @param string $dir
      */
-    public static function setDirectoryCache($dir)
+    public static function setCacheDir($dir)
     {
-        self::$directoryCache = $dir;
+        self::$cacheDir = $dir;
     }
 
     /**
@@ -121,9 +121,9 @@ class Syllable
      *
      * @param string $dir
      */
-    public static function setDirectoryLanguage($dir)
+    public static function setLanguageDir($dir)
     {
-        self::$directoryLanguage = $dir;
+        self::$languageDir = $dir;
     }
 
     /**
@@ -134,7 +134,7 @@ class Syllable
     public function setLanguage($language)
     {
         $this->language = $language;
-        $this->setSource(new File($language, self::$directoryLanguage));
+        $this->setSource(new File($language, self::$languageDir));
     }
 
     /**

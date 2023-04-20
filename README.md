@@ -42,7 +42,7 @@ For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
 Create a new Syllable class, with defaults.
 
-### public static setDirectoryCache(string $dir)
+### public static setCacheDir(string $dir)
 
 Set the directory where compiled language files may be stored.
 Default to the `cache` subdirectory of the current directory.
@@ -52,7 +52,7 @@ Default to the `cache` subdirectory of the current directory.
 Set the character encoding to use.
 Specify `null` encoding to not apply any encoding at all.
 
-### public static setDirectoryLanguage(string $dir)
+### public static setLanguageDir(string $dir)
 
 Set the directory where language source files can be found.
 Default to the `languages` subdirectory of the current directory.
