@@ -23,7 +23,7 @@ class Syllable
     /**
      * Version string, used to recalculate language caches if needed.
      */
-    const CACHE_VERSION = 1.4;
+    const CACHE_VERSION = '1.4';
 
     /**
      * @var Cache

@@ -117,7 +117,7 @@ class SyllableTest extends AbstractTestCase
                 'json',
                 'json/syllable.en-us.json',
                 '{'.
-                    '"version":1.4,'.
+                    '"version":"1.4",'.
                     '"patterns":{%a},'.
                     '"max_pattern":9,'.
                     '"hyphenation":{%a},'.
@@ -131,7 +131,7 @@ class SyllableTest extends AbstractTestCase
                 'serialized',
                 'serialized/syllable.en-us.serialized',
                 'a:6:{'.
-                    's:7:"version";d:1.4;'.
+                    's:7:"version";s:3:"1.4";'.
                     's:8:"patterns";a:4939:{%a}'.
                     's:11:"max_pattern";i:9;'.
                     's:11:"hyphenation";a:15:{%a}'.
@@ -169,12 +169,39 @@ class SyllableTest extends AbstractTestCase
 
         $this->assertFileExists($cacheFile);
         $this->assertStringMatchesFormat($expectedCacheContent, file_get_contents($cacheFile));
-        $this->assertSame(1.4, $this->object->getCache()->__get('version'));
+        $this->assertSame('1.4', $this->object->getCache()->__get('version'));
         $this->assertNotEmpty($this->object->getCache()->__get('patterns'));
         $this->assertGreaterThan(0, $this->object->getCache()->__get('max_pattern'));
         $this->assertNotEmpty($this->object->getCache()->__get('hyphenation'));
         $this->assertInternalType('int', $this->object->getCache()->__get('left_min_hyphen'));
         $this->assertInternalType('int', $this->object->getCache()->__get('right_min_hyphen'));
+    }
+
+    public function dataCacheVersionMatchesCacheFileVersionIsRelaxed()
+    {
+        return [
+            'Cache file version is float.'                            => [1.4],
+            'Cache file version is string.'                           => ['1.4'],
+            'Cache file version is float with unexpected precision.'  => [1.3999999999999999],
+            'Cache file version is string with unexpected precision.' => ['1.3999999999999999'],
+        ];
+    }
+
+    /**
+     * Some PHP versions have the Syllable cache version number 1.4 encoded in 1.39999999999999
+     * instead of 1.4 in the cache files. To fix this, the internal representation of
+     * the cache version is changed from float to string. This test shows that the user's existing
+     * cache files are still valid after this change and do not need to be recreated.
+     *
+     * @dataProvider dataCacheVersionMatchesCacheFileVersionIsRelaxed
+     *
+     * @return void
+     */
+    public function testCacheVersionMatchesCacheFileVersionIsRelaxed($cacheFileVersion)
+    {
+        $cacheVersion = '1.4';
+
+        $this->assertTrue($cacheVersion == $cacheFileVersion);
     }
 
     /**
