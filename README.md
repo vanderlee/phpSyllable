@@ -38,94 +38,129 @@ echo $syllable->hyphenateText('Provide a plethora of paragraphs');
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
-### public static __construct(  $language = 'en',  $hyphen = null )
-Create a new Syllable class, with defaults
+### public __construct($language = 'en', string|Hyphen $hyphen = null)
 
-### public static setCacheDir(  $dir )
+Create a new Syllable class, with defaults.
+
+### public static setCacheDir(string $dir)
+
 Set the directory where compiled language files may be stored.
 Default to the `cache` subdirectory of the current directory.
 
-### public static setLanguageDir(  $dir )
+### public static setEncoding(string|null $encoding = null)
+
+Set the character encoding to use.
+Specify `null` encoding to not apply any encoding at all.
+
+### public static setLanguageDir(string $dir)
+
 Set the directory where language source files can be found.
 Default to the `languages` subdirectory of the current directory.
 
-### public static function setEncoding(  $encoding = null  )
-Specify the character encoding to use or disable character encoding handling
-completely by specifying `null` as encoding. The default encoding is `UTF-8`,
-which will work in most situations.
+### public setLanguage(string $language)
 
-### public setLanguage(  $language )
 Set the language whose rules will be used for hyphenation.
 
-### public setHyphen( Mixed $hyphen )
+### public setHyphen(mixed $hyphen)
+
 Set the hyphen text or object to use as a hyphen marker.
 
-### public getHyphen( ) : Syllable_Hyphen_Interface
-Get the hyphen object used as a hyphen marker.
+### public getHyphen(): Hyphen
 
-### public setMinWordLength( integer $length = 0 )
-Set the minimum length required for a word to be hyphenated.
-Any words with less characters than this length will not be hyphenated.
+Get the current hyphen object.
 
-### public getMinWordLength( ) : int
-Get the minimum length required for a word to be hyphenated.
+### public setCache(Cache $cache = null)
 
-### public array splitWord(  $word )
+### public getCache(): Cache
+
+### public setSource($source)
+
+### public getSource(): Source
+
+### public setMinWordLength(int $length = 0)
+
+Words need to contain at least this many character to be hyphenated.
+
+### public getMinWordLength(): int
+
+### public setLibxmlOptions(int $libxmlOptions)
+
+Options to use for HTML parsing by libxml.
+See https://www.php.net/manual/de/libxml.constants.php.
+
+### public excludeAll()
+
+Exclude all elements.
+
+### public excludeElement(string|string[] $elements)
+
+Add one or more elements to exclude from HTML.
+
+### public excludeAttribute(string|string[] $attributes, $value = null)
+
+Add one or more elements with attributes to exclude from HTML.
+
+### public excludeXpath(string|string[] $queries)
+
+Add one or more xpath queries to exclude from HTML.
+
+### public includeElement(string|string[] $elements)
+
+Add one or more elements to include from HTML.
+
+### public includeAttribute(string|string[] $attributes, $value = null)
+
+Add one or more elements with attributes to include from HTML.
+
+### public includeXpath(string|string[] $queries)
+
+Add one or more xpath queries to include from HTML.
+
+### public splitWord(string $word): array
+
 Split a single word on where the hyphenation would go.
+Punctuation is not supported, only simple words. For parsing whole sentences
+please use Syllable::splitWords() or Syllable::splitText().
 
-### public array splitText(  $text )
+### public splitWords(string $text): array
+
+Split a text into an array of punctuation marks and words,
+splitting each word on where the hyphenation would go.
+
+### public splitText(string $text): array
+
 Split a text on where the hyphenation would go.
 
-### public string hyphenateWord(  $word )
+### public hyphenateWord(string $word): string
+
 Hyphenate a single word.
 
-### public string hyphenateText(  $text )
+### public hyphenateText(string $text): string
+
 Hyphenate all words in the plain text.
 
-### public string hyphenateHtml(  $html )
-Hyphenate all readable text in the HTML, excluding HTML tags and attributes.
+### public hyphenateHtml(string $html): string
 
-### public array histogramText(  $text )
+Hyphenate all readable text in the HTML, excluding HTML tags and
+attributes.
+
+### public histogramText(string $text): array
+
 Count the number of syllables in the text and return a map with
 syllable count as key and number of words for that syllable count as
 the value.
 
-### public integer countWordsText(  $text )
+### public countWordsText(string $text): int
+
 Count the number of words in the text.
 
-### public integer countSyllablesText(  $text )
+### public countSyllablesText(string $text): int
+
 Count the number of syllables in the text.
 
-### public integer countPolysyllablesText(  $text )
-Count the number of polysyllables (words with 3 or more syllables) in the text.
+### public countPolysyllablesText(string $text): int
 
-### public function excludeAll()
-Exclude all HTML elements from hyphenation, allowing explicit whitelisting.
-
-###	public function excludeElement(  $elements  )
-Exclude from hyphenation all HTML content within the given elements.
-
-###	public function excludeAttribute(  $attributes, $value = null  )
-Exclude from hyphenation all HTML content within elements with the given
-attributes. If a value is specified, only those elements with attributes with
-that specific value are excluded.
-
-###	public function excludeXpath(  $queries  )
-Exclude from hyphenation all HTML content within elements matching the
-specified xpath queries.
-
-###	public function includeElement(  $elements  )
-Hyphenate all HTML content within the given elements,
-ignoring any rules which might exclude them from hyphenation.
-
-###	public function includeAttribute(  $attributes, $value = null  )
-Hyphenate all HTML content within elements with the given attributes. If a value
-is specified, only those elements with attributes with that specific value are
-included, ignoring any rules which might exclude them from hyphenation.
-
-###	public function includeXpath(  $queries  )
-Hyphenate all HTML content within elements matching the specified xpath queries,
-ignoring any rules which might exclude them from hyphenation.
+Count the number of polysyllables in the text.
 
 Example
 -------
@@ -209,6 +244,26 @@ LOG_LEVEL=0 ./build/update-language-files
 ```
 to silently run the script without outputting any logging.
 
+### Update API documentation
+
+Run
+```
+composer dump-autoload --dev
+./build/generate-docs
+```
+to update the API documentation in this README.md. This should be done when the Syllable class has been modified.
+Optionally, you can use environment variables to modify the documentation update process:
+
+#### WITH_COMMIT
+
+Create (1) or skip (0) a Git commit from the adapted files.
+Default: `0`.
+
+#### LOG_LEVEL
+
+Set the verbosity of the script to verbose (6), warnings and errors (4), errors only (3) or silent (0).
+Default: `6`.
+
 ### Create release
 
 Run
@@ -216,7 +271,7 @@ Run
 composer dump-autoload --dev
 ./build/create-release
 ```
-to create a local release of the project by adding a changelog to this README.md. 
+to create a local release of the project by adding a changelog to this README.md.
 Optionally, you can use environment variables to modify the release process:
 
 #### RELEASE_TYPE

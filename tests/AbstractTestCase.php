@@ -36,28 +36,38 @@ abstract class AbstractTestCase extends TestCase
     protected function removeTestDirectory()
     {
         if (is_dir($this->getTestDirectory())) {
-            $files = glob($this->getTestDirectory().'/*');
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    unlink($file);
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->getTestDirectory(), \FilesystemIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::CHILD_FIRST
+            );
+            foreach ($iterator as $path) {
+                if ($path->isDir() && !$path->isLink()) {
+                    rmdir($path->getPathname());
+                } else {
+                    unlink($path->getPathname());
                 }
             }
             rmdir($this->getTestDirectory());
         }
     }
 
-    protected function addFileToTestDirectory($filename, $content)
+    protected function createDirectoryInTestDirectory($path)
     {
-        file_put_contents($this->getPathOfTestDirectoryFile($filename), $content);
+        mkdir($this->getPathInTestDirectory($path), 0777, true);
     }
 
-    protected function getPathOfTestDirectoryFile($filename)
+    protected function createFileInTestDirectory($path, $content)
     {
-        return $this->getTestDirectory().'/'.$filename;
+        file_put_contents($this->getPathInTestDirectory($path), $content);
     }
 
-    protected function getPathOfTestDirectoryFileAsUrl($filename)
+    protected function getPathInTestDirectory($path)
     {
-        return 'file://'.$this->getPathOfTestDirectoryFile($filename);
+        return $this->getTestDirectory().'/'.$path;
+    }
+
+    protected function getPathInTestDirectoryAsUrl($path)
+    {
+        return 'file://'.$this->getPathInTestDirectory($path);
     }
 }

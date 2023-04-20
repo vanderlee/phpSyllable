@@ -19,6 +19,6 @@ class Serialized extends File
 
     protected function getFilename($language)
     {
-        return "syllable.{$language}.serialized";
+        return "syllable.$language.serialized";
     }
 }

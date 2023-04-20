@@ -2,6 +2,11 @@
 
 namespace Vanderlee\Syllable;
 
+use DOMDocument;
+use DOMNode;
+use DOMNodeList;
+use DOMText;
+use DOMXPath;
 use Vanderlee\Syllable\Cache\Cache;
 use Vanderlee\Syllable\Cache\Json;
 use Vanderlee\Syllable\Hyphen\Hyphen;
@@ -18,36 +23,36 @@ class Syllable
     /**
      * Version string, used to recalculate language caches if needed.
      */
-    const CACHE_VERSION = 1.4;
+    const CACHE_VERSION = '1.4';
 
     /**
      * @var Cache
      */
-    private $Cache;
+    private $cache;
 
     /**
      * @var Source
      */
-    private $Source;
+    private $source;
 
     /**
      * @var Hyphen
      */
-    private $Hyphen;
+    private $hyphen;
 
     /**
      * @var int
      */
-    private $min_word_length = 0;
+    private $minWordLength = 0;
 
     /**
      * @var string
      */
     private $language;
-    private $left_min_hyphen = 2;
-    private $right_min_hyphen = 2;
+    private $minHyphenLeft = 2;
+    private $minHyphenRight = 2;
     private $patterns = null;
-    private $max_pattern = null;
+    private $maxPattern = null;
     private $hyphenation = null;
 
     /**
@@ -56,8 +61,8 @@ class Syllable
      * @var string|null
      */
     private static $encoding = 'UTF-8';
-    private static $cache_dir = null;
-    private static $language_dir = null;
+    private static $cacheDir = null;
+    private static $languageDir = null;
     private $excludes = [];
     private $includes = [];
 
@@ -74,18 +79,18 @@ class Syllable
      */
     public function __construct($language = 'en', $hyphen = null)
     {
-        if (!self::$cache_dir) {
-            self::$cache_dir = __DIR__.'/../cache';
+        if (!self::$cacheDir) {
+            self::$cacheDir = __DIR__.'/../cache';
         }
-        $this->setCache(new Json(self::$cache_dir));
+        $this->setCache(new Json(self::$cacheDir));
 
-        if (!self::$language_dir) {
-            self::$language_dir = __DIR__.'/../languages';
+        if (!self::$languageDir) {
+            self::$languageDir = __DIR__.'/../languages';
         }
 
         $this->setLanguage($language);
 
-        $this->setHyphen($hyphen ? $hyphen : new Soft());
+        $this->setHyphen($hyphen ?: new Soft());
     }
 
     /**
@@ -96,7 +101,7 @@ class Syllable
      */
     public static function setCacheDir($dir)
     {
-        self::$cache_dir = $dir;
+        self::$cacheDir = $dir;
     }
 
     /**
@@ -118,7 +123,7 @@ class Syllable
      */
     public static function setLanguageDir($dir)
     {
-        self::$language_dir = $dir;
+        self::$languageDir = $dir;
     }
 
     /**
@@ -129,7 +134,7 @@ class Syllable
     public function setLanguage($language)
     {
         $this->language = $language;
-        $this->setSource(new File($language, self::$language_dir));
+        $this->setSource(new File($language, self::$languageDir));
     }
 
     /**
@@ -139,7 +144,9 @@ class Syllable
      */
     public function setHyphen($hyphen)
     {
-        $this->Hyphen = ($hyphen instanceof Hyphen) ? $hyphen : new Text($hyphen);
+        $this->hyphen = ($hyphen instanceof Hyphen)
+            ? $hyphen
+            : new Text($hyphen);
     }
 
     /**
@@ -149,15 +156,15 @@ class Syllable
      */
     public function getHyphen()
     {
-        return $this->Hyphen;
+        return $this->hyphen;
     }
 
     /**
-     * @param Cache $Cache
+     * @param Cache $cache
      */
-    public function setCache(Cache $Cache = null)
+    public function setCache(Cache $cache = null)
     {
-        $this->Cache = $Cache;
+        $this->cache = $cache;
     }
 
     /**
@@ -165,12 +172,12 @@ class Syllable
      */
     public function getCache()
     {
-        return $this->Cache;
+        return $this->cache;
     }
 
-    public function setSource(Source $Source)
+    public function setSource(Source $source)
     {
-        $this->Source = $Source;
+        $this->source = $source;
     }
 
     /**
@@ -178,7 +185,7 @@ class Syllable
      */
     public function getSource()
     {
-        return $this->Source;
+        return $this->source;
     }
 
     /**
@@ -188,7 +195,7 @@ class Syllable
      */
     public function setMinWordLength($length = 0)
     {
-        $this->min_word_length = $length;
+        $this->minWordLength = $length;
     }
 
     /**
@@ -196,7 +203,7 @@ class Syllable
      */
     public function getMinWordLength()
     {
-        return $this->min_word_length;
+        return $this->minWordLength;
     }
 
     /**
@@ -230,12 +237,18 @@ class Syllable
         if ($cache !== null) {
             $cache->open($this->language);
 
-            if (isset($cache->version) && $cache->version == self::CACHE_VERSION && isset($cache->patterns) && isset($cache->max_pattern) && isset($cache->hyphenation) && isset($cache->left_min_hyphen) && isset($cache->right_min_hyphen)) {
+            if (isset($cache->version)
+                && $cache->version == self::CACHE_VERSION
+                && isset($cache->patterns)
+                && isset($cache->max_pattern)
+                && isset($cache->hyphenation)
+                && isset($cache->left_min_hyphen)
+                && isset($cache->right_min_hyphen)) {
                 $this->patterns = $cache->patterns;
-                $this->max_pattern = $cache->max_pattern;
+                $this->maxPattern = $cache->max_pattern;
                 $this->hyphenation = $cache->hyphenation;
-                $this->left_min_hyphen = $cache->left_min_hyphen;
-                $this->right_min_hyphen = $cache->right_min_hyphen;
+                $this->minHyphenLeft = $cache->left_min_hyphen;
+                $this->minHyphenRight = $cache->right_min_hyphen;
 
                 $loaded = true;
             }
@@ -244,24 +257,24 @@ class Syllable
         if (!$loaded) {
             $source = $this->getSource();
             $this->patterns = $source->getPatterns();
-            $this->max_pattern = $source->getMaxPattern();
+            $this->maxPattern = $source->getMaxPattern();
             $this->hyphenation = $source->getHyphentations();
 
-            $this->left_min_hyphen = 2;
-            $this->right_min_hyphen = 2;
+            $this->minHyphenLeft = 2;
+            $this->minHyphenRight = 2;
             $minHyphens = $source->getMinHyphens();
             if ($minHyphens) {
-                $this->left_min_hyphen = $minHyphens[0];
-                $this->right_min_hyphen = $minHyphens[1];
+                $this->minHyphenLeft = $minHyphens[0];
+                $this->minHyphenRight = $minHyphens[1];
             }
 
             if ($cache !== null) {
                 $cache->version = self::CACHE_VERSION;
                 $cache->patterns = $this->patterns;
-                $cache->max_pattern = $this->max_pattern;
+                $cache->max_pattern = $this->maxPattern;
                 $cache->hyphenation = $this->hyphenation;
-                $cache->left_min_hyphen = $this->left_min_hyphen;
-                $cache->right_min_hyphen = $this->right_min_hyphen;
+                $cache->left_min_hyphen = $this->minHyphenLeft;
+                $cache->right_min_hyphen = $this->minHyphenRight;
 
                 $cache->close();
             }
@@ -296,7 +309,7 @@ class Syllable
      */
     public function excludeAttribute($attributes, $value = null)
     {
-        $value = $value === null ? '' : "='{$value}'";
+        $value = $value === null ? '' : "='$value'";
 
         foreach ((array) $attributes as $attribute) {
             $this->excludes[] = '//*[@'.$attribute.$value.']';
@@ -335,7 +348,9 @@ class Syllable
      */
     public function includeAttribute($attributes, $value = null)
     {
-        $value = $value === null ? '' : "='{$value}'";
+        $value = $value === null
+            ? ''
+            : "='$value'";
 
         foreach ((array) $attributes as $attribute) {
             $this->includes[] = '//*[@'.$attribute.$value.']';
@@ -357,6 +372,9 @@ class Syllable
     /**
      * Split a single word on where the hyphenation would go.
      *
+     * Punctuation is not supported, only simple words. For parsing whole sentences
+     * please use Syllable::splitWords() or Syllable::splitText().
+     *
      * @param string $word
      *
      * @return array
@@ -367,6 +385,45 @@ class Syllable
         $this->loadLanguage();
 
         return $this->parseWord($word);
+    }
+
+    /**
+     * Split a text into an array of punctuation marks and words,
+     * splitting each word on where the hyphenation would go.
+     *
+     * @param string $text
+     *
+     * @return array
+     */
+    public function splitWords($text)
+    {
+        self::initEncoding();
+        $this->loadLanguage();
+
+        $words = mb_split('[^\'[:alpha:]]+', $text);
+        $parts = [];
+        $textPosition = 0;
+        $textLength = mb_strlen($text);
+
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $wordPosition = mb_stripos($text, $word, $textPosition);
+
+                if ($wordPosition > $textPosition) {
+                    $parts[][] = mb_substr($text, $textPosition, $wordPosition - $textPosition);
+                }
+
+                $parts[] = $this->parseWord($word);
+
+                $textPosition = $wordPosition + mb_strlen($word);
+            }
+        }
+
+        if ($textPosition < $textLength - 1) {
+            $parts[][] = mb_substr($text, $textPosition);
+        }
+
+        return $parts;
     }
 
     /**
@@ -381,35 +438,32 @@ class Syllable
         self::initEncoding();
         $this->loadLanguage();
 
-        $splits = mb_split('[^\'[:alpha:]]+', $text);
+        $words = mb_split('[^\'[:alpha:]]+', $text);
         $parts = [];
         $part = '';
-        $pos = 0;
+        $textPosition = 0;
 
-        foreach ($splits as $split) {
-            if (mb_strlen($split)) {
-                $p = mb_stripos($text, $split, $pos);
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $wordPosition = mb_stripos($text, $word, $textPosition);
 
-                $length = $p - $pos;
-                if ($length >= 1) {
-                    $part .= mb_substr($text, $pos, $length);
+                if ($wordPosition > $textPosition) {
+                    $part .= mb_substr($text, $textPosition, $wordPosition - $textPosition);
                 }
-                if (!empty($split)) {
-                    $sw = $this->parseWord($split);
-                    $index = 0;
-                    $part .= $sw[$index++];
-                    $sw_count = count($sw);
-                    if ($sw_count > 1) {
-                        do {
-                            $parts[] = $part;
-                            $part = $sw[$index++];
-                        } while ($index < $sw_count);
-                    }
+
+                $syllables = $this->parseWord($word);
+
+                $part .= $syllables[0];
+                for ($i = 1; $i < count($syllables); $i++) {
+                    $parts[] = $part;
+                    $part = $syllables[$i];
                 }
-                $pos = $p + mb_strlen($split);
+
+                $textPosition = $wordPosition + mb_strlen($word);
             }
         }
-        $parts[] = $part.mb_substr($text, $pos);
+
+        $parts[] = $part.mb_substr($text, $textPosition);
 
         return $parts;
     }
@@ -425,7 +479,7 @@ class Syllable
     {
         $parts = $this->splitWord($word);
 
-        return $this->Hyphen->joinText($parts);
+        return $this->hyphen->joinText($parts);
     }
 
     /**
@@ -439,7 +493,7 @@ class Syllable
     {
         $parts = $this->splitText($text);
 
-        return $this->Hyphen->joinText($parts);
+        return $this->hyphen->joinText($parts);
     }
 
     /**
@@ -452,12 +506,12 @@ class Syllable
      */
     public function hyphenateHtml($html)
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->resolveExternals = true;
         $dom->loadHTML($html, $this->libxmlOptions);
 
         // filter excludes
-        $xpath = new \DOMXPath($dom);
+        $xpath = new DOMXPath($dom);
         $excludedNodes = $this->excludes ? $xpath->query(join('|', $this->excludes)) : null;
         $includedNodes = $this->includes ? $xpath->query(join('|', $this->includes)) : null;
 
@@ -469,47 +523,47 @@ class Syllable
     /**
      * Add hyphenation to the DOM nodes.
      *
-     * @param \DOMNode          $node
-     * @param \DOMNodeList|null $excludeNodes
-     * @param \DOMNodeList|null $includeNodes
-     * @param bool              $split
+     * @param DOMNode          $node
+     * @param DOMNodeList|null $excludeNodes
+     * @param DOMNodeList|null $includeNodes
+     * @param bool             $split
      */
     private function hyphenateHtmlDom(
-        \DOMNode $node,
-        \DOMNodeList $excludeNodes = null,
-        \DOMNodeList $includeNodes = null,
+        DOMNode $node,
+        DOMNodeList $excludeNodes = null,
+        DOMNodeList $includeNodes = null,
         $split = true
     ) {
         if ($node->hasChildNodes()) {
             foreach ($node->childNodes as $child) {
-                $split_child = $split;
+                $splitChild = $split;
                 if ($excludeNodes && self::hasNode($child, $excludeNodes)) {
-                    $split_child = false;
+                    $splitChild = false;
                 }
                 if ($includeNodes && self::hasNode($child, $includeNodes)) {
-                    $split_child = true;
+                    $splitChild = true;
                 }
 
-                $this->hyphenateHtmlDom($child, $excludeNodes, $includeNodes, $split_child);
+                $this->hyphenateHtmlDom($child, $excludeNodes, $includeNodes, $splitChild);
             }
         }
 
-        if ($split && $node instanceof \DOMText) {
+        if ($split && $node instanceof DOMText) {
             $parts = $this->splitText($node->data);
 
-            $this->Hyphen->joinHtmlDom($parts, $node);
+            $this->hyphen->joinHtmlDom($parts, $node);
         }
     }
 
     /**
      * Test if the node is known.
      *
-     * @param \DOMNode     $node
-     * @param \DOMNodeList $nodes
+     * @param DOMNode     $node
+     * @param DOMNodeList $nodes
      *
      * @return bool
      */
-    private static function hasNode(\DOMNode $node, \DOMNodeList $nodes)
+    private static function hasNode(DOMNode $node, DOMNodeList $nodes)
     {
         foreach ($nodes as $test) {
             if ($node->isSameNode($test)) {
@@ -624,10 +678,11 @@ class Syllable
      */
     private function parseWord($word)
     {
-        $word_length = mb_strlen($word);
+        $wordLength = mb_strlen($word);
 
-        // Is this word smaller than the miminal length requirement?
-        if ($word_length < $this->left_min_hyphen + $this->right_min_hyphen || $word_length < $this->min_word_length) {
+        // Is this word smaller than the minimal length requirement?
+        if ($wordLength < $this->minHyphenLeft + $this->minHyphenRight
+            || $wordLength < $this->minWordLength) {
             return [$word];
         }
 
@@ -638,25 +693,28 @@ class Syllable
 
         // Convenience array
         $text = '.'.mb_strtolower($word).'.';
-        $text_length = $word_length + 2;
-        $pattern_length = $this->max_pattern < $text_length ? $this->max_pattern : $text_length;
+        $textLength = $wordLength + 2;
+        $patternLength = $this->maxPattern < $textLength
+            ? $this->maxPattern
+            : $textLength;
 
         // Maximize
         $before = [];
-        $end = $text_length - $this->right_min_hyphen;
+        $end = $textLength - $this->minHyphenRight;
         for ($start = 0; $start < $end; $start++) {
-            $max_length = $start + $pattern_length;
-            if ($text_length - $start < $max_length) {
-                $max_length = $text_length - $start;
+            $maxLength = $start + $patternLength;
+            if ($textLength - $start < $maxLength) {
+                $maxLength = $textLength - $start;
             }
-            for ($length = 1; $length <= $max_length; $length++) {
+            for ($length = 1; $length <= $maxLength; $length++) {
                 $subword = mb_substr($text, $start, $length);
                 if (isset($this->patterns[$subword])) {
                     $scores = $this->patterns[$subword];
-                    $scores_length = $length + 1;
-                    for ($offset = 0; $offset < $scores_length; $offset++) {
+                    $scoresLength = $length + 1;
+                    for ($offset = 0; $offset < $scoresLength; $offset++) {
                         $score = $scores[$offset];
-                        if (!isset($before[$start + $offset]) || $score > $before[$start + $offset]) {
+                        if (!isset($before[$start + $offset])
+                            || $score > $before[$start + $offset]) {
                             $before[$start + $offset] = $score;
                         }
                     }
@@ -666,8 +724,8 @@ class Syllable
 
         // Output
         $parts = [];
-        $part = mb_substr($word, 0, $this->left_min_hyphen);
-        for ($i = $this->left_min_hyphen + 1; $i < $end; $i++) {
+        $part = mb_substr($word, 0, $this->minHyphenLeft);
+        for ($i = $this->minHyphenLeft + 1; $i < $end; $i++) {
             if (isset($before[$i])) {
                 $score = (int) $before[$i];
                 if ($score & 1) { // only odd
@@ -678,7 +736,7 @@ class Syllable
             }
             $part .= mb_substr($word, $i - 1, 1);
         }
-        for (; $i < $text_length - 1; $i++) {
+        for (; $i < $textLength - 1; $i++) {
             $part .= mb_substr($word, $i - 1, 1);
         }
         if (!empty($part)) {

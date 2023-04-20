@@ -19,6 +19,6 @@ class Json extends File
 
     protected function getFilename($language)
     {
-        return "syllable.{$language}.json";
+        return "syllable.$language.json";
     }
 }

@@ -18,7 +18,7 @@ class LanguagesDownloadManager extends DownloadManager
             );
         }
 
-        $this->console->exec('git add .');
+        $this->console->exec('git add --all');
         $this->console->exec(sprintf('git commit -m "%s"', $message));
     }
 }

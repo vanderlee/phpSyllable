@@ -91,16 +91,15 @@ Changes
 -   Fixed PHP 7.4 compatibility (#37) by @Dargmuesli.
         ');
 
-        $this->addFileToTestDirectory('README.md', $readme);
+        $this->createFileInTestDirectory('README.md', $readme);
 
         $releaseType = SemanticVersioning::PATCH_RELEASE;
-        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+        $readmeFile = $this->getPathInTestDirectory('README.md');
 
-        $releaseManager = new ReleaseManager();
-        $releaseManager->setReleaseType($releaseType);
-        $releaseManager->setReadmeFile($readmeFile);
-        $releaseManager->setGit($gitStub);
-        $result = $releaseManager->delegate();
+        $this->releaseManager->setReleaseType($releaseType);
+        $this->releaseManager->setReadmeFile($readmeFile);
+        $this->releaseManager->setGit($gitStub);
+        $result = $this->releaseManager->delegate();
 
         $this->assertTrue($result);
         $this->expectOutputRegex($expectedOutputRegex);
@@ -147,16 +146,15 @@ Aborting.
         ')."\n";
         $expectedReadme = $readme;
 
-        $this->addFileToTestDirectory('README.md', $readme);
+        $this->createFileInTestDirectory('README.md', $readme);
 
         $releaseType = SemanticVersioning::PATCH_RELEASE;
-        $readmeFile = $this->getPathOfTestDirectoryFile('README.md');
+        $readmeFile = $this->getPathInTestDirectory('README.md');
 
-        $releaseManager = new ReleaseManager();
-        $releaseManager->setReleaseType($releaseType);
-        $releaseManager->setReadmeFile($readmeFile);
-        $releaseManager->setGit($gitStub);
-        $result = $releaseManager->delegate();
+        $this->releaseManager->setReleaseType($releaseType);
+        $this->releaseManager->setReadmeFile($readmeFile);
+        $this->releaseManager->setGit($gitStub);
+        $result = $this->releaseManager->delegate();
 
         $this->assertFalse($result);
         $this->expectOutputString($expectedOutput);
