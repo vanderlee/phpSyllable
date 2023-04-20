@@ -1,6 +1,6 @@
 Syllable
 ========
-Version 1.5.5
+Version 1.6
 
 [![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
 
@@ -301,6 +301,28 @@ to execute the tests.
 
 Changes
 -------
+1.6
+-   Revert renaming of API method names
+-   Use cache version as string instead of number
+-   Cover caching with tests
+-   Reduce the PHP test matrix to the latest versions of PHP 5, 7 and 8
+-   Check via GitHub Action if the API documentation is up-to-date
+-   Update API reference
+-   Fix API documentation of an array as parameter default value
+-   Satisfy StyleCI
+-   Commit changed files of entire working tree in build context
+-   Support for generation of API documentation in README.md
+-   Add words with reduced hyphenation to collection from PR #26
+-   Satisfy StyleCI
+-   Add test for collection of words with reduced hyphenation
+-   Refactor splitWord(), splitWords() and splitText() of Syllable class
+-   Remove @covers annotation in tests
+-   Added splitWords and various code quality improvements
+-   Update the README.md copyright claim on release
+-   Skip GitHub Action scheduler in forks and run tests only in PR context
+-   Allow GitHub Action "Update languages" workflow to bypass reviews
+-   Use German orthography from 2006 as standard orthography
+
 1.5.5
 -   Automatic update of 74 languages
 
