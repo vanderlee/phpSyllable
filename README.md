@@ -51,6 +51,9 @@ use Vanderlee\Syllable\Syllable;
 use Vanderlee\Syllable\Hyphen;
 
 // Globally set the directory where Syllable can store cache files.
+// By default, this is the cache/ folder in this package, but usually
+// you want to have the folder outside the package. Note that the cache
+// folder must be created beforehand.
 Syllable::setCacheDir(__DIR__ . '/cache');
 
 // Globally set the directory where the .tex files are stored.
