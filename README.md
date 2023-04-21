@@ -23,8 +23,8 @@ Language sources: http://tug.org/tex-hyphen/#languages
 
 Supports PHP 5.6 and up, so you can use it on older servers.
 
-Quick start
------------
+Installation
+------------
 
 Install phpSyllable via Composer
 
@@ -35,7 +35,10 @@ composer require vanderlee/syllable
 or simply add phpSyllable to your project and set up the project's 
 autoloader for phpSyllable's src/ directory.
 
-Then instantiate a Syllable object and start hyphenation.
+Usage
+-----
+
+Instantiate a Syllable object and start hyphenation.
 
 Minimal example:
 
