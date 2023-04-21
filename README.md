@@ -89,7 +89,7 @@ The following describes the API of the main Syllable class. In most cases,
 you will not use any other functions. Browse the code under src/ for all 
 available functions.
 
-#### public __construct($language = 'en', string|Hyphen $hyphen = null)
+#### public __construct($language = 'en-us', string|Hyphen $hyphen = null)
 
 Create a new Syllable class, with defaults.
 

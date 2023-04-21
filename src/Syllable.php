@@ -77,7 +77,7 @@ class Syllable
      * @param string        $language
      * @param string|Hyphen $hyphen
      */
-    public function __construct($language = 'en', $hyphen = null)
+    public function __construct($language = 'en-us', $hyphen = null)
     {
         if (!self::$cacheDir) {
             self::$cacheDir = __DIR__.'/../cache';
