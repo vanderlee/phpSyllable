@@ -146,15 +146,19 @@ class DocumentationManager extends Manager
             $apiDocumentation .= '#### '.$method['signature']."\n\n";
             $apiDocumentation .= $method['comment'] !== '' ? $method['comment']."\n\n" : '';
         }
+        $apiDocumentation .= "\n";
 
         $readme = file_get_contents($this->readmeFile);
-        $apiDocumentationStart = strpos($readme, '####', strpos($readme, "`Syllable` API reference\n--------------------------"));
-        $apiDocumentationEnd = strpos($readme, "Development\n-----------", $apiDocumentationStart);
-        $apiDocumentationLength = $apiDocumentationEnd - $apiDocumentationStart;
+        $apiDocumentationStart = strpos($readme, '## `Syllable` API reference');
+        if ($apiDocumentationStart !== false) {
+            $apiDocumentationStart = strpos($readme, '####', $apiDocumentationStart);
+            $apiDocumentationEnd = strpos($readme, '## Development', $apiDocumentationStart);
+        }
+
         $apiDocumentationOld = '';
         $readmeState = 0;
-
-        if ($apiDocumentationStart > -1 && $apiDocumentationEnd > -1) {
+        if ($apiDocumentationStart !== false && $apiDocumentationEnd !== false) {
+            $apiDocumentationLength = $apiDocumentationEnd - $apiDocumentationStart;
             $apiDocumentationOld = substr($readme, $apiDocumentationStart, $apiDocumentationLength);
             $readme = substr_replace($readme, $apiDocumentation, $apiDocumentationStart, $apiDocumentationLength);
             $readmeState += 1;

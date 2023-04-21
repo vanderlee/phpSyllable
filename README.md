@@ -1,5 +1,5 @@
-Syllable
-========
+# Syllable
+
 Version 1.6
 
 [![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
@@ -7,8 +7,9 @@ Version 1.6
 Copyright &copy; 2011-2023 Martijn van der Lee.
 MIT Open Source license applies.
 
-Introduction
-------------
+
+## Introduction
+
 PHP Syllable splitting and hyphenation.
 or rather...
 PHP Syl-la-ble split-ting and hy-phen-ation.
@@ -23,8 +24,8 @@ Language sources: http://tug.org/tex-hyphen/#languages
 
 Supports PHP 5.6 and up, so you can use it on older servers.
 
-Installation
-------------
+
+## Installation
 
 Install phpSyllable via Composer
 
@@ -35,8 +36,8 @@ composer require vanderlee/syllable
 or simply add phpSyllable to your project and set up the project's 
 autoloader for phpSyllable's src/ directory.
 
-Usage
------
+
+## Usage
 
 Instantiate a Syllable object and start hyphenation.
 
@@ -81,8 +82,9 @@ echo $syllable->hyphenateText('Provide your own paragraphs...');
 
 See the [demo.php](demo.php) file for a working example.
 
-`Syllable` API reference
---------------------------
+
+## `Syllable` API reference
+
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
@@ -210,8 +212,8 @@ Count the number of syllables in the text.
 
 Count the number of polysyllables in the text.
 
-Development
------------
+
+## Development
 
 ### Update language files
 
@@ -318,8 +320,8 @@ composer install
 to execute the tests.
 
 
-Changes
--------
+## Changes
+
 1.6
 -   Revert renaming of API method names
 -   Use cache version as string instead of number
