@@ -51,8 +51,8 @@ For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
 ..
 
-Example
--------
+Development
+-----------
         ');
 
         $expectedOutputRegex = '#The API documentation in the README.md has CHANGED.#';
@@ -75,8 +75,8 @@ The public getter method.
 
 The public static method.
 
-Example
--------
+Development
+-----------
         ');
 
         $this->createFileInTestDirectory('README.md', $readme);
@@ -115,7 +115,7 @@ Examples
         $expectedOutput = trim('
 Could not update README.md. The format has probably changed:
 [
-    "Missing headlines \"`Syllable` class reference\" and \"Example\" to locate API documentation."
+    "Missing headlines \"`Syllable` class reference\" and \"Development\" to locate API documentation."
 ]
 Aborting.
         ')."\n";
