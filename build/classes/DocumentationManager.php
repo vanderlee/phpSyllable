@@ -143,12 +143,12 @@ class DocumentationManager extends Manager
 
         $apiDocumentation = '';
         foreach ($apiMethods as $method) {
-            $apiDocumentation .= '### '.$method['signature']."\n\n";
+            $apiDocumentation .= '#### '.$method['signature']."\n\n";
             $apiDocumentation .= $method['comment'] !== '' ? $method['comment']."\n\n" : '';
         }
 
         $readme = file_get_contents($this->readmeFile);
-        $apiDocumentationStart = strpos($readme, '###', strpos($readme, "`Syllable` class reference\n--------------------------"));
+        $apiDocumentationStart = strpos($readme, '####', strpos($readme, "`Syllable` class reference\n--------------------------"));
         $apiDocumentationEnd = strpos($readme, "Development\n-----------", $apiDocumentationStart);
         $apiDocumentationLength = $apiDocumentationEnd - $apiDocumentationStart;
         $apiDocumentationOld = '';

@@ -83,127 +83,127 @@ See the [demo.php](demo.php) file for a working example.
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
 
-### public __construct($language = 'en', string|Hyphen $hyphen = null)
+#### public __construct($language = 'en', string|Hyphen $hyphen = null)
 
 Create a new Syllable class, with defaults.
 
-### public static setCacheDir(string $dir)
+#### public static setCacheDir(string $dir)
 
 Set the directory where compiled language files may be stored.
 Default to the `cache` subdirectory of the current directory.
 
-### public static setEncoding(string|null $encoding = null)
+#### public static setEncoding(string|null $encoding = null)
 
 Set the character encoding to use.
 Specify `null` encoding to not apply any encoding at all.
 
-### public static setLanguageDir(string $dir)
+#### public static setLanguageDir(string $dir)
 
 Set the directory where language source files can be found.
 Default to the `languages` subdirectory of the current directory.
 
-### public setLanguage(string $language)
+#### public setLanguage(string $language)
 
 Set the language whose rules will be used for hyphenation.
 
-### public setHyphen(mixed $hyphen)
+#### public setHyphen(mixed $hyphen)
 
 Set the hyphen text or object to use as a hyphen marker.
 
-### public getHyphen(): Hyphen
+#### public getHyphen(): Hyphen
 
 Get the current hyphen object.
 
-### public setCache(Cache $cache = null)
+#### public setCache(Cache $cache = null)
 
-### public getCache(): Cache
+#### public getCache(): Cache
 
-### public setSource($source)
+#### public setSource($source)
 
-### public getSource(): Source
+#### public getSource(): Source
 
-### public setMinWordLength(int $length = 0)
+#### public setMinWordLength(int $length = 0)
 
 Words need to contain at least this many character to be hyphenated.
 
-### public getMinWordLength(): int
+#### public getMinWordLength(): int
 
-### public setLibxmlOptions(int $libxmlOptions)
+#### public setLibxmlOptions(int $libxmlOptions)
 
 Options to use for HTML parsing by libxml.
 See https://www.php.net/manual/de/libxml.constants.php.
 
-### public excludeAll()
+#### public excludeAll()
 
 Exclude all elements.
 
-### public excludeElement(string|string[] $elements)
+#### public excludeElement(string|string[] $elements)
 
 Add one or more elements to exclude from HTML.
 
-### public excludeAttribute(string|string[] $attributes, $value = null)
+#### public excludeAttribute(string|string[] $attributes, $value = null)
 
 Add one or more elements with attributes to exclude from HTML.
 
-### public excludeXpath(string|string[] $queries)
+#### public excludeXpath(string|string[] $queries)
 
 Add one or more xpath queries to exclude from HTML.
 
-### public includeElement(string|string[] $elements)
+#### public includeElement(string|string[] $elements)
 
 Add one or more elements to include from HTML.
 
-### public includeAttribute(string|string[] $attributes, $value = null)
+#### public includeAttribute(string|string[] $attributes, $value = null)
 
 Add one or more elements with attributes to include from HTML.
 
-### public includeXpath(string|string[] $queries)
+#### public includeXpath(string|string[] $queries)
 
 Add one or more xpath queries to include from HTML.
 
-### public splitWord(string $word): array
+#### public splitWord(string $word): array
 
 Split a single word on where the hyphenation would go.
 Punctuation is not supported, only simple words. For parsing whole sentences
 please use Syllable::splitWords() or Syllable::splitText().
 
-### public splitWords(string $text): array
+#### public splitWords(string $text): array
 
 Split a text into an array of punctuation marks and words,
 splitting each word on where the hyphenation would go.
 
-### public splitText(string $text): array
+#### public splitText(string $text): array
 
 Split a text on where the hyphenation would go.
 
-### public hyphenateWord(string $word): string
+#### public hyphenateWord(string $word): string
 
 Hyphenate a single word.
 
-### public hyphenateText(string $text): string
+#### public hyphenateText(string $text): string
 
 Hyphenate all words in the plain text.
 
-### public hyphenateHtml(string $html): string
+#### public hyphenateHtml(string $html): string
 
 Hyphenate all readable text in the HTML, excluding HTML tags and
 attributes.
 
-### public histogramText(string $text): array
+#### public histogramText(string $text): array
 
 Count the number of syllables in the text and return a map with
 syllable count as key and number of words for that syllable count as
 the value.
 
-### public countWordsText(string $text): int
+#### public countWordsText(string $text): int
 
 Count the number of words in the text.
 
-### public countSyllablesText(string $text): int
+#### public countSyllablesText(string $text): int
 
 Count the number of syllables in the text.
 
-### public countPolysyllablesText(string $text): int
+#### public countPolysyllablesText(string $text): int
 
 Count the number of polysyllables in the text.
 
