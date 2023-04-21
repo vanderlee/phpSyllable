@@ -42,7 +42,7 @@ class DocumentationManagerTest extends AbstractTestCase
     public function delegateSucceeds()
     {
         $readme = trim('
-`Syllable` class reference
+`Syllable` API reference
 --------------------------
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
@@ -57,7 +57,7 @@ Development
 
         $expectedOutputRegex = '#The API documentation in the README.md has CHANGED.#';
         $expectedReadme = trim('
-`Syllable` class reference
+`Syllable` API reference
 --------------------------
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
@@ -115,7 +115,7 @@ Examples
         $expectedOutput = trim('
 Could not update README.md. The format has probably changed:
 [
-    "Missing headlines \"`Syllable` class reference\" and \"Development\" to locate API documentation."
+    "Missing headlines \"`Syllable` API reference\" and \"Development\" to locate API documentation."
 ]
 Aborting.
         ')."\n";

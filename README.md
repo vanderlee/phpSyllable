@@ -81,7 +81,7 @@ echo $syllable->hyphenateText('Provide your own paragraphs...');
 
 See the [demo.php](demo.php) file for a working example.
 
-`Syllable` class reference
+`Syllable` API reference
 --------------------------
 The following is an incomplete list, containing only the most common methods.
 For a complete documentation of all classes, read the generated [PHPDoc](doc).
