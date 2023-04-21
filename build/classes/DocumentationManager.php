@@ -149,7 +149,7 @@ class DocumentationManager extends Manager
 
         $readme = file_get_contents($this->readmeFile);
         $apiDocumentationStart = strpos($readme, '###', strpos($readme, "`Syllable` class reference\n--------------------------"));
-        $apiDocumentationEnd = strpos($readme, "Example\n-------", $apiDocumentationStart);
+        $apiDocumentationEnd = strpos($readme, "Development\n-----------", $apiDocumentationStart);
         $apiDocumentationLength = $apiDocumentationEnd - $apiDocumentationStart;
         $apiDocumentationOld = '';
         $readmeState = 0;
@@ -164,7 +164,7 @@ class DocumentationManager extends Manager
 
         if ($readmeState < 1) {
             if (!($readmeState & 1)) {
-                $errors[] = 'Missing headlines "`Syllable` class reference" and "Example" to locate API documentation.';
+                $errors[] = 'Missing headlines "`Syllable` class reference" and "Development" to locate API documentation.';
             }
             if (isset($errors)) {
                 throw new Exception(sprintf(

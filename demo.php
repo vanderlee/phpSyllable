@@ -23,7 +23,7 @@ $language = isset($_REQUEST['language']) ? $_REQUEST['language'] : 'en-us';
 
 $languages = array(
     'af' => 'Afrikaans'
-    , 'hyph-zh-latn-pinyin' => 'Chinese - Pinyin'
+    , 'zh-latn-pinyin' => 'Chinese - Pinyin'
     , 'da' => 'Danish'
     , 'nl' => 'Dutch'
     , 'en-us' => 'English - American'
@@ -48,11 +48,10 @@ asort($languages);
 // phpSyllable code
 require_once __DIR__ . '/vendor/autoload.php';
 
+\Vanderlee\Syllable\Syllable::setCacheDir(__DIR__ . '/cache');
+\Vanderlee\Syllable\Syllable::setLanguageDir(__DIR__ . '/languages');
+
 $syllable = new \Vanderlee\Syllable\Syllable($language);
-/** @var \Vanderlee\Syllable\Cache\File $cache */
-$cache = $syllable->getCache();
-$cache->setPath(__DIR__ . '/cache');
-$syllable->getSource()->setPath(__DIR__ . '/languages');
 ?>
 <html>
 <head>
@@ -161,7 +160,7 @@ $syllable->getSource()->setPath(__DIR__ . '/languages');
     <h2>Soft-hyphens</h2>
     <h5>&amp;shy; entities</h5>
     <?php
-    $syllable->setHyphen(new Vanderlee\Syllable\Hyphen\Soft());
+    $syllable->setHyphen(new \Vanderlee\Syllable\Hyphen\Soft());
     echo nl2br($syllable->hyphenateText($source));
     ?>
 </div>

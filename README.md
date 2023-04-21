@@ -25,13 +25,55 @@ Supports PHP 5.6 and up, so you can use it on older servers.
 
 Quick start
 -----------
-Just include phpSyllable in your project, set up the autoloader to the classes
-directory and instantiate yourself a Syllable class.
+
+Install phpSyllable via Composer
+
+```
+composer require vanderlee/syllable
+```
+
+or simply add phpSyllable to your project and set up the project's 
+autoloader for phpSyllable's src/ directory.
+
+Then instantiate a Syllable object and start hyphenation.
+
+Minimal example:
 
 ```php
-$syllable = new Syllable('en-us');
+$syllable = new \Vanderlee\Syllable\Syllable('en-us');
 echo $syllable->hyphenateText('Provide a plethora of paragraphs');
 ```
+
+Extended example:
+
+```php
+use Vanderlee\Syllable\Syllable;
+use Vanderlee\Syllable\Hyphen;
+
+// Globally set the directory where Syllable can store cache files.
+Syllable::setCacheDir(__DIR__ . '/cache');
+
+// Globally set the directory where the .tex files are stored.
+// By default, this is the languages/ folder of this package and
+// usually does not need to be adapted.
+Syllable::setLanguageDir(__DIR__ . '/languages');
+
+// Create a new instance for the language.
+$syllable = new Syllable('en-us');
+
+// Set the style of the hyphen. In this case it is the "-" character.
+// By default, it is the soft hyphen "&shy;".
+$syllable->setHyphen(new Hyphen\Dash());
+
+// Set the minimum word length required for hyphenation.
+// By default, all words are hyphenated.
+$syllable->setMinWordLength(5);
+
+// Output hyphenated text.
+echo $syllable->hyphenateText('Provide your own paragraphs...');
+```
+
+See the [demo.php](demo.php) file for a working example.
 
 `Syllable` class reference
 --------------------------
@@ -161,35 +203,6 @@ Count the number of syllables in the text.
 ### public countPolysyllablesText(string $text): int
 
 Count the number of polysyllables in the text.
-
-Example
--------
-See the [demo.php](demo.php) file for a working example.
-
-```php
-// Setup the autoloader (if needed)
-require_once dirname(__FILE__) . '/classes/autoloader.php';
-use Vanderlee\Syllable\Syllable;
-
-// Create a new instance for the language
-$syllable = new Syllable('en-us');
-
-// Set the directory where the .tex files are stored
-$syllable->getSource()->setPath(__DIR__ . '/languages');
-
-// Set the directory where Syllable can store cache files
-$syllable->getCache()->setPath(__DIR__ . '/cache');
-
-// Set the hyphen style. In this case, the &shy; HTML entity
-// for HTML (falls back to '-' for text)
-$syllable->setHyphen(new Syllable_Hyphen_Soft);
-
-// Set the treshold (sensitivity)
-$syllable->setTreshold(Syllable::TRESHOLD_MOST);
-
-// Output hyphenated text
-echo $syllable->hyphenateText('Provide your own paragraphs...');
-```
 
 Development
 -----------
