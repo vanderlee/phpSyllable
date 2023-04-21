@@ -44,8 +44,9 @@ class DocumentationManagerTest extends AbstractTestCase
         $readme = trim('
 ## `Syllable` API reference
 
-The following is an incomplete list, containing only the most common methods.
-For a complete documentation of all classes, read the generated [PHPDoc](doc).
+The following describes the API of the main Syllable class. In most cases, 
+you will not use any other functions. Browse the code under src/ for all 
+available functions.
 
 #### public setMethods(array $methods = [])
 
@@ -59,8 +60,9 @@ For a complete documentation of all classes, read the generated [PHPDoc](doc).
         $expectedReadme = trim('
 ## `Syllable` API reference
 
-The following is an incomplete list, containing only the most common methods.
-For a complete documentation of all classes, read the generated [PHPDoc](doc).
+The following describes the API of the main Syllable class. In most cases, 
+you will not use any other functions. Browse the code under src/ for all 
+available functions.
 
 #### public setMethods(array $methods = [])
 
@@ -101,8 +103,9 @@ The public static method.
         $readme = trim('
 ## Syllable API reference
 
-The following is an incomplete list, containing only the most common methods.
-For a complete documentation of all classes, read the generated [PHPDoc](doc).
+The following describes the API of the main Syllable class. In most cases, 
+you will not use any other functions. Browse the code under src/ for all 
+available functions.
 
 #### public setMethods(array $methods = [])
 
