@@ -33,8 +33,12 @@ class ReflectionTest extends AbstractTestCase
 
         $expected = [
             [
+                'signature' => 'public setMethodsDeprecated(array $methods = [])',
+                'comment'   => "The deprecated public setter method.\n**Deprecated:** Use setMethods() instead.",
+            ],
+            [
                 'signature' => 'public setMethods(array $methods = [])',
-                'comment'   => "The public setter method.\nSee https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.",
+                'comment'   => "The public setter method.\n**See:** https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.",
             ],
             [
                 'signature' => 'public getMethods(): array',

@@ -558,9 +558,25 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
+     * @return void
+     */
+    public function testHyphenateHtml()
+    {
+        $this->object->setHyphen('-');
+
+        $this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
+            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+
+        $this->object->setLibxmlOptions(LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $this->assertEquals('<p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p>'
+            ."\n", $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext'));
+    }
+
+    /**
      * @return array[]
      */
-    public function dataHyphenateHtml()
+    public function dataHyphenateHtmlText()
     {
         return [
             [
@@ -597,11 +613,11 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider dataHyphenateHtml
+     * @dataProvider dataHyphenateHtmlText
      *
      * @return void
      */
-    public function testHyphenateHtml($html, $expected)
+    public function testHyphenateHtmlText($html, $expected)
     {
         $this->object->setHyphen('-');
 
@@ -609,10 +625,10 @@ class SyllableTest extends AbstractTestCase
         // html and body tag of DOMDocument. It always behaves as if LIBXML_HTML_NOIMPLIED
         // and LIBXML_HTML_NODEFDTD are set.
         $this->object->setLibxmlOptions(0);
-        $this->assertEquals($expected, $this->object->hyphenateHtml($html));
+        $this->assertEquals($expected, $this->object->hyphenateHtmlText($html));
 
         $this->object->setLibxmlOptions(LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $this->assertEquals($expected, $this->object->hyphenateHtml($html));
+        $this->assertEquals($expected, $this->object->hyphenateHtmlText($html));
     }
 
     /**
@@ -684,8 +700,14 @@ class SyllableTest extends AbstractTestCase
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
-            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i>',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
+        );
+        $this->assertEquals(
+            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i>',
+            $this->object->hyphenateHtmlText('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
@@ -699,8 +721,14 @@ class SyllableTest extends AbstractTestCase
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
-            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i>',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
+        );
+        $this->assertEquals(
+            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>extravaganza</i>',
+            $this->object->hyphenateHtmlText('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
@@ -715,8 +743,14 @@ class SyllableTest extends AbstractTestCase
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
-            'Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i>',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
+        );
+        $this->assertEquals(
+            'Ridiculously <b class="unsplittable">com-pli-cat-ed</b> metatext <i>extravaganza</i>',
+            $this->object->hyphenateHtmlText('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
@@ -731,8 +765,14 @@ class SyllableTest extends AbstractTestCase
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
-            'Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text</p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated <i>extravaganza</i></b> metatext')
+        );
+        $this->assertEquals(
+            'Ridicu-lous-ly <b class="unsplittable">complicated <i>ex-trav-a-gan-za</i></b> meta-text',
+            $this->object->hyphenateHtmlText('Ridiculously <b class="unsplittable">complicated <i>extravaganza</i></b> metatext')
         );
     }
 
@@ -746,8 +786,14 @@ class SyllableTest extends AbstractTestCase
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
-            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i>',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
+        );
+        $this->assertEquals(
+            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i>ex-trav-a-gan-za</i>',
+            $this->object->hyphenateHtmlText('Ridiculously <b class="unsplittable">complicated</b> metatext <i>extravaganza</i>')
         );
     }
 
@@ -761,8 +807,14 @@ class SyllableTest extends AbstractTestCase
 
         // Do not Hypenate content within <b>
         $this->assertEquals(
-            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i>',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i></p></body></html>'
+            ."\n",
             $this->object->hyphenateHtml('Ridiculously <b class="unsplittable">complicated</b> metatext <i class="go right ahead">extravaganza</i>')
+        );
+        $this->assertEquals(
+            'Ridicu-lous-ly <b class="unsplittable">complicated</b> meta-text <i class="go right ahead">ex-trav-a-gan-za</i>',
+            $this->object->hyphenateHtmlText('Ridiculously <b class="unsplittable">complicated</b> metatext <i class="go right ahead">extravaganza</i>')
         );
     }
 
@@ -778,13 +830,13 @@ class SyllableTest extends AbstractTestCase
             $this->object->hyphenateText('Äußerst komplizierter Metatext.')
         );
         $this->assertEquals('Äu-ßerst <b class="unsplittable">kom-pli-zier-ter</b> Me-ta-text.',
-            $this->object->hyphenateHtml('Äußerst <b class="unsplittable">komplizierter</b> Metatext.')
+            $this->object->hyphenateHtmlText('Äußerst <b class="unsplittable">komplizierter</b> Metatext.')
         );
 
         $this->object->setLanguage('uk');
         $this->assertEquals('Над-зви-чайно скла-дний ме-та-те-кст.',
             $this->object->hyphenateText('Надзвичайно складний метатекст.'));
         $this->assertEquals('Над-зви-чайно <b class="unsplittable">скла-дний</b> ме-та-те-кст.',
-            $this->object->hyphenateHtml('Надзвичайно <b class="unsplittable">складний</b> метатекст.'));
+            $this->object->hyphenateHtmlText('Надзвичайно <b class="unsplittable">складний</b> метатекст.'));
     }
 }

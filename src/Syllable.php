@@ -497,8 +497,10 @@ class Syllable
     }
 
     /**
-     * Hyphenate all readable text in the HTML body, excluding HTML tags and
+     * Hyphenate all readable text in the HTML, excluding HTML tags and
      * attributes.
+     *
+     * @deprecated Use the UTF-8 capable hyphenateHtmlText() instead. This method is kept only for backward compatibility and will be removed in the next major version 2.0.
      *
      * @param string $html
      *
@@ -506,8 +508,34 @@ class Syllable
      */
     public function hyphenateHtml($html)
     {
+        $dom = new DOMDocument();
+        $dom->resolveExternals = true;
+        $dom->loadHTML($html, $this->libxmlOptions);
+
+        // filter excludes
+        $xpath = new DOMXPath($dom);
+        $excludedNodes = $this->excludes ? $xpath->query(join('|', $this->excludes)) : null;
+        $includedNodes = $this->includes ? $xpath->query(join('|', $this->includes)) : null;
+
+        $this->hyphenateHtmlDom($dom, $excludedNodes, $includedNodes);
+
+        return $dom->saveHTML();
+    }
+
+    /**
+     * Hyphenate all readable text in the HTML, excluding HTML tags and
+     * attributes.
+     *
+     * This method is UTF-8 capable and should be preferred over hyphenateHtml().
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    public function hyphenateHtmlText($html)
+    {
         $charset = mb_detect_encoding($html);
-        list($bodyContent, $beforeBodyContent, $afterBodyContent) = $this->parseHtml($html);
+        list($bodyContent, $beforeBodyContent, $afterBodyContent) = $this->parseHtmlText($html);
         $html = "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN' 'http://www.w3.org/TR/REC-html40/loose.dtd'>" .
             "<html>" .
                 "<head>" .
@@ -539,7 +567,7 @@ class Syllable
      *
      * @return array
      */
-    protected function parseHtml($html)
+    private function parseHtmlText($html)
     {
         if (($bodyContentEnd = mb_strrpos($html, '</body>')) !== false) {
             $bodyContentStart = mb_strpos($html, '<body');

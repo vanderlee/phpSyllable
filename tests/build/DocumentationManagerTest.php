@@ -64,10 +64,15 @@ The following describes the API of the main Syllable class. In most cases,
 you will not use any other functions. Browse the code under src/ for all 
 available functions.
 
+#### public setMethodsDeprecated(array $methods = [])
+
+The deprecated public setter method.
+**Deprecated:** Use setMethods() instead.
+
 #### public setMethods(array $methods = [])
 
 The public setter method.
-See https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.
+**See:** https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.
 
 #### public getMethods(): array
 
