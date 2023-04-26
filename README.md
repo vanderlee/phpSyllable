@@ -192,7 +192,7 @@ Hyphenate all words in the plain text.
 
 #### public hyphenateHtml(string $html): string
 
-Hyphenate all readable text in the HTML, excluding HTML tags and
+Hyphenate all readable text in the HTML body, excluding HTML tags and
 attributes.
 
 #### public histogramText(string $text): array

@@ -497,7 +497,7 @@ class Syllable
     }
 
     /**
-     * Hyphenate all readable text in the HTML, excluding HTML tags and
+     * Hyphenate all readable text in the HTML body, excluding HTML tags and
      * attributes.
      *
      * @param string $html
@@ -506,6 +506,16 @@ class Syllable
      */
     public function hyphenateHtml($html)
     {
+        $charset = mb_detect_encoding($html);
+        list($bodyContent, $beforeBodyContent, $afterBodyContent) = $this->parseHtml($html);
+        $html = "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN' 'http://www.w3.org/TR/REC-html40/loose.dtd'>" .
+            "<html>" .
+                "<head>" .
+                    "<meta http-equiv='content-type' content='text/html; charset=$charset'>" .
+                "</head>" .
+                "<body>$bodyContent</body>" .
+            "</html>";
+
         $dom = new DOMDocument();
         $dom->resolveExternals = true;
         $dom->loadHTML($html, $this->libxmlOptions);
@@ -517,7 +527,37 @@ class Syllable
 
         $this->hyphenateHtmlDom($dom, $excludedNodes, $includedNodes);
 
-        return $dom->saveHTML();
+        $hyphenatedBodyContent = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
+        $hyphenatedBodyContent = mb_substr($hyphenatedBodyContent, mb_strlen('<body>'), -mb_strlen('</body>'));
+        $hyphenatedHtml = $beforeBodyContent.$hyphenatedBodyContent.$afterBodyContent;
+
+        return $hyphenatedHtml;
+    }
+
+    /**
+     * @param string $html
+     *
+     * @return array
+     */
+    protected function parseHtml($html)
+    {
+        if (($bodyContentEnd = mb_strrpos($html, '</body>')) !== false) {
+            $bodyContentStart = mb_strpos($html, '<body');
+            $bodyContentStart = $bodyContentStart + strcspn($html, '>', $bodyContentStart) + 1;
+            $beforeBodyContent = mb_substr($html, 0, $bodyContentStart);
+            $afterBodyContent = mb_substr($html, $bodyContentEnd);
+            $bodyContent = mb_substr($html, $bodyContentStart, -mb_strlen($afterBodyContent));
+        } else {
+            $beforeBodyContent = '';
+            $afterBodyContent = '';
+            $bodyContent = $html;
+        }
+
+        return [
+            $bodyContent,
+            $beforeBodyContent,
+            $afterBodyContent,
+        ];
     }
 
     /**
