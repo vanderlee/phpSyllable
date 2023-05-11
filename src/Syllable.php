@@ -693,7 +693,7 @@ class Syllable
         }
 
         // Convenience array
-        $text = '.' . $word . '.';
+        $text = '.'.$word.'.';
         $textLength = $wordLength + 2;
         $patternLength = $this->maxPattern < $textLength
             ? $this->maxPattern
