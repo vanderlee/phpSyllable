@@ -687,12 +687,13 @@ class Syllable
         }
 
         // Is it a pre-hyphenated word?
+        $word = mb_strtolower($word);
         if (isset($this->hyphenation[$word])) {
             return mb_split('-', $this->hyphenation[$word]);
         }
 
         // Convenience array
-        $text = '.'.mb_strtolower($word).'.';
+        $text = '.' . $word . '.';
         $textLength = $wordLength + 2;
         $patternLength = $this->maxPattern < $textLength
             ? $this->maxPattern
