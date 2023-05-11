@@ -754,13 +754,30 @@ class Syllable
             return [$word];
         }
 
+        $wordLowerCased = mb_strtolower($word);
+
         // Is it a pre-hyphenated word?
-        if (isset($this->hyphenation[$word])) {
-            return mb_split('-', $this->hyphenation[$word]);
+        if (isset($this->hyphenation[$wordLowerCased])) {
+            $hyphenation = $this->hyphenation[$wordLowerCased];
+            $hyphenationLength = mb_strlen($hyphenation);
+            $parts = [];
+            $part = '';
+            for ($i = 0, $j = 0; $i < $hyphenationLength; $i++) {
+                if (mb_substr($hyphenation, $i, 1) !== '-') {
+                    $part .= mb_substr($word, $j++, 1);
+                } else {
+                    $parts[] = $part;
+                    $part = '';
+                }
+            }
+            if (!empty($part)) {
+                $parts[] = $part;
+            }
+            return $parts;
         }
 
         // Convenience array
-        $text = '.'.mb_strtolower($word).'.';
+        $text = '.'.$wordLowerCased.'.';
         $textLength = $wordLength + 2;
         $patternLength = $this->maxPattern < $textLength
             ? $this->maxPattern
