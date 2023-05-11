@@ -748,7 +748,6 @@ class Syllable
     {
         $wordLength = mb_strlen($word);
 
-        // Is this word smaller than the minimal length requirement?
         if ($wordLength < $this->minHyphenLeft + $this->minHyphenRight
             || $wordLength < $this->minWordLength) {
             return [$word];
@@ -756,25 +755,41 @@ class Syllable
 
         $wordLowerCased = mb_strtolower($word);
 
-        // Is it a pre-hyphenated word?
         if (isset($this->hyphenation[$wordLowerCased])) {
-            $hyphenation = $this->hyphenation[$wordLowerCased];
-            $hyphenationLength = mb_strlen($hyphenation);
-            $parts = [];
-            $part = '';
-            for ($i = 0, $j = 0; $i < $hyphenationLength; $i++) {
-                if (mb_substr($hyphenation, $i, 1) !== '-') {
-                    $part .= mb_substr($word, $j++, 1);
-                } else {
-                    $parts[] = $part;
-                    $part = '';
-                }
-            }
-            if (!empty($part)) {
-                $parts[] = $part;
-            }
-            return $parts;
+            return $this->parseWordByHyphenation($word, $wordLowerCased);
+        } else {
+            return $this->parseWordByPatterns($word, $wordLength, $wordLowerCased);
         }
+    }
+
+    private function parseWordByHyphenation($word, $wordLowerCased = null)
+    {
+        $wordLowerCased = $wordLowerCased ?: mb_strtolower($word);
+
+        $hyphenation = $this->hyphenation[$wordLowerCased];
+        $hyphenationLength = mb_strlen($hyphenation);
+
+        $parts = [];
+        $part = '';
+        for ($i = 0, $j = 0; $i < $hyphenationLength; $i++) {
+            if (mb_substr($hyphenation, $i, 1) !== '-') {
+                $part .= mb_substr($word, $j++, 1);
+            } else {
+                $parts[] = $part;
+                $part = '';
+            }
+        }
+        if (!empty($part)) {
+            $parts[] = $part;
+        }
+
+        return $parts;
+    }
+
+    private function parseWordByPatterns($word, $wordLength = 0, $wordLowerCased = null)
+    {
+        $wordLength = $wordLength > 0 ? $wordLength : mb_strlen($word);
+        $wordLowerCased = $wordLowerCased ?: mb_strtolower($word);
 
         // Convenience array
         $text = '.'.$wordLowerCased.'.';
