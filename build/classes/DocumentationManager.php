@@ -143,18 +143,22 @@ class DocumentationManager extends Manager
 
         $apiDocumentation = '';
         foreach ($apiMethods as $method) {
-            $apiDocumentation .= '### '.$method['signature']."\n\n";
+            $apiDocumentation .= '#### '.$method['signature']."\n\n";
             $apiDocumentation .= $method['comment'] !== '' ? $method['comment']."\n\n" : '';
         }
+        $apiDocumentation .= "\n";
 
         $readme = file_get_contents($this->readmeFile);
-        $apiDocumentationStart = strpos($readme, '###', strpos($readme, "`Syllable` class reference\n--------------------------"));
-        $apiDocumentationEnd = strpos($readme, "Development\n-----------", $apiDocumentationStart);
-        $apiDocumentationLength = $apiDocumentationEnd - $apiDocumentationStart;
+        $apiDocumentationStart = strpos($readme, '## `Syllable` API reference');
+        if ($apiDocumentationStart !== false) {
+            $apiDocumentationStart = strpos($readme, '####', $apiDocumentationStart);
+            $apiDocumentationEnd = strpos($readme, '## Development', $apiDocumentationStart);
+        }
+
         $apiDocumentationOld = '';
         $readmeState = 0;
-
-        if ($apiDocumentationStart > -1 && $apiDocumentationEnd > -1) {
+        if ($apiDocumentationStart !== false && $apiDocumentationEnd !== false) {
+            $apiDocumentationLength = $apiDocumentationEnd - $apiDocumentationStart;
             $apiDocumentationOld = substr($readme, $apiDocumentationStart, $apiDocumentationLength);
             $readme = substr_replace($readme, $apiDocumentation, $apiDocumentationStart, $apiDocumentationLength);
             $readmeState += 1;
@@ -164,7 +168,7 @@ class DocumentationManager extends Manager
 
         if ($readmeState < 1) {
             if (!($readmeState & 1)) {
-                $errors[] = 'Missing headlines "`Syllable` class reference" and "Development" to locate API documentation.';
+                $errors[] = 'Missing headlines "`Syllable` API reference" and "Development" to locate API documentation.';
             }
             if (isset($errors)) {
                 throw new Exception(sprintf(

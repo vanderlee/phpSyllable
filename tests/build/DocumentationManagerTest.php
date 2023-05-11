@@ -42,41 +42,43 @@ class DocumentationManagerTest extends AbstractTestCase
     public function delegateSucceeds()
     {
         $readme = trim('
-`Syllable` class reference
---------------------------
-The following is an incomplete list, containing only the most common methods.
-For a complete documentation of all classes, read the generated [PHPDoc](doc).
+## `Syllable` API reference
 
-### public setMethods(array $methods = [])
+The following describes the API of the main Syllable class. In most cases, 
+you will not use any other functions. Browse the code under src/ for all 
+available functions.
+
+#### public setMethods(array $methods = [])
 
 ..
 
-Development
------------
+
+## Development
         ');
 
         $expectedOutputRegex = '#The API documentation in the README.md has CHANGED.#';
         $expectedReadme = trim('
-`Syllable` class reference
---------------------------
-The following is an incomplete list, containing only the most common methods.
-For a complete documentation of all classes, read the generated [PHPDoc](doc).
+## `Syllable` API reference
 
-### public setMethods(array $methods = [])
+The following describes the API of the main Syllable class. In most cases, 
+you will not use any other functions. Browse the code under src/ for all 
+available functions.
+
+#### public setMethods(array $methods = [])
 
 The public setter method.
 See https://github.com/vanderlee/phpSyllable/blob/master/tests/build/ReflectionFixture.php.
 
-### public getMethods(): array
+#### public getMethods(): array
 
 The public getter method.
 
-### public static getParameters(): array
+#### public static getParameters(): array
 
 The public static method.
 
-Development
------------
+
+## Development
         ');
 
         $this->createFileInTestDirectory('README.md', $readme);
@@ -99,23 +101,24 @@ Development
     public function delegateFailsIfReadmeFormatChanges()
     {
         $readme = trim('
-Syllable class reference
---------------------------
-The following is an incomplete list, containing only the most common methods.
-For a complete documentation of all classes, read the generated [PHPDoc](doc).
+## Syllable API reference
 
-### public setMethods(array $methods = [])
+The following describes the API of the main Syllable class. In most cases, 
+you will not use any other functions. Browse the code under src/ for all 
+available functions.
+
+#### public setMethods(array $methods = [])
 
 ..
 
-Examples
---------
+
+## Development
         ');
 
         $expectedOutput = trim('
 Could not update README.md. The format has probably changed:
 [
-    "Missing headlines \"`Syllable` class reference\" and \"Development\" to locate API documentation."
+    "Missing headlines \"`Syllable` API reference\" and \"Development\" to locate API documentation."
 ]
 Aborting.
         ')."\n";

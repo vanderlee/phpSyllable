@@ -76,8 +76,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testSetHyphen()
     {
-        $this->object->setLanguage('en-us');
-
         $this->object->setHyphen('-');
         $this->assertEquals(
             'Su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious',
@@ -247,7 +245,6 @@ class SyllableTest extends AbstractTestCase
     public function testSplitWord($word, $expected)
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals($expected, $this->object->splitWord($word));
     }
@@ -273,7 +270,6 @@ class SyllableTest extends AbstractTestCase
     public function testSplitWordDoesNotSupportPunctuation($word, $expected)
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals($expected, $this->object->splitWord($word));
     }
@@ -325,7 +321,6 @@ class SyllableTest extends AbstractTestCase
     public function testSplitWordDoesNotAlwaysProvideFullHyphenation($word, $expected)
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals($expected, $this->object->splitWord($word));
     }
@@ -415,7 +410,6 @@ class SyllableTest extends AbstractTestCase
     public function testSplitWords($text, $expected)
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals($expected, $this->object->splitWords($text));
     }
@@ -476,7 +470,6 @@ class SyllableTest extends AbstractTestCase
     public function testSplitText($text, $expected)
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals($expected, $this->object->splitText($text));
     }
@@ -487,7 +480,6 @@ class SyllableTest extends AbstractTestCase
     public function testHyphenateWord()
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals(
             ';Re-dun-dan-t, punc-tu-a-tion...',
@@ -502,7 +494,6 @@ class SyllableTest extends AbstractTestCase
     public function testHyphenateText()
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals(
             ';Re-dun-dant, punc-tu-a-tion...',
@@ -523,7 +514,6 @@ class SyllableTest extends AbstractTestCase
     public function testMinWordLength()
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals(
             'I am the same thing en-core in-stead im-poster ven-er-a-ble',
@@ -573,7 +563,6 @@ class SyllableTest extends AbstractTestCase
     public function testHyphenateHtml()
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'
             ."\n".'<html><body><p>Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text</p></body></html>'
@@ -590,7 +579,6 @@ class SyllableTest extends AbstractTestCase
     public function testCaseInsensitivity()
     {
         $this->object->setHyphen('-');
-        $this->object->setLanguage('en-us');
 
         $this->assertEquals(['IN', 'EX', 'PLIC', 'A', 'BLE'], $this->object->splitText('INEXPLICABLE'));
         $this->assertEquals(['in', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('inexplicable'));
@@ -601,7 +589,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testHistogramText()
     {
-        $this->object->setLanguage('en-us');
         $this->assertSame([], $this->object->histogramText('.'));
         $this->assertSame(
             [1 => 1, 2 => 2, 3 => 1, 5 => 1, 7 => 1],
@@ -614,7 +601,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testCountWordsText()
     {
-        $this->object->setLanguage('en-us');
         $this->assertSame(0, $this->object->countWordsText('.'));
         $this->assertSame(
             6,
@@ -627,7 +613,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testCountPolysyllablesText()
     {
-        $this->object->setLanguage('en-us');
         $this->assertSame(0, $this->object->countPolysyllablesText('.'));
         $this->assertSame(
             3,
@@ -640,7 +625,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testCountSyllablesText()
     {
-        $this->object->setLanguage('en-us');
         $this->assertSame(0, $this->object->countSyllablesText('.'));
         $this->assertSame(
             1 + 2 + 2 + 3 + 5 + 7,
@@ -653,7 +637,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testExcludeElement()
     {
-        $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
         $this->object->excludeElement('b');
 
@@ -671,7 +654,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testExcludeElements()
     {
-        $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
         $this->object->excludeElement(['b', 'i']);
 
@@ -689,7 +671,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testExcludeAllAndInclude()
     {
-        $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
         $this->object->excludeAll();
         $this->object->includeElement('b');
@@ -708,7 +689,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testExcludeAndInclude()
     {
-        $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
         $this->object->excludeElement('b');
         $this->object->includeElement('i');
@@ -727,7 +707,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testExcludeAttribute()
     {
-        $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
         $this->object->excludeAttribute('class');
 
@@ -745,7 +724,6 @@ class SyllableTest extends AbstractTestCase
      */
     public function testExcludeAttributeValue()
     {
-        $this->object->setLanguage('en-us');
         $this->object->setHyphen('-');
         $this->object->excludeAttribute('class', 'unsplittable');
 
