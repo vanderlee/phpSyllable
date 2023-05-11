@@ -584,29 +584,29 @@ class SyllableTest extends AbstractTestCase
                 'Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text — with dash en-ti-ty.',
             ],
             [
-                '<html>' .
-                    '<body>' .
-                        'Ridiculously <b class="unsplittable">complicated</b> metatext — with dash entity.' .
-                    '</body>' .
+                '<html>'.
+                    '<body>'.
+                        'Ridiculously <b class="unsplittable">complicated</b> metatext — with dash entity.'.
+                    '</body>'.
                 '</html>',
-                '<html>' .
-                    '<body>' .
-                        'Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text — with dash en-ti-ty.' .
-                    '</body>' .
+                '<html>'.
+                    '<body>'.
+                        'Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text — with dash en-ti-ty.'.
+                    '</body>'.
                 '</html>',
             ],
             [
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">' .
-                '<html>' .
-                    '<body class="body-class">' .
-                        'Ridiculously <b class="unsplittable">complicated</b> metatext — with dash entity.' .
-                    '</body>' .
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'.
+                '<html>'.
+                    '<body class="body-class">'.
+                        'Ridiculously <b class="unsplittable">complicated</b> metatext — with dash entity.'.
+                    '</body>'.
                 '</html>',
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">' .
-                '<html>' .
-                    '<body class="body-class">' .
-                        'Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text — with dash en-ti-ty.' .
-                    '</body>' .
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">'.
+                '<html>'.
+                    '<body class="body-class">'.
+                        'Ridicu-lous-ly <b class="unsplittable">com-pli-cat-ed</b> meta-text — with dash en-ti-ty.'.
+                    '</body>'.
                 '</html>',
             ],
         ];
@@ -844,17 +844,23 @@ class SyllableTest extends AbstractTestCase
         $this->object->setHyphen('-');
 
         $this->object->setLanguage('de');
-        $this->assertEquals('Äu-ßerst kom-pli-zier-ter Me-ta-text.',
+        $this->assertEquals(
+            'Äu-ßerst kom-pli-zier-ter Me-ta-text.',
             $this->object->hyphenateText('Äußerst komplizierter Metatext.')
         );
-        $this->assertEquals('Äu-ßerst <b class="unsplittable">kom-pli-zier-ter</b> Me-ta-text.',
+        $this->assertEquals(
+            'Äu-ßerst <b class="unsplittable">kom-pli-zier-ter</b> Me-ta-text.',
             $this->object->hyphenateHtmlText('Äußerst <b class="unsplittable">komplizierter</b> Metatext.')
         );
 
         $this->object->setLanguage('uk');
-        $this->assertEquals('Над-зви-чайно скла-дний ме-та-те-кст.',
-            $this->object->hyphenateText('Надзвичайно складний метатекст.'));
-        $this->assertEquals('Над-зви-чайно <b class="unsplittable">скла-дний</b> ме-та-те-кст.',
-            $this->object->hyphenateHtmlText('Надзвичайно <b class="unsplittable">складний</b> метатекст.'));
+        $this->assertEquals(
+            'Над-зви-чайно скла-дний ме-та-те-кст.',
+            $this->object->hyphenateText('Надзвичайно складний метатекст.')
+        );
+        $this->assertEquals(
+            'Над-зви-чайно <b class="unsplittable">скла-дний</b> ме-та-те-кст.',
+            $this->object->hyphenateHtmlText('Надзвичайно <b class="unsplittable">складний</b> метатекст.')
+        );
     }
 }
