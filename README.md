@@ -76,8 +76,10 @@ $syllable->setHyphen(new Hyphen\Dash());
 // By default, all words are hyphenated.
 $syllable->setMinWordLength(5);
 
-// Output hyphenated text.
+// Output hyphenated text ..
 echo $syllable->hyphenateText('Provide your own paragraphs...');
+// .. or hyphenated HTML.
+echo $syllable->hyphenateHtmlText('<b>... with highlighted text.</b>');
 ```
 
 See the [demo.php](demo.php) file for a working example.
@@ -137,7 +139,7 @@ Words need to contain at least this many character to be hyphenated.
 #### public setLibxmlOptions(int $libxmlOptions)
 
 Options to use for HTML parsing by libxml.
-See https://www.php.net/manual/de/libxml.constants.php.
+**See:** https://www.php.net/manual/de/libxml.constants.php.
 
 #### public excludeAll()
 
@@ -194,6 +196,13 @@ Hyphenate all words in the plain text.
 
 Hyphenate all readable text in the HTML, excluding HTML tags and
 attributes.
+**Deprecated:** Use the UTF-8 capable hyphenateHtmlText() instead. This method is kept only for backward compatibility and will be removed in the next major version 2.0.
+
+#### public hyphenateHtmlText(string $html): string
+
+Hyphenate all readable text in the HTML, excluding HTML tags and
+attributes.
+This method is UTF-8 capable and should be preferred over hyphenateHtml().
 
 #### public histogramText(string $text): array
 

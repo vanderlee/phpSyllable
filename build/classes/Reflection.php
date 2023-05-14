@@ -114,8 +114,11 @@ class Reflection
                             $annotation = explode(' ', $line);
                             $returnType = $annotation[1] !== 'void' ? $annotation[1] : '';
                         } elseif (strpos($line, '@see') === 0) {
-                            $annotation = explode(' ', $line);
-                            $commentLines[] = 'See '.$annotation[1].'.';
+                            $annotation = explode(' ', $line, 2);
+                            $commentLines[] = '**See:** '.rtrim($annotation[1], '.').'.';
+                        } elseif (strpos($line, '@deprecated') === 0) {
+                            $annotation = explode(' ', $line, 2);
+                            $commentLines[] = '**Deprecated:** '.rtrim($annotation[1], '.').'.';
                         } elseif (!empty($line)) {
                             $commentLines[] = $line;
                         }

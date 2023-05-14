@@ -15,6 +15,20 @@ class ReflectionFixture
     protected static $parameters;
 
     /**
+     * The deprecated public setter method.
+     *
+     * @param array $methods
+     *
+     * @return void
+     *
+     * @deprecated Use setMethods() instead.
+     */
+    public function setMethodsDeprecated($methods = [])
+    {
+        $this->methods = $methods;
+    }
+
+    /**
      * The public setter method.
      *
      * @param array $methods
