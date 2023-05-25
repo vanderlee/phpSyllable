@@ -1,6 +1,6 @@
 # Syllable
 
-Version 1.6
+Version 1.7
 
 [![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
 
@@ -331,6 +331,9 @@ to execute the tests.
 
 
 ## Changes
+
+1.7
+-   Use \hyphenations case-insensitive (like \patterns)
 
 1.6
 -   Revert renaming of API method names
