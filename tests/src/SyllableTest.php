@@ -638,8 +638,13 @@ class SyllableTest extends AbstractTestCase
     {
         $this->object->setHyphen('-');
 
+        // Patterns
         $this->assertEquals(['IN', 'EX', 'PLIC', 'A', 'BLE'], $this->object->splitText('INEXPLICABLE'));
         $this->assertEquals(['in', 'ex', 'plic', 'a', 'ble'], $this->object->splitText('inexplicable'));
+
+        // Hyphenations
+        $this->assertEquals(['as', 'so', 'ciate'], $this->object->splitText('associate'));
+        $this->assertEquals(['AS', 'SO', 'CIATE'], $this->object->splitText('ASSOCIATE'));
     }
 
     /**
