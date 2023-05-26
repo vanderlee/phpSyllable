@@ -1,0 +1,96 @@
+name: Tests
+
+on:
+  # Run manually on demand.
+  workflow_dispatch:
+  # Run automatically when a pull request is created and on each push to it.
+  # The runtime is only ~ 30s due to parallelization.
+  pull_request:
+
+jobs:
+  test:
+    name: 'Run tests'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [ '5.6', '7.4', '8.2' ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Include tags.
+          fetch-depth: 0
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Install dependencies (using the workflow cache)
+        uses: ramsey/composer-install@v2
+
+      - name: Run tests
+        run: |
+          ./vendor/bin/phpunit
+
+  api-documentation:
+    name: 'Check API documentation'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Prepare environment
+        run: |
+          composer dump-autoload --dev
+          
+      - name: Check API documentation
+        run: |
+          LOG_LEVEL=4 ./build/generate-docs
+          
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "The API documentation in README.md is NOT UP-TO-DATE."
+            echo "Run './build/generate-docs' locally to update it."
+            exit 1
+          else
+            echo "The API documentation in README.md is up-to-date."
+            exit 0
+          fi
+
+# The coverage service on https://coveralls.io requires registration of this project
+# for receiving the coverage report.
+#
+#      - name: Run tests
+#        run: |
+#          ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+#
+#      - name: Send coverage report to Coveralls
+#        env:
+#          COVERALLS_RUN_LOCALLY: 1
+#          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+#        run: |
+#          composer require --dev php-coveralls/php-coveralls
+#          ./vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
+
+# The code quality service on https://app.codacy.com/gh/vanderlee/phpSyllable requires
+# the project registration token for receiving the coverage report.
+# See: https://docs.codacy.com/getting-started/configuring-your-repository/#adding-coverage
+# See: https://github.com/codacy/codacy-coverage-reporter-action.
+#
+#      - name: Run tests
+#        run: |
+#          ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+#
+#      - name: Send coverage report to Codacy
+#        uses: codacy/codacy-coverage-reporter-action@v1
+#        with:
+#          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#          coverage-reports: 'build/logs/clover.xml'

@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+use Vanderlee\SyllableBuild\DocumentationManager;
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$withCommit = getenv('WITH_COMMIT');
+$logLevel = getenv('LOG_LEVEL');
+
+$withCommit = $withCommit !== false ? (int) $withCommit === 1 : false;
+$logLevel = $logLevel !== false ? (int) $logLevel : LOG_INFO;
+
+$documentationManager = new DocumentationManager();
+$documentationManager->setWithCommit($withCommit);
+$documentationManager->setLogLevel($logLevel);
+$result = $documentationManager->delegate();
+
+if ($result === false) {
+    exit(1);
+}
+exit(0);

@@ -1,19 +1,48 @@
 {
-	"name": "vanderlee/syllable",
-	"description": "Text syllable splitting and hyphenation using Frank M. Liang's TeX algorithm.",
-	"type": "library",
-	"keywords": ["syllable", "hyphenation", "language", "locale", "hyphen", "dash", "words", "text", "syllables", "split", "hyphenate"],
-	"homepage": "https://github.com/vanderlee/phpSyllable",
-	"license": "MIT",
-	"support": {
-		"issues": "https://github.com/vanderlee/phpSyllable/issues",
-		"source": "https://github.com/vanderlee/phpSyllable/"
-	},
-	"require": {
-		"php": ">=5.3.0"
-	},
-	"autoload": {
-		"classmap": ["classes/"]
-	}
+  "name": "vanderlee/syllable",
+  "description": "Text syllable splitting and hyphenation using Frank M. Liang's TeX algorithm.",
+  "type": "library",
+  "keywords": [
+    "syllable",
+    "hyphenation",
+    "language",
+    "locale",
+    "hyphen",
+    "dash",
+    "words",
+    "text",
+    "syllables",
+    "split",
+    "hyphenate"
+  ],
+  "homepage": "https://github.com/vanderlee/phpSyllable",
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/vanderlee/phpSyllable/issues",
+    "source": "https://github.com/vanderlee/phpSyllable/"
+  },
+  "require": {
+    "php": ">=5.6",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-mbstring": "*",
+    "ext-dom": "*"
+  },
+  "require-dev": {
+    "ext-curl": "*",
+    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vanderlee\\Syllable\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Vanderlee\\SyllableBuild\\": "build/classes",
+      "Vanderlee\\SyllableTest\\": "tests",
+      "Vanderlee\\SyllableTest\\Build\\": "tests/build",
+      "Vanderlee\\SyllableTest\\Src\\": "tests/src"
+    }
+  }
 }
-
