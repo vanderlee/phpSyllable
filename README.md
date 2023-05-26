@@ -334,6 +334,10 @@ to execute the tests.
 
 1.7
 -   Use \hyphenations case-insensitive (like \patterns)
+-   Correct handling of UTF-8 character sets when hyphenating HTML 
+    using the new Syllable::hyphenateHtmlText()
+-   Replace invalid "en" with "en-us" as default language of Syllable
+-   Update of hyph-de.tex
 
 1.6
 -   Revert renaming of API method names
