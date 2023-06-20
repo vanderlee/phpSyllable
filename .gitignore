@@ -1,8 +1,6 @@
-/.idea
-/nbproject/private/
-/build/logs/
-/cache/
+.phpunit.result.cache
+
+/.idea/
 /nbproject/
-/debug/
-/composer.lock
 /vendor/
+/composer.lock
