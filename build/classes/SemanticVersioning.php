@@ -11,7 +11,11 @@ class SemanticVersioning
     public function getNextReleaseTag($tag, $releaseType)
     {
         $tagPrefix = substr($tag, 0, strcspn($tag, '0123456789'));
-        $tagVersion = substr($tag, strlen($tagPrefix));
+        if (($tagSuffixPos = strpos($tag, '-')) !== false) {
+            $tagVersion = substr($tag, strlen($tagPrefix), $tagSuffixPos);
+        } else {
+            $tagVersion = substr($tag, strlen($tagPrefix));
+        }
         $tagVersionParts = explode('.', $tagVersion);
         $releaseVersionParts = $tagVersionParts + [0, 0, 0];
         $releaseVersionParts = array_slice($releaseVersionParts, 0, $releaseType + 1);

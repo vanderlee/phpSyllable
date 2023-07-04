@@ -37,6 +37,7 @@ class SemanticVersioningTest extends AbstractTestCase
             ['1', SemanticVersioning::MINOR_RELEASE, '1.1'],
             ['1', SemanticVersioning::MAJOR_RELEASE, '2'],
             ['v1.0.1', SemanticVersioning::PATCH_RELEASE, 'v1.0.2'],
+            ['1.0.1-p1', SemanticVersioning::PATCH_RELEASE, '1.0.2'],
         ];
     }
 
