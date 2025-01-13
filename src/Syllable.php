@@ -54,6 +54,7 @@ class Syllable
     private $patterns = null;
     private $maxPattern = null;
     private $hyphenation = null;
+    private $userHyphenations = array();
 
     /**
      * Character encoding to use.
@@ -135,6 +136,19 @@ class Syllable
     {
         $this->language = $language;
         $this->setSource(new File($language, self::$languageDir));
+    }
+
+    /**
+     * Add custom hyphenation patterns for words using a '-' to explicitly specify hyphenation (if any)
+     * @param array $hyphenations
+     * @return void
+     */
+    public function addHyphenations(array $hyphenations)
+    {
+        foreach ($hyphenations as $pattern) {
+            $word = str_replace('-', '', $pattern);
+            $this->userHyphenations[$word] = $pattern;
+        }
     }
 
     /**
@@ -755,18 +769,19 @@ class Syllable
 
         $wordLowerCased = mb_strtolower($word);
 
-        if (isset($this->hyphenation[$wordLowerCased])) {
-            return $this->parseWordByHyphenation($word, $wordLowerCased);
-        } else {
-            return $this->parseWordByPatterns($word, $wordLength, $wordLowerCased);
+        if (isset($this->userHyphenations[$wordLowerCased])) {
+            return $this->parseWordByHyphenation($this->userHyphenations[$wordLowerCased], $word, $wordLowerCased);
         }
+
+        if (isset($this->hyphenation[$wordLowerCased])) {
+            return $this->parseWordByHyphenation($this->hyphenation[$wordLowerCased], $word, $wordLowerCased);
+        }
+
+        return $this->parseWordByPatterns($word, $wordLength, $wordLowerCased);
     }
 
-    private function parseWordByHyphenation($word, $wordLowerCased = null)
+    private function parseWordByHyphenation($hyphenation, $word, $wordLowerCased = null)
     {
-        $wordLowerCased = $wordLowerCased ?: mb_strtolower($word);
-
-        $hyphenation = $this->hyphenation[$wordLowerCased];
         $hyphenationLength = mb_strlen($hyphenation);
 
         $parts = [];

@@ -1,6 +1,6 @@
 # Syllable
 
-Version 1.7
+Version 1.8
 
 [![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
 
@@ -113,6 +113,11 @@ Default to the `languages` subdirectory of the current directory.
 #### public setLanguage(string $language)
 
 Set the language whose rules will be used for hyphenation.
+
+#### public addHyphenations(array $hyphenations)
+
+Add any number of custom hyphenation patterns, using '-' to specify where hyphens may occur.
+Omit the '-' from the pattern to add words that will not be hyphenated.
 
 #### public setHyphen(mixed $hyphen)
 

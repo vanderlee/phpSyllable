@@ -74,6 +74,24 @@ class SyllableTest extends AbstractTestCase
     /**
      * @return void
      */
+    public function testSetExceptions()
+    {
+        $this->object->setHyphen('-');
+
+        $this->object->setLanguage('en-us');
+        $this->object->addHyphenations([
+            'explicit',
+            'hyp-hena-ti-on'
+        ]);
+        $this->assertEquals(
+            'ap-ply explicit hyp-hena-ti-on pat-terns',
+            $this->object->hyphenateText('apply explicit hyphenation patterns')
+        );
+    }
+
+    /**
+     * @return void
+     */
     public function testSetHyphen()
     {
         $this->object->setHyphen('-');
