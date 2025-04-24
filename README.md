@@ -1,10 +1,10 @@
 # Syllable
 
-Version 1.8
+Version 1.9
 
 [![Tests](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml/badge.svg)](https://github.com/vanderlee/phpSyllable/actions/workflows/tests.yml)
 
-Copyright &copy; 2011-2023 Martijn van der Lee.
+Copyright &copy; 2011-2025 Martijn van der Lee.
 MIT Open Source license applies.
 
 
@@ -22,7 +22,7 @@ italian, romanian, russian, etc. 76 languages in total.
 
 Language sources: http://tug.org/tex-hyphen/#languages
 
-Supports PHP 5.6 and up, so you can use it on older servers.
+Supports PHP 7.1 and up, so you can use it on older servers.
 
 
 ## Installation
