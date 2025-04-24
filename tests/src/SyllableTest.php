@@ -189,8 +189,8 @@ class SyllableTest extends AbstractTestCase
         $this->assertNotEmpty($this->object->getCache()->__get('patterns'));
         $this->assertGreaterThan(0, $this->object->getCache()->__get('max_pattern'));
         $this->assertNotEmpty($this->object->getCache()->__get('hyphenation'));
-        $this->assertInternalType('int', $this->object->getCache()->__get('left_min_hyphen'));
-        $this->assertInternalType('int', $this->object->getCache()->__get('right_min_hyphen'));
+        $this->assertIsInt($this->object->getCache()->__get('left_min_hyphen'));
+        $this->assertIsInt($this->object->getCache()->__get('right_min_hyphen'));
     }
 
     public function dataCacheVersionMatchesCacheFileVersionIsRelaxed()

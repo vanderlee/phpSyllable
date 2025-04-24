@@ -176,7 +176,7 @@ class Syllable
     /**
      * @param Cache $cache
      */
-    public function setCache(Cache $cache = null)
+    public function setCache(?Cache $cache = null)
     {
         $this->cache = $cache;
     }
@@ -612,8 +612,8 @@ class Syllable
      */
     private function hyphenateHtmlDom(
         DOMNode $node,
-        DOMNodeList $excludeNodes = null,
-        DOMNodeList $includeNodes = null,
+        ?DOMNodeList $excludeNodes = null,
+        ?DOMNodeList $includeNodes = null,
         $split = true
     ) {
         if ($node->hasChildNodes()) {
