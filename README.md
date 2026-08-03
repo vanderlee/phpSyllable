@@ -56,8 +56,8 @@ use Vanderlee\Syllable\Hyphen;
 
 // Globally set the directory where Syllable can store cache files.
 // By default, this is the cache/ folder in this package, but usually
-// you want to have the folder outside the package. Note that the cache
-// folder must be created beforehand.
+// you want to have the folder outside the package. Missing cache
+// directories are created automatically.
 Syllable::setCacheDir(__DIR__ . '/cache');
 
 // Globally set the directory where the .tex files are stored.
@@ -91,141 +91,219 @@ The following describes the API of the main Syllable class. In most cases,
 you will not use any other functions. Browse the code under src/ for all 
 available functions.
 
-#### public __construct($language = 'en-us', string|Hyphen $hyphen = null)
+#### public __construct($language = 'en-us', $hyphen = null)
+
 
 Create a new Syllable class, with defaults.
 
-#### public static setCacheDir(string $dir)
+
+#### public static setCacheDir($dir)
+
 
 Set the directory where compiled language files may be stored.
 Default to the `cache` subdirectory of the current directory.
 
+
 #### public static setEncoding(string|null $encoding = null)
+
 
 Set the character encoding to use.
 Specify `null` encoding to not apply any encoding at all.
 
-#### public static setLanguageDir(string $dir)
+
+#### public static setLanguageDir($dir)
+
 
 Set the directory where language source files can be found.
 Default to the `languages` subdirectory of the current directory.
 
-#### public setLanguage(string $language)
+
+#### public setLanguage($language)
+
 
 Set the language whose rules will be used for hyphenation.
 
-#### public addHyphenations(array $hyphenations)
 
-Add any number of custom hyphenation patterns, using '-' to specify where hyphens may occur.
-Omit the '-' from the pattern to add words that will not be hyphenated.
+#### public addHyphenations($hyphenations): void
+
+
+Add custom hyphenation patterns for words using a '-' to explicitly specify hyphenation (if any)
 
 #### public setHyphen(mixed $hyphen)
 
+
 Set the hyphen text or object to use as a hyphen marker.
+
 
 #### public getHyphen(): Hyphen
 
+
 Get the current hyphen object.
 
-#### public setCache(Cache $cache = null)
+
+#### public setCache($cache = null)
+
+
 
 #### public getCache(): Cache
+
+
 
 #### public setSource($source)
 
 #### public getSource(): Source
 
-#### public setMinWordLength(int $length = 0)
+
+
+#### public setMinWordLength($length = 0)
+
 
 Words need to contain at least this many character to be hyphenated.
 
+
 #### public getMinWordLength(): int
 
-#### public setLibxmlOptions(int $libxmlOptions)
+
+
+#### public setLibxmlOptions($libxmlOptions)
+
 
 Options to use for HTML parsing by libxml.
-**See:** https://www.php.net/manual/de/libxml.constants.php.
+
+
+**See:** https://www.php.net/manual/de/libxml.constants.php
+.
 
 #### public excludeAll()
 
+
 Exclude all elements.
 
-#### public excludeElement(string|string[] $elements)
+#### public excludeElement($elements)
+
 
 Add one or more elements to exclude from HTML.
 
-#### public excludeAttribute(string|string[] $attributes, $value = null)
+
+#### public excludeAttribute($attributes, $value = null)
+
 
 Add one or more elements with attributes to exclude from HTML.
 
-#### public excludeXpath(string|string[] $queries)
+
+#### public excludeXpath($queries)
+
 
 Add one or more xpath queries to exclude from HTML.
 
-#### public includeElement(string|string[] $elements)
+
+#### public includeElement($elements)
+
 
 Add one or more elements to include from HTML.
 
-#### public includeAttribute(string|string[] $attributes, $value = null)
+
+#### public includeAttribute($attributes, $value = null)
+
 
 Add one or more elements with attributes to include from HTML.
 
-#### public includeXpath(string|string[] $queries)
+
+#### public includeXpath($queries)
+
 
 Add one or more xpath queries to include from HTML.
 
-#### public splitWord(string $word): array
+
+#### public splitWord($word): array
+
 
 Split a single word on where the hyphenation would go.
+
 Punctuation is not supported, only simple words. For parsing whole sentences
 please use Syllable::splitWords() or Syllable::splitText().
 
-#### public splitWords(string $text): array
+
+
+#### public splitWords($text): array
+
 
 Split a text into an array of punctuation marks and words,
 splitting each word on where the hyphenation would go.
 
-#### public splitText(string $text): array
+
+
+#### public splitText($text): array
+
 
 Split a text on where the hyphenation would go.
 
-#### public hyphenateWord(string $word): string
+
+
+#### public hyphenateWord($word): string
+
 
 Hyphenate a single word.
 
-#### public hyphenateText(string $text): string
+
+
+#### public hyphenateText($text): string
+
 
 Hyphenate all words in the plain text.
 
-#### public hyphenateHtml(string $html): string
+
+
+#### public hyphenateHtml($html): string
+
 
 Hyphenate all readable text in the HTML, excluding HTML tags and
 attributes.
+
 **Deprecated:** Use the UTF-8 capable hyphenateHtmlText() instead. This method is kept only for backward compatibility and will be removed in the next major version 2.0.
+.
 
-#### public hyphenateHtmlText(string $html): string
+
+
+#### public hyphenateHtmlText($html): string
+
 
 Hyphenate all readable text in the HTML, excluding HTML tags and
 attributes.
+
 This method is UTF-8 capable and should be preferred over hyphenateHtml().
 
-#### public histogramText(string $text): array
+
+
+#### public histogramText($text): array
+
 
 Count the number of syllables in the text and return a map with
 syllable count as key and number of words for that syllable count as
 the value.
 
-#### public countWordsText(string $text): int
+
+
+#### public countWordsText($text): int
+
 
 Count the number of words in the text.
 
-#### public countSyllablesText(string $text): int
+
+
+#### public countSyllablesText($text): int
+
 
 Count the number of syllables in the text.
 
-#### public countPolysyllablesText(string $text): int
+
+
+#### public countPolysyllablesText($text): int
+
 
 Count the number of polysyllables in the text.
+
+
 
 
 ## Development
