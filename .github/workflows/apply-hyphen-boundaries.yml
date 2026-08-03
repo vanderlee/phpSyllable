@@ -1,0 +1,173 @@
+name: Apply configurable hyphen boundary API
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/configurable-hyphen-boundaries
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, dom
+          coverage: none
+          tools: composer:v2
+
+      - name: Install documentation dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Patch API and tests
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          source_path = Path('src/Syllable.php')
+          source = source_path.read_text(encoding='utf-8')
+
+          old_properties = """    private $minHyphenLeft = 2;
+    private $minHyphenRight = 2;"""
+          new_properties = """    private $minHyphenLeft = 2;
+    private $minHyphenRight = 2;
+    private $minHyphenLeftOverride = null;
+    private $minHyphenRightOverride = null;"""
+          if source.count(old_properties) != 1:
+              raise SystemExit('Expected hyphen boundary properties exactly once')
+          source = source.replace(old_properties, new_properties)
+
+          getter = """    public function getMinWordLength()
+    {
+        return $this->minWordLength;
+    }
+"""
+          methods = getter + """
+    /**
+     * Override the minimum number of characters retained before a hyphenation point.
+     * Pass null to restore the active language's default.
+     *
+     * @param int|null $length
+     */
+    public function setMinHyphenLeft($length = null)
+    {
+        $this->minHyphenLeftOverride = $length === null ? null : max(0, (int) $length);
+    }
+
+    /**
+     * Get the effective minimum number of characters before a hyphenation point.
+     *
+     * @return int
+     */
+    public function getMinHyphenLeft()
+    {
+        $this->loadLanguage();
+
+        return $this->minHyphenLeft;
+    }
+
+    /**
+     * Override the minimum number of characters retained after a hyphenation point.
+     * Pass null to restore the active language's default.
+     *
+     * @param int|null $length
+     */
+    public function setMinHyphenRight($length = null)
+    {
+        $this->minHyphenRightOverride = $length === null ? null : max(0, (int) $length);
+    }
+
+    /**
+     * Get the effective minimum number of characters after a hyphenation point.
+     *
+     * @return int
+     */
+    public function getMinHyphenRight()
+    {
+        $this->loadLanguage();
+
+        return $this->minHyphenRight;
+    }
+"""
+          if source.count(getter) != 1:
+              raise SystemExit('Expected minimum word length getter exactly once')
+          source = source.replace(getter, methods)
+
+          old_end = """                $cache->close();
+            }
+        }
+    }
+
+    /**
+     * Exclude all elements."""
+          new_end = """                $cache->close();
+            }
+        }
+
+        if ($this->minHyphenLeftOverride !== null) {
+            $this->minHyphenLeft = $this->minHyphenLeftOverride;
+        }
+        if ($this->minHyphenRightOverride !== null) {
+            $this->minHyphenRight = $this->minHyphenRightOverride;
+        }
+    }
+
+    /**
+     * Exclude all elements."""
+          if source.count(old_end) != 1:
+              raise SystemExit('Expected loadLanguage ending exactly once')
+          source_path.write_text(source.replace(old_end, new_end), encoding='utf-8')
+
+          test_path = Path('tests/src/SyllableTest.php')
+          tests = test_path.read_text(encoding='utf-8')
+          marker = """    /**
+     * @return array[]
+     */
+    public function dataSplitWord()"""
+          test = """    /**
+     * @return void
+     */
+    public function testConfigurableHyphenBoundaries()
+    {
+        $this->object->setMinHyphenLeft(5);
+        $this->object->setMinHyphenRight(5);
+
+        $parts = $this->object->splitWord('Supercalifragilisticexpialidocious');
+
+        $this->assertSame(5, $this->object->getMinHyphenLeft());
+        $this->assertSame(5, $this->object->getMinHyphenRight());
+        $this->assertGreaterThanOrEqual(5, mb_strlen(reset($parts)));
+        $this->assertGreaterThanOrEqual(5, mb_strlen(end($parts)));
+
+        $this->object->setMinHyphenLeft(null);
+        $this->object->setMinHyphenRight(null);
+        $this->assertSame(2, $this->object->getMinHyphenLeft());
+        $this->assertSame(2, $this->object->getMinHyphenRight());
+    }
+
+""" + marker
+          if tests.count(marker) != 1:
+              raise SystemExit('Expected split-word provider marker exactly once')
+          test_path.write_text(tests.replace(marker, test), encoding='utf-8')
+          PY
+
+      - name: Regenerate API documentation
+        run: ./build/generate-docs
+
+      - name: Commit generated changes
+        run: |
+          rm .github/workflows/apply-hyphen-boundaries.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/Syllable.php tests/src/SyllableTest.php README.md .github/workflows/apply-hyphen-boundaries.yml
+          git commit -m "Add configurable hyphen boundaries"
+          git push origin HEAD:agent/configurable-hyphen-boundaries
