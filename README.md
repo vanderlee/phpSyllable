@@ -91,245 +91,158 @@ The following describes the API of the main Syllable class. In most cases,
 you will not use any other functions. Browse the code under src/ for all 
 available functions.
 
-#### public __construct($language = 'en-us', $hyphen = null)
-
+#### public __construct($language = 'en-us', string|Hyphen $hyphen = null)
 
 Create a new Syllable class, with defaults.
 
-
-#### public static setCacheDir($dir)
-
+#### public static setCacheDir(string $dir)
 
 Set the directory where compiled language files may be stored.
 Default to the `cache` subdirectory of the current directory.
 
-
 #### public static setEncoding(string|null $encoding = null)
-
 
 Set the character encoding to use.
 Specify `null` encoding to not apply any encoding at all.
 
-
-#### public static setLanguageDir($dir)
-
+#### public static setLanguageDir(string $dir)
 
 Set the directory where language source files can be found.
 Default to the `languages` subdirectory of the current directory.
 
-
-#### public setLanguage($language)
-
+#### public setLanguage(string $language)
 
 Set the language whose rules will be used for hyphenation.
 
-
-#### public addHyphenations($hyphenations): void
-
+#### public addHyphenations(array $hyphenations)
 
 Add custom hyphenation patterns for words using a '-' to explicitly specify hyphenation (if any)
 
 #### public setHyphen(mixed $hyphen)
 
-
 Set the hyphen text or object to use as a hyphen marker.
-
 
 #### public getHyphen(): Hyphen
 
-
 Get the current hyphen object.
 
-
-#### public setCache($cache = null)
-
-
+#### public setCache(Cache $cache = null)
 
 #### public getCache(): Cache
-
-
 
 #### public setSource($source)
 
 #### public getSource(): Source
 
-
-
-#### public setMinWordLength($length = 0)
-
+#### public setMinWordLength(int $length = 0)
 
 Words need to contain at least this many character to be hyphenated.
 
-
 #### public getMinWordLength(): int
 
-
-
-#### public setMinHyphenLeft($length = null)
-
+#### public setMinHyphenLeft(int|null $length = null)
 
 Override the minimum number of characters retained before a hyphenation point.
 Pass null to restore the active language's default.
 
-
 #### public getMinHyphenLeft(): int
-
 
 Get the effective minimum number of characters before a hyphenation point.
 
-
-#### public setMinHyphenRight($length = null)
-
+#### public setMinHyphenRight(int|null $length = null)
 
 Override the minimum number of characters retained after a hyphenation point.
 Pass null to restore the active language's default.
 
-
 #### public getMinHyphenRight(): int
-
 
 Get the effective minimum number of characters after a hyphenation point.
 
-
-#### public setLibxmlOptions($libxmlOptions)
-
+#### public setLibxmlOptions(int $libxmlOptions)
 
 Options to use for HTML parsing by libxml.
-
-
-**See:** https://www.php.net/manual/de/libxml.constants.php
-.
+**See:** https://www.php.net/manual/de/libxml.constants.php.
 
 #### public excludeAll()
 
-
 Exclude all elements.
 
-#### public excludeElement($elements)
-
+#### public excludeElement(string|string[] $elements)
 
 Add one or more elements to exclude from HTML.
 
-
-#### public excludeAttribute($attributes, $value = null)
-
+#### public excludeAttribute(string|string[] $attributes, $value = null)
 
 Add one or more elements with attributes to exclude from HTML.
 
-
-#### public excludeXpath($queries)
-
+#### public excludeXpath(string|string[] $queries)
 
 Add one or more xpath queries to exclude from HTML.
 
-
-#### public includeElement($elements)
-
+#### public includeElement(string|string[] $elements)
 
 Add one or more elements to include from HTML.
 
-
-#### public includeAttribute($attributes, $value = null)
-
+#### public includeAttribute(string|string[] $attributes, $value = null)
 
 Add one or more elements with attributes to include from HTML.
 
-
-#### public includeXpath($queries)
-
+#### public includeXpath(string|string[] $queries)
 
 Add one or more xpath queries to include from HTML.
 
-
-#### public splitWord($word): array
-
+#### public splitWord(string $word): array
 
 Split a single word on where the hyphenation would go.
-
 Punctuation is not supported, only simple words. For parsing whole sentences
 please use Syllable::splitWords() or Syllable::splitText().
 
-
-
-#### public splitWords($text): array
-
+#### public splitWords(string $text): array
 
 Split a text into an array of punctuation marks and words,
 splitting each word on where the hyphenation would go.
 
-
-
-#### public splitText($text): array
-
+#### public splitText(string $text): array
 
 Split a text on where the hyphenation would go.
 
-
-
-#### public hyphenateWord($word): string
-
+#### public hyphenateWord(string $word): string
 
 Hyphenate a single word.
 
-
-
-#### public hyphenateText($text): string
-
+#### public hyphenateText(string $text): string
 
 Hyphenate all words in the plain text.
 
-
-
-#### public hyphenateHtml($html): string
-
+#### public hyphenateHtml(string $html): string
 
 Hyphenate all readable text in the HTML, excluding HTML tags and
 attributes.
-
 **Deprecated:** Use the UTF-8 capable hyphenateHtmlText() instead. This method is kept only for backward compatibility and will be removed in the next major version 2.0.
-.
 
-
-
-#### public hyphenateHtmlText($html): string
-
+#### public hyphenateHtmlText(string $html): string
 
 Hyphenate all readable text in the HTML, excluding HTML tags and
 attributes.
-
 This method is UTF-8 capable and should be preferred over hyphenateHtml().
 
-
-
-#### public histogramText($text): array
-
+#### public histogramText(string $text): array
 
 Count the number of syllables in the text and return a map with
 syllable count as key and number of words for that syllable count as
 the value.
 
-
-
-#### public countWordsText($text): int
-
+#### public countWordsText(string $text): int
 
 Count the number of words in the text.
 
-
-
-#### public countSyllablesText($text): int
-
+#### public countSyllablesText(string $text): int
 
 Count the number of syllables in the text.
 
-
-
-#### public countPolysyllablesText($text): int
-
+#### public countPolysyllablesText(string $text): int
 
 Count the number of polysyllables in the text.
-
-
 
 
 ## Development
