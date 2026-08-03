@@ -2,6 +2,8 @@
 
 namespace Vanderlee\Syllable\Cache;
 
+use RuntimeException;
+
 abstract class File implements Cache
 {
     private static $language = null;
@@ -50,6 +52,12 @@ abstract class File implements Cache
     public function close()
     {
         $file = $this->filename();
+        $directory = dirname($file);
+
+        if (!is_dir($directory) && !mkdir($directory, 0777, true) && !is_dir($directory)) {
+            throw new RuntimeException(sprintf('Unable to create cache directory "%s".', $directory));
+        }
+
         file_put_contents($file, $this->encode(self::$data));
         @chmod($file, 0777);
     }

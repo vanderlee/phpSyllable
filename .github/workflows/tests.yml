@@ -7,6 +7,9 @@ on:
   # The runtime is only ~ 30s due to parallelization.
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: 'Run tests'
@@ -18,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Include tags.
           fetch-depth: 0
@@ -29,7 +32,7 @@ jobs:
           php-version: ${{ matrix.php }}
 
       - name: Install dependencies (using the workflow cache)
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@v4
 
       - name: Run tests
         run: |
@@ -41,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP 7.4
         uses: shivammathur/setup-php@v2
