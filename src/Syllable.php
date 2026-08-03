@@ -51,6 +51,8 @@ class Syllable
     private $language;
     private $minHyphenLeft = 2;
     private $minHyphenRight = 2;
+    private $minHyphenLeftOverride = null;
+    private $minHyphenRightOverride = null;
     private $patterns = null;
     private $maxPattern = null;
     private $hyphenation = null;
@@ -221,6 +223,52 @@ class Syllable
     }
 
     /**
+     * Override the minimum number of characters retained before a hyphenation point.
+     * Pass null to restore the active language's default.
+     *
+     * @param int|null $length
+     */
+    public function setMinHyphenLeft($length = null)
+    {
+        $this->minHyphenLeftOverride = $length === null ? null : max(0, (int) $length);
+    }
+
+    /**
+     * Get the effective minimum number of characters before a hyphenation point.
+     *
+     * @return int
+     */
+    public function getMinHyphenLeft()
+    {
+        $this->loadLanguage();
+
+        return $this->minHyphenLeft;
+    }
+
+    /**
+     * Override the minimum number of characters retained after a hyphenation point.
+     * Pass null to restore the active language's default.
+     *
+     * @param int|null $length
+     */
+    public function setMinHyphenRight($length = null)
+    {
+        $this->minHyphenRightOverride = $length === null ? null : max(0, (int) $length);
+    }
+
+    /**
+     * Get the effective minimum number of characters after a hyphenation point.
+     *
+     * @return int
+     */
+    public function getMinHyphenRight()
+    {
+        $this->loadLanguage();
+
+        return $this->minHyphenRight;
+    }
+
+    /**
      * Options to use for HTML parsing by libxml.
      *
      * @param int $libxmlOptions
@@ -292,6 +340,13 @@ class Syllable
 
                 $cache->close();
             }
+        }
+
+        if ($this->minHyphenLeftOverride !== null) {
+            $this->minHyphenLeft = $this->minHyphenLeftOverride;
+        }
+        if ($this->minHyphenRightOverride !== null) {
+            $this->minHyphenRight = $this->minHyphenRightOverride;
         }
     }
 

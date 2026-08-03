@@ -243,6 +243,27 @@ class SyllableTest extends AbstractTestCase
     }
 
     /**
+     * @return void
+     */
+    public function testConfigurableHyphenBoundaries()
+    {
+        $this->object->setMinHyphenLeft(5);
+        $this->object->setMinHyphenRight(5);
+
+        $parts = $this->object->splitWord('Supercalifragilisticexpialidocious');
+
+        $this->assertSame(5, $this->object->getMinHyphenLeft());
+        $this->assertSame(5, $this->object->getMinHyphenRight());
+        $this->assertGreaterThanOrEqual(5, mb_strlen(reset($parts)));
+        $this->assertGreaterThanOrEqual(5, mb_strlen(end($parts)));
+
+        $this->object->setMinHyphenLeft(null);
+        $this->object->setMinHyphenRight(null);
+        $this->assertSame(2, $this->object->getMinHyphenLeft());
+        $this->assertSame(2, $this->object->getMinHyphenRight());
+    }
+
+    /**
      * @return array[]
      */
     public function dataSplitWord()
