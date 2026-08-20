@@ -84,6 +84,15 @@ echo $syllable->hyphenateHtmlText('<b>... with highlighted text.</b>');
 
 See the [demo.php](demo.php) file for a working example.
 
+A PSR-6 cache pool can be used without changing the existing Syllable API:
+
+```php
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Vanderlee\Syllable\Cache\Psr6;
+
+$syllable->setCache(new Psr6(new FilesystemAdapter()));
+```
+
 
 ## `Syllable` API reference
 

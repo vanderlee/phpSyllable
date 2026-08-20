@@ -26,11 +26,12 @@
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "psr/cache": "^1.0 || ^2.0 || ^3.0"
   },
   "require-dev": {
     "ext-curl": "*",
-    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.5"
+    "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.5 || ^9.6"
   },
   "autoload": {
     "psr-4": {
